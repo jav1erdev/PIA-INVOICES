@@ -31,7 +31,7 @@ export default function Search(
   return (
     <div className="relative flex flex-1 flex-shrink-0">
       <label htmlFor="search" className="sr-only">
-        Search
+        Buscar
       </label>
       <input
         className={`peer block w-full rounded-md border py-[9px] 

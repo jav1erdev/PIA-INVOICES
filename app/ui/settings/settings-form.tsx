@@ -27,7 +27,7 @@ export default function Form({
           <label htmlFor="theme" className={`mb-2  block text-sm font-medium
             ${theme.text}
           `}>
-            Choose theme:
+            Elige un tema:
           </label>
           <div className="relative">
             <select
@@ -77,7 +77,7 @@ export default function Form({
       </div>
 
       <div className="mt-6 flex justify-end">
-        <Button type="submit">Update User</Button>
+        <Button type="submit">Actualizar Configuracion</Button>
       </div>
     </form>
   );

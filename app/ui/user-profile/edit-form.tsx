@@ -71,7 +71,7 @@ export default function Form({
           <label htmlFor="name" className={`mb-2 block text-sm font-medium
             ${theme.text}
           `}>
-            Name: 
+            Nombre: 
           </label>
           <div className="relative">
             <input
@@ -106,11 +106,10 @@ export default function Form({
             className={`mt-5 block text-sm font-medium ${theme.text}`}
             htmlFor="password"
           >
-            Password:
+            Contraseña:
           </label>
           <p className={`mb-3 block text-xs font-medium ${theme.text}`}>
-            The password must have at least 8 characters, <br /> 
-            one special character, one upper case letter and one lower case letter.
+            La contraseña debe tener al menos 8 caracteres, <br /> un carácter especial, una letra mayúscula y una letra minúscula.
           </p>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -118,7 +117,7 @@ export default function Form({
                 id="password"
                 name="password"
                 type="password"
-                placeholder="Enter the new user password"
+                placeholder="Introduzca la nueva contraseña de usuario"
                 className={`peer block w-full rounded-md border
                   py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                   ${theme.border} ${theme.bg} ${theme.text}
@@ -145,7 +144,7 @@ export default function Form({
           <label htmlFor="confirm-password" className={`mb-2 block text-sm font-medium
             ${theme.text}
           `}>
-            Confirm password: 
+            Confirmar contraseña:
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -153,7 +152,7 @@ export default function Form({
                 id="confirm-password"
                 name="confirm-password"
                 type="password"
-                placeholder="Confirm password"
+                placeholder="Confirmar contraseña"
                 className={`peer block w-full rounded-md border
                   py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                   ${theme.border} ${theme.bg} ${theme.text}
@@ -184,7 +183,7 @@ export default function Form({
       </div>
 
       <div className="mt-6 flex justify-end">
-        <Button type="submit">Update User</Button>
+        <Button type="submit">Actualizar Usuario</Button>
       </div>
     </form>
   );

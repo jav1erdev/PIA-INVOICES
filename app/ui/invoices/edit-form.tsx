@@ -17,7 +17,9 @@ import { Button, Button14 } from '@/app/ui/button';
 import { updateInvoice } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 import { themeType } from '@/app/lib/theme';
+import { ToastContainer, toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function EditInvoiceForm({
   invoice,
@@ -39,7 +41,23 @@ export default function EditInvoiceForm({
   const [usocliente, setUsocliente] = useState(invoice.usocliente_cdfi);
   const [modopago, setModoPago] = useState(invoice.modo_pago);
   const [regimenfiscal, setRegimenfiscal] = useState(invoice.regimenfiscal_cdfi);
+  const [isGood, setIsGood] = useState(false);
+  const router = useRouter();
   const [total, setTotal] = useState(invoice.amount || 0);
+
+
+  useEffect(() => {
+    if (state?.success) {
+      toast.success('Factura actualizada con éxito!');
+      setTimeout(() => {
+        router.push('/dashboard/invoices');
+        router.refresh();
+      }, 2000);
+    } 
+    if (state?.errors) {
+      setIsGood(false);
+    }
+  }, [state, router]);
 
   const handleStatusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsPaid(e.target.value === 'Pagado');
@@ -61,9 +79,17 @@ export default function EditInvoiceForm({
   // Uso del formato adecuado
   //const fechaMaxima = invoice.fecha_para_pagar ? formatDate(invoice.fecha_para_pagar) : '';
   
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsGood(true);
+    const formData = new FormData(e.currentTarget);
+    dispatch(formData);
+  };
+  
 
   return (
-    <form action={dispatch}>
+    <form onSubmit={handleSubmit}>
+      <ToastContainer theme="colored" />
       <div className={`rounded-md ${theme.container} p-4 md:p-6`}>
         {/* Customer Name */}
         <h1 className={`text-sm text-gray-500 ${theme.title}`}>Identificador de factura: {invoice.id}</h1>
@@ -72,7 +98,7 @@ export default function EditInvoiceForm({
             htmlFor="customer"
             className={`mb-2 block text-sm font-medium ${theme.text}`}
           >
-            Choose customer
+            Elegir cliente
           </label>
           <div className="relative">
             <select
@@ -86,7 +112,7 @@ export default function EditInvoiceForm({
               aria-describedby="customer-error"
             >
               <option value="" disabled>
-                Select a customer
+                Seleccione un cliente
               </option>
               {customers.map((customer) => (
                 <option key={customer.id} value={customer.id}>
@@ -147,7 +173,7 @@ export default function EditInvoiceForm({
          {/* Invoice Amount (read-only) */}
          <div className="mb-4">
           <label htmlFor="amount" className={`mb-2 block text-sm font-medium ${theme.text}`}>
-            Invoice Amount
+            Importe de la factura
           </label>
           <div className="relative mt-2 rounded-md">
             <input
@@ -176,7 +202,7 @@ export default function EditInvoiceForm({
         {/* Invoice Status */}
         <fieldset>
           <legend className={`mb-2 block text-sm font-medium ${theme.text}`}>
-            Set the invoice status
+            Establecer el estado de la factura
           </legend>
           <div className={`rounded-md border px-[14px] py-3 ${theme.bg} ${theme.border}`}>
             <div className="flex gap-4">
@@ -325,7 +351,8 @@ export default function EditInvoiceForm({
         >
           Cancel
         </Link>
-        <Button type="submit">Update Invoice</Button>
+        <Button disabled={isGood} className="disabled:bg-slate-400 disabled:cursor-not-allowed" type="submit">
+          {isGood ? "Actualizando..." : "Actualizar Factura"}</Button>
       </div>
     </form>
   );

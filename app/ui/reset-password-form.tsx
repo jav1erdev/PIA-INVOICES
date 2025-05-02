@@ -24,13 +24,13 @@ export default function Form({token} :
 					<label htmlFor="password" className={`block text-sm font-medium
 						${systemDefault.text}
 					`}>
-						Password: 
+						Contraseña:  
 					</label>
 					<p className={`mb-2 block text-xs font-medium
 						${systemDefault.text}
 					`}>
-						The password must have at least 8 characters, 
-						one special character, one upper case letter and one lower case letter.
+						La contraseña debe tener al menos 8 caracteres,
+						un carácter especial, una letra mayúscula y una letra minúscula.
 					</p>
 					<div className="relative mt-2 rounded-md">
 						<div className="relative">
@@ -38,7 +38,7 @@ export default function Form({token} :
 								id="password"
 								name="password"
 								type="password"
-								placeholder="Enter the new user password"
+								placeholder="Introduzca la nueva contraseña de usuario"
 								className={`peer block w-full rounded-md border border-gray-200 
 									py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
 									${systemDefault.border} ${systemDefault.bg} ${systemDefault.text}
@@ -57,7 +57,7 @@ export default function Form({token} :
 					<label htmlFor="confirm-password" className={`mb-2 block text-sm font-medium
 						${systemDefault.text}
 					`}>
-						Confirm password: 
+						Confirmar contraseña:
 					</label>
 					<div className="relative mt-2 rounded-md">
 						<div className="relative">
@@ -65,7 +65,7 @@ export default function Form({token} :
 								id="confirm-password"
 								name="confirm-password"
 								type="password"
-								placeholder="Confirm password"
+								placeholder="Confirmar contraseña"
 								className={`peer block w-full rounded-md border border-gray-200 
 									py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
 									${systemDefault.border} ${systemDefault.bg} ${systemDefault.text}
@@ -86,7 +86,7 @@ export default function Form({token} :
 					</p>
 				)}
 
-				<Button className="mt-4 w-full" type="submit">Set new password</Button>
+				<Button className="mt-4 w-full" type="submit">Establecer una nueva contraseña</Button>
 				<GoBack />
 			</div>
 		</form>
@@ -102,7 +102,7 @@ function GoBack() {
     <Button className="mt-2 w-full" aria-disabled={pending} onClick={() => {
       replace('/forgot');
     }}>
-      Go back to password reset page <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
+      Volver a la página de restablecimiento de contraseña <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   );
 }

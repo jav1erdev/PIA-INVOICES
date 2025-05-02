@@ -89,7 +89,7 @@ export default async function RevenueChart({ theme }: { theme: themeType }) {
     return (
       <div>
         <p className="mt-4 text-xl text-center text-gray-400">Grafico de ganancias.</p>
-        <p className="mt-4 text-base text-center text-gray-400">No data available.</p>
+        <p className="mt-4 text-base text-center text-gray-400">No hay datos disponibles.</p>
       </div>
     );
   }
@@ -104,10 +104,10 @@ export default async function RevenueChart({ theme }: { theme: themeType }) {
       <h2
         className={`${lusitana.className} mb-4 text-xl md:text-2xl ${theme.title}`}
       >
-        Recent Revenue
+        Ingresos recientes
       </h2>
 
-      <div className={`rounded-xl p-4 ${theme.container}`}>
+      <div id="revenue-chart" className={`rounded-xl p-4 ${theme.container}`}>
         <div
           className={`sm:grid-cols-13 mt-0 grid grid-cols-12 items-end gap-2 rounded-md 
           ${theme.bg} p-4 md:gap-4`}
@@ -138,7 +138,7 @@ export default async function RevenueChart({ theme }: { theme: themeType }) {
         </div>
         <div className="flex items-center pb-2 pt-6">
           <CalendarIcon className="h-5 w-5 text-gray-500" />
-          <h3 className="ml-2 text-sm text-gray-500">From the current year</h3>
+          <h3 className="ml-2 text-sm text-gray-500">A partir del año en curso</h3>
         </div>
       </div>
     </div>

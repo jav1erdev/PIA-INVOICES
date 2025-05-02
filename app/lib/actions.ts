@@ -13,7 +13,10 @@ import axios from 'axios';
 import path from 'path';
 import nodemailer from 'nodemailer';
 import type { User } from '@/app/lib/definitions';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { unstable_noStore } from 'next/cache';
+import { error } from 'console';
 
 const modelPath = path.join(process.cwd(), 'models');
 faceapi.env.monkeyPatch({ Image: canvas.Image, Canvas: canvas.Canvas });
@@ -32,22 +35,23 @@ const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[-_!@#$%^&*]).{8,}$/;
 
 // A Zod schema for the name field
-const nameSchema = z.string().min(3, "Name must have at least 3 characters");
-const rfcSchema = z.string().min(8, "RFC must have at least 8 characters");
-const telefonoSchema = z.string().min(8, "Telefono must have at least 8 characters");
-const direccionSchema = z.string().min(10, "Direccion must have at least 10 characters");
+const nameSchema = z.string().min(3, "El nombre debe tener al menos 3 caracteres");
+const photoSchema = z.string().min(1, "Falta ingresar la foto del empleado");
+const rfcSchema = z.string().min(8, "El RFC debe tener al menos 8 caracteres");
+const telefonoSchema = z.string().min(8, "El teléfono debe tener al menos 8 caracteres");
+const direccionSchema = z.string().min(10, "La dirección debe tener al menos 10 caracteres");
 const tipoempleadoSchema =  z.enum(["Supervisor", "Jefe de area", "Asistente de Inventario", "Gerente de la planta principal", "Auxiliar"], {
-  invalid_type_error: 'Please select an type employee.',
+  invalid_type_error: 'Por favor, seleccione un tipo de empleado.',
 });
 const tipoclienteSchema =  z.enum(["Normal", "Asociado"], {
-  invalid_type_error: 'Please select an type customer.',
+  invalid_type_error: 'Por favor, seleccione un tipo de cliente.',
 });
 // A Zod schema for the email field
-const emailSchema = z.string().regex(emailRegex, "Invalid email format");
+const emailSchema = z.string().regex(emailRegex, "Formato de correo electrónico no válido");
 
 // A Zod schema for the password field
 const passwordSchema = z.string().regex(passwordRegex, `
-  The password does not meet the minimum security requirements.
+  La contraseña no cumple con los requisitos mínimos de seguridad.
 `);
 
 // A Zod schema for the object with name, email and password fields
@@ -63,13 +67,13 @@ const UserSchema = z.object({
 const InvoicesSchema = z.object({
   id: z.string().optional(),
   customerId: z.string({
-    invalid_type_error: 'Please select a customer.',
+    invalid_type_error: 'Por favor, seleccione un cliente.',
   }),
   amount: z.coerce
     .number()
-    .gt(0, { message: 'Please enter an amount greater than $0.' }),
+    .gt(0, { message: 'Ingrese un monto superior a $0.' }),
   status: z.enum(['Pendiente', 'Pagado'], {
-    invalid_type_error: 'Please select an invoice status.',
+    invalid_type_error: 'Seleccione un estado de factura.',
   }),
   fechapagar: z.string().optional(),
   employee: z.string(),
@@ -78,12 +82,22 @@ const InvoicesSchema = z.object({
   uso_factura:  z.string().optional(),
   products: z.array(
     z.object({
-      id: z.string().nonempty('Product ID is required.'),
-      name: z.string().nonempty('Product name is required.'),
-      price: z.number().positive('Price must be greater than 0.'),
+      id: z.string().nonempty('Se requiere el ID del producto.'),
+      name: z.string().nonempty('El nombre del producto es obligatorio.'),
+      price: z.number().positive('El precio debe ser mayor que 0.'),
       quantity: z.number().min(1).default(1),
     })
   ),
+});
+
+const EditInvoiceSchema = z.object({
+  status: z.enum(['Pendiente', 'Pagado'], {
+    invalid_type_error: 'Seleccione un estado de factura.',
+  }).optional(),
+  fechapagar: z.string().optional(),
+  regimen_fiscal: z.string().optional(),
+  metodo_pago: z.string().optional(),
+  uso_factura: z.string().optional(),
 });
 
 
@@ -96,10 +110,18 @@ const EmployeeSchema = z.object({
   tipo_empleado: tipoempleadoSchema,
   password: passwordSchema,
   userEmail: emailSchema,
-  photo: z.string().optional(),
+  photo: photoSchema,
 })
 
-const UpdateEmployee = EmployeeSchema.omit({ password: true, rfc: true });
+const UpdateEmployee = z.object({
+  name: nameSchema,
+  email: emailSchema,
+  telefono: telefonoSchema,
+  direccion: direccionSchema,
+  tipo_empleado: tipoempleadoSchema,
+  userEmail: emailSchema,
+  photo: photoSchema.optional(),
+})
 
 const CustomerSchema = z.object({
   name: nameSchema,
@@ -122,6 +144,7 @@ export type InvoiceState = {
     amount?: string[];
     status?: string[];
   };
+  success?: boolean;
   message?: string | null;
 };
 
@@ -150,6 +173,7 @@ export type EmployeeState = {
     photo?: string[];
   }
   message?: string | null;
+  success?: boolean;
 }
 
 export type CustomerState = {
@@ -161,6 +185,7 @@ export type CustomerState = {
     direccion?: string[];
     tipo_cliente?: string[];
   }
+  success?: boolean;
   message?: string | null;
 }
 
@@ -432,9 +457,10 @@ export async function createInvoice(prevState: InvoiceState, formData: FormData)
     };
   }
 
-  // Redirigir después de insertar
-  redirect('/dashboard/invoices');
-
+  return {
+    success: true,
+    message: 'Factura creada con éxito!',
+  }
 }
 
 
@@ -583,7 +609,7 @@ export async function updateInvoice(
   });
 
   // Validación con Zod
-  const validatedFields = InvoicesSchema.safeParse({
+  const validatedFields = EditInvoiceSchema.safeParse({
     status,
     fechapagar,
     regimen_fiscal,
@@ -596,7 +622,7 @@ export async function updateInvoice(
     console.log("Validation Errors:", fieldErrors);
     return {
       errors: fieldErrors,
-      message: "Please correct the highlighted errors and try again.",
+      message: "Corrija los errores resaltados e inténtelo de nuevo.",
     };
   }
 
@@ -631,20 +657,26 @@ export async function updateInvoice(
   } catch (error) {
     console.error("Database Error:", error);
     return {
-      message: "Database Error: Failed to Update Invoice.",
+      message: "Error de base de datos: No se pudo actualizar la factura.",
     };
   }
 
-  redirect("/dashboard/invoices");
+  return {
+    success: true,
+    message: 'Factura actualizada con éxito!',
+  }
 }
 
 export async function deleteInvoice(id: string) {
   try {
     await sql`DELETE FROM invoice_items WHERE invoice_id = ${id}`;
     await sql`DELETE FROM invoices WHERE id = ${id}`;
-    return { message: 'Deleted Invoice.' };
+    return {
+      success: true,
+      message: 'Factura eliminada con exito!',
+    }
   } catch (error) {
-    return { message: 'Database Error: Failed to Delete Invoice.' };
+    return { errors: 'Error de base de datos: No se pudo eliminar la factura.' };
   }
 }
 
@@ -682,7 +714,7 @@ export async function checkOutEmployee(client: any, employee_id: string) {
   }
 }
 
-export async function saveEmployeeDescriptor(employeeId: any, imageUrl: any) {
+export async function verificarEmployeeDescriptor(imageUrl: any) {
   await loadModels();
   const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
   const image = await canvas.loadImage(Buffer.from(response.data, 'binary'));
@@ -693,13 +725,31 @@ export async function saveEmployeeDescriptor(employeeId: any, imageUrl: any) {
     .withFaceDescriptor();
 
   if (!detections || !detections.descriptor) {
-    throw new Error('❌ No se pudo extraer el descriptor facial.');
+    throw new Error('No se pudo crear el empleado ya que la imagen ingresada no es correcta. Debes subir una foto clara y frontal del empleado (Tiene que ser una foto de una persona).');
   }
+ 
+  console.log(`✅ La foto es correcta, se obtuvo el descriptor facial del empleado `);
+  return JSON.stringify(detections.descriptor);
+}
+
+export async function saveEmployeeDescriptor(employeeId: any, data: any) {
+  // await loadModels();
+  // const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+  // const image = await canvas.loadImage(Buffer.from(response.data, 'binary'));
+
+  // const detections = await faceapi
+  //   .detectSingleFace(image)
+  //   .withFaceLandmarks()
+  //   .withFaceDescriptor();
+
+  // if (!detections || !detections.descriptor) {
+  //   throw new Error('❌ No se pudo extraer el descriptor facial.');
+  // }
 
   // Guardar el descriptor en la base de datos como un array de floats
   await sql`
     UPDATE employees 
-    SET face_descriptor = ${JSON.stringify(detections.descriptor)}
+    SET face_descriptor = ${data}
     WHERE id = ${employeeId};
   `;
   console.log(`✅ Descriptor facial guardado para el empleado ${employeeId}`);
@@ -725,7 +775,7 @@ export async function createEmployee(prevState: EmployeeState, formData: FormDat
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Employee.',
+      message: 'Campos faltantes. No se pudo crear un empleado.',
     };
   }
  
@@ -735,7 +785,7 @@ export async function createEmployee(prevState: EmployeeState, formData: FormDat
   const confirmPassword = formData.get('confirm-password');
   if (password != confirmPassword) {
     return {
-      message: 'Passwords are different.'
+      message: 'Las contraseñas son diferentes.'
     };
   }
 
@@ -744,7 +794,23 @@ export async function createEmployee(prevState: EmployeeState, formData: FormDat
 
   if (Number(account.rows[0]?.count) > 0) {
     return {
-      message: `This email address is already in use, please use another one!`
+      message: `Esta dirección de correo electrónico ya está en uso, ¡utilice otra!`,
+      errors: {
+        email: ['Esta dirección de correo electrónico ya está en uso, ¡utilice otra!'],
+      }
+    }
+  }
+
+  let resultadoverificar = null;
+
+  try {
+    resultadoverificar = await verificarEmployeeDescriptor(photo)
+  } catch (error) {
+    return {
+      message: `${error}`,
+      errors: {
+        photo: ['Ingresa una foto clara y frontal (Tiene que ser una foto de una persona).'],
+      }
     }
   }
 
@@ -770,18 +836,21 @@ export async function createEmployee(prevState: EmployeeState, formData: FormDat
 
     const employeeId = result.rows[0].id;
 
-    if (employeeId && photo) {
-      await saveEmployeeDescriptor(employeeId, photo);
+    if (employeeId && resultadoverificar) {
+      await saveEmployeeDescriptor(employeeId, resultadoverificar);
     }
 
   } catch (error) {
     // If a database error occurs, return a more specific error.
     return {
-      message: `Database Error: Failed to Create Employee. ${error} `,
+      message: `Error de base de datos: No se pudo crear el empleado. ${error} `,
     };
   }
  
-  redirect('/dashboard/employees');
+  return {
+    success: true,
+    message: 'Empleado creado con éxito!',
+  }
 }
 
 export async function updateEmployee(
@@ -789,44 +858,99 @@ export async function updateEmployee(
   prevState: EmployeeState,
   formData: FormData
 ) {
-  const validatedFields = UpdateEmployee.safeParse({
-    name: formData.get('name'),
-    email: formData.get('email'),
-    telefono: formData.get('telefono'),
-    direccion: formData.get('direccion'),
-    tipo_empleado: formData.get('tipo_empleado'),
-    userEmail: formData.get('userEmail'),
-  });
+
+  const foto = formData.get('photo');
+  let validatedFields;
+
+  if (foto === "") {
+    validatedFields = UpdateEmployee.safeParse({
+      name: formData.get('name'),
+      email: formData.get('email'),
+      telefono: formData.get('telefono'),
+      direccion: formData.get('direccion'),
+      tipo_empleado: formData.get('tipo_empleado'),
+      userEmail: formData.get('userEmail'),
+    });
+  } else {
+    validatedFields = UpdateEmployee.safeParse({
+      name: formData.get('name'),
+      email: formData.get('email'),
+      telefono: formData.get('telefono'),
+      direccion: formData.get('direccion'),
+      tipo_empleado: formData.get('tipo_empleado'),
+      userEmail: formData.get('userEmail'),
+      photo: formData.get('photo'),
+    });
+  }
+
  
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Update Employee.',
+      message: 'Campos faltantes. No se pudo actualizar al empleado.',
     };
   }
  
-  const { name, email, telefono, direccion, tipo_empleado, userEmail} = validatedFields.data;
+  const { name, email, telefono, direccion, tipo_empleado, userEmail, photo } = validatedFields.data;
  
+  let resultadoverificar = null;
+
+  if (foto !== "") { 
+    try {
+      resultadoverificar = await verificarEmployeeDescriptor(photo)
+    } catch (error) {
+      return {
+        message: `${error}`,
+        errors: {
+          photo: ['Ingresa una foto clara y frontal (Tiene que ser una foto de una persona).'],
+        }
+      }
+    }
+  }
+
   try {
-    await sql`
+
+    if (foto !== "") {
+      await sql`
       UPDATE employees
-      SET name = ${name}, email = ${email}, telefono = ${telefono}, direccion = ${direccion}, tipo_empleado = ${tipo_empleado}
+      SET name = ${name}, email = ${email}, telefono = ${telefono}, direccion = ${direccion}, image_url = ${photo}, tipo_empleado = ${tipo_empleado}  
       WHERE
         id = ${id}
     `;
+
+    } else {
+      await sql`
+      UPDATE employees
+      SET name = ${name}, email = ${email}, telefono = ${telefono}, direccion = ${direccion}, tipo_empleado = ${tipo_empleado}  
+      WHERE
+        id = ${id}
+    `;
+    }
+
+    if (foto !== "" && resultadoverificar) {
+      await saveEmployeeDescriptor(id, resultadoverificar);
+    }
+
+
   } catch (error) {
-    return { message: `Database Error: Failed to Update Employee. ` };
+    return { message: `Error de base de datos: No se pudo actualizar el empleado. ` };
   }
  
-  redirect('/dashboard/employees');
+  return {
+    success: true,
+    message: 'Empleado actualizado con éxito!',
+  }
 }
 
 export async function deleteEmployee(id: string) {
   try {
     await sql`DELETE FROM employees WHERE id = ${id}`;
-    return { message: 'Deleted Employee.' };
+    return {
+      success: true,
+      message: 'Empleado eliminada con exito!',
+    }
   } catch (error) {
-    return { message: 'Database Error: Failed to Delete Employee.' };
+    return { message: 'Error de base de datos: No se pudo eliminar el empleado.' };
   }
 }
 
@@ -847,7 +971,7 @@ export async function createCustomer(prevState: CustomerState, formData: FormDat
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Customer.',
+      message: 'Campos faltantes. No se pudo crear un cliente.',
     };
   }
  
@@ -872,14 +996,18 @@ export async function createCustomer(prevState: CustomerState, formData: FormDat
       INSERT INTO customers (name, email, rfc, direccion, telefono, tipo_cliente, fecha_creado)
       VALUES (${name}, ${email}, ${rfc}, ${direccion}, ${telefono}, ${tipo_cliente}, ${formattedDate})
     `;
+
   } catch (error) {
     // If a database error occurs, return a more specific error.
     return {
-      message: `Database Error: Failed to Create Customer. `,
+      message: `Error de base de datos: No se pudo crear el cliente. `,
     };
   }
  
-  redirect('/dashboard/customers');
+  return {
+    success: true,
+    message: 'Cliente creado con éxito!',
+  }
 }
 
 export async function updateCustomer(
@@ -900,7 +1028,7 @@ export async function updateCustomer(
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Update Customer.',
+      message: 'Campos faltantes. No se pudo actualizar al cliente.',
     };
   }
  
@@ -915,19 +1043,24 @@ export async function updateCustomer(
       AND
         id = ${id}
     `;
+
   } catch (error) {
-    return { message: `Database Error: Failed to Update Customer. ` };
+    return { message: `Error de base de datos: No se pudo actualizar el cliente. ` };
   }
  
-  redirect('/dashboard/customers');
+  return {
+    success: true,
+    message: 'Cliente actualizado con éxito!',
+  }
 }
 
 export async function deleteCustomer(id: string) {
   try {
     await sql`DELETE FROM customers WHERE id = ${id}`;
-    return { message: 'Deleted Customer.' };
+    toast.success("Cliente eliminado con éxito!");
+    return { message: 'Cliente eliminado.' };
   } catch (error) {
-    return { message: 'Database Error: Failed to Delete Customer.' };
+    return { message: 'Error de base de datos: No se pudo eliminar el cliente.' };
   }
 }
 
@@ -944,7 +1077,7 @@ export async function createUserWithCredentials(prevState: UserState, formData: 
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing or wrong fields. Failed to create Account.',
+      message: 'Campos faltantes o incorrectos. No se pudo crear la cuenta.',
     };
   }
 
@@ -952,7 +1085,7 @@ export async function createUserWithCredentials(prevState: UserState, formData: 
   const confirmPassword = formData.get('confirm-password');
   if (password != confirmPassword) {
     return {
-      message: 'Passwords are different.'
+      message: 'Las contraseñas son diferentes.'
     };
   }
 
@@ -961,7 +1094,7 @@ export async function createUserWithCredentials(prevState: UserState, formData: 
 
   if (account.rowCount) {
     return {
-      message: `This email address is already in use, please use another one!`
+      message: `Esta dirección de correo electrónico ya está en uso, ¡utilice otra!`
     }
   }
 
@@ -973,13 +1106,13 @@ export async function createUserWithCredentials(prevState: UserState, formData: 
     `;
   } catch (error) {
     console.log(`
-      Database Error: Failed to create account:
+      Error de base de datos: No se pudo crear la cuenta:
       ${error}
     `);
     return {
       message: `
-        Database Error: Failed to create account.
-        Please try again or contact the support team.
+        Error de base de datos: No se pudo crear la cuenta.
+        Inténtalo de nuevo o ponte en contacto con el equipo de soporte.
       `
     }
   }
@@ -999,9 +1132,9 @@ export async function authenticateWithCredentials(
       console.log(error.type);
       switch (error.type) {
         case 'CredentialsSignin':
-          return 'Invalid credentials.';
+          return 'Credenciales no válidas.';
         default:
-          return 'Something went wrong.';
+          return 'Algo salió mal.';
       }
     }
     throw error;
@@ -1029,7 +1162,7 @@ export async function updateUser(
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Update User.',
+      message: 'Campos faltantes. No se pudo actualizar el usuario.',
     };
   }
  
@@ -1040,7 +1173,7 @@ export async function updateUser(
   const confirmPassword = formData.get('confirm-password');
   if (password != confirmPassword) {
     return {
-      message: 'Passwords are different'
+      message: 'Las contraseñas son diferentes'
     }
   }
 
@@ -1058,11 +1191,14 @@ export async function updateUser(
       WHERE
         email = ${email}
     `;
+
+    toast.success("Datos del usuario actualizados con éxito!");
+
   } catch (error) {
     // If a database error occurs, return a more specific error.
 
     return {
-      message: 'Database Error: Failed to Update User.',
+      message: 'Error de base de datos: No se pudo actualizar el usuario.',
     };
   }
  
@@ -1084,6 +1220,9 @@ export async function updateTheme(
       WHERE
         email = ${email}
     `;
+
+    toast.success("Tema actualizado con éxito!");
+
   } catch (error) {
     console.log(error);
   }
@@ -1118,12 +1257,12 @@ export async function forgotPassword(
     await transporter.sendMail({
       from: process.env.GOOGLE_ACCOUNT!, // Same as the 'user' above
       to: email as string, // Recipient email(s)
-      subject: 'Your password reset link', // Subject of the email
-      text: `Click the link to reset your password: ${process.env.BASE_URL}/reset-password/${resetToken}`, // Customize the email content
+      subject: 'Tu enlace de restablecimiento de contraseña', // Subject of the email
+      text: `Haz clic en el enlace para restablecer tu contraseña: ${process.env.BASE_URL}/reset-password/${resetToken}`, // Customize the email content
     });
   } catch(error) {
     console.log(error);
-    return "Something went wrong.";
+    return "Algo salió mal.";
   }
 
   redirect(`/forgot/instructions/${email}`);
@@ -1139,7 +1278,7 @@ export async function resetPassword(
     var decoded = jwt.verify(token, process.env.AUTH_SECRET!) as ResetPasswordToken;
   } catch(error) {
     console.log(error);
-    return 'This token is invalid or has expired.';
+    return 'Este token no es válido o ha caducado.';
   }
 
   // checking whether there is an user with this email
@@ -1147,11 +1286,11 @@ export async function resetPassword(
   try {
     const user = await sql<User>`SELECT * FROM employees WHERE email=${email}`;
     if (!user.rows[0]) {
-      return `There's no user with this email: ${email}`;
+      return `No hay ningún usuario con este correo electrónico: ${email}`;
     }
   } catch(error) {
-    console.log('Something went wrong.');
-    return 'Something went wrong.';
+    console.log('Algo salió mal.');
+    return 'Algo salió mal.';
   }
 
   // updating the password
@@ -1159,15 +1298,15 @@ export async function resetPassword(
  
   // If form validation fails, return errors early. Otherwise, continue.
   if (!ValidatePassword.success) {
-    return  'Passwords must have at least 8 characters,' + 
-      'one special character, one upper case letter and one lower case letter.';
+    return  'Las contraseñas deben tener al menos 8 caracteres,' + 
+      'un carácter especial, una letra mayúscula y una letra minúscula.';
   }
 
   // Insert data into the database
   const password = ValidatePassword.data;
   const confirmPassword = formData.get('confirm-password');
   if (password != confirmPassword) {
-    return 'Passwords are different.';
+    return 'Las contraseñas son diferentes.';
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -1182,7 +1321,7 @@ export async function resetPassword(
   } catch (error) {
     console.log(error);
 
-    return 'Database Error: Failed to Update User.';
+    return 'Error de base de datos: No se pudo actualizar el usuario.';
   }
 
   redirect('/login?password-updated=true');

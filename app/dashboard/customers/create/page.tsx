@@ -6,7 +6,7 @@ import { auth } from '@/auth';
 import { Metadata } from 'next'; 
 
 export const metadata: Metadata = {
-  title: 'Create Customer',
+  title: 'Crear Cliente',
 };
  
 export default async function Page() {
@@ -31,9 +31,9 @@ export default async function Page() {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Customers', href: '/dashboard/customers' },
+          { label: 'Clientes', href: '/dashboard/customers' },
           {
-            label: 'Create Customer',
+            label: 'Crear Cliente',
             href: '/dashboard/customers/create',
             active: true,
           },

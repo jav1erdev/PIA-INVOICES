@@ -9,6 +9,8 @@ import { themeType } from '@/app/lib/theme';
 import { Customer, Employee } from '@/app/lib/definitions';
 import { formatCurrency } from '@/app/lib/utils';
 import { EmployeeDetailsModal } from './modal';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function EmployeesTable({  
   employees,
@@ -28,8 +30,9 @@ export default function EmployeesTable({
 
   return (
     <div className="w-full">
+      <ToastContainer theme="colored" />
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search employees..." theme={theme} />
+        <Search placeholder="Buscar empleados (por Id, Nombre o Cargo)..." theme={theme} />
         <CreateEmployee />
       </div>
 
@@ -55,6 +58,9 @@ export default function EmployeesTable({
                           </div>
                         </div>
                         <p className="text-sm text-gray-500">
+                          {employee.id}
+                        </p>
+                        <p className="text-sm text-gray-500">
                           {employee.tipo_empleado}
                         </p>
                         <p className="text-sm text-gray-500">
@@ -62,17 +68,19 @@ export default function EmployeesTable({
                         </p>
                       </div>
                     </div>
-                    <div className={`pt-4 text-sm ${theme.title}`}>
-                      <p>{employee.total_invoices} invoices</p>
-                    </div>
-                    <div className="flex justify-end gap-2">
-                      <ViewDetailsEmployee
-                        id={employee.id}
-                        onOpen={() => openModal(employee)}
-                        theme={theme}
-                      />
-                      <UpdateEmployee disabled={employee.email == user ? true : false} id={employee.id} theme={theme} />
-                      <DeleteEmployee disabled={employee.email == user ? true : false} id={employee.id} theme={theme} />
+                    <div className='flex items-center justify-between pt-4'>
+                      <div className={`text-sm ${theme.title}`}>
+                        <p>{employee.total_invoices} facturas</p>
+                      </div>
+                      <div className="flex justify-end gap-2">
+                        <ViewDetailsEmployee
+                          id={employee.id}
+                          onOpen={() => openModal(employee)}
+                          theme={theme}
+                          />
+                        <UpdateEmployee disabled={employee.email == user ? true : false} id={employee.id} theme={theme} />
+                        <DeleteEmployee disabled={employee.email == user || employee.tipo_empleado == "Gerente de la planta principal" ? true : false} id={employee.id} theme={theme} />
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -89,7 +97,7 @@ export default function EmployeesTable({
                       Id Empleado
                     </th>
                     <th scope="col" className="px-3 py-5 font-medium">
-                      Name
+                      Nombre
                     </th>
                     <th scope="col" className="px-3 py-5 font-medium">
                       Cargo
@@ -98,7 +106,7 @@ export default function EmployeesTable({
                       Telefono
                     </th>
                     <th scope="col" className="px-4 py-5 font-medium">
-                      Total invoices made
+                      Total de facturas realizadas 
                     </th>
                   </tr>
                 </thead>
@@ -148,7 +156,7 @@ export default function EmployeesTable({
                             theme={theme}
                           />
                           <UpdateEmployee disabled={employee.email == user ? true : false} id={employee.id} theme={theme} />
-                          <DeleteEmployee disabled={employee.email == user ? true : false} id={employee.id} theme={theme} />
+                          <DeleteEmployee disabled={employee.email == user || employee.tipo_empleado == "Gerente de la planta principal" ? true : false} id={employee.id} theme={theme} />
                         </div>
                       </td>
                     </tr>

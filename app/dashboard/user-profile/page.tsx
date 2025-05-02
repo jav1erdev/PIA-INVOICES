@@ -6,7 +6,7 @@ import { getUser } from '@/app/lib/data';
 import { darkTheme, lightTheme, systemDefault, themeType } from '@/app/lib/theme';
 
 export const metadata: Metadata = {
-  title: 'User Profile',
+  title: 'Mi Cuenta',
 };
  
 export default async function Page() {
@@ -30,7 +30,7 @@ export default async function Page() {
   return (
     <main className="w-full">
       <div className="flex w-full items-center justify-between mb-6">
-        <h1 className={` text-2xl ${theme.title}`}>User Profile</h1>
+        <h1 className={` text-2xl ${theme.title}`}>Mi Cuenta</h1>
       </div>
       <Form user={user} theme={theme} />
     </main>

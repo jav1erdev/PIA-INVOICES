@@ -10,7 +10,7 @@ import { auth } from '@/auth';
 import EmployeesServerTable from '@/app/ui/employees/servertable';
 
 export const metadata: Metadata = {
-  title: 'Employees',
+  title: 'Empleados',
 };
  
 export default async function Page({
@@ -46,7 +46,7 @@ export default async function Page({
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl ${theme.title}`}>Employees</h1>
+        <h1 className={`${lusitana.className} text-2xl ${theme.title}`}>Empleados</h1>
       </div>
       <Suspense key={query} fallback={<InvoicesTableSkeleton theme={theme} />}>
         <EmployeesServerTable query={query} currentPage={currentPage} theme={theme} />

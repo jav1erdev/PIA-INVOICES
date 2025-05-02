@@ -24,9 +24,9 @@ const GitHubSignIn = authenticateWithOAuth.bind(null, 'github');
 function GoogleSignIn() {
   toast.error(
     <>
-      This login option <b>does not</b> work due to <b>Google&apos;s privacy protection rules</b>. <br />
+      Esta opción de inicio de sesión <b>no</b> funciona debido a <b>las reglas de protección de privacidad de Google</b>. <br />
       <br />
-      As this is a <b>test project</b>, I cannot provide all the necessary <b>bureaucracy</b>.
+      Como se trata de un <b>proyecto de prueba</b>, no puedo proporcionar toda la <b>burocracia</b> necesaria.
     </>
   , {
     autoClose: 15000
@@ -44,10 +44,10 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (params.accountCreated) {
-      toast.success("Account created successfully!!");
+      toast.success("¡Cuenta creada con éxito!");
     }
     if (params.passwordUpdated) {
-      toast.success("Password updated successfully!!");
+      toast.success("¡Contraseña actualizada con éxito!");
     }
     // if (!params.accountCreated && !params.passwordUpdated) {
     //   toast.warning(<><b>Note</b>: accounts are now automatically <b>deleted</b> after <b>one week</b>.</>);
@@ -60,7 +60,7 @@ export default function LoginForm() {
       `}>
         <ToastContainer theme="colored" />
         <h1 className={`${lusitana.className} mb-3 text-2xl ${systemDefault.title}`}>
-          Please log in to continue.
+          Inicie sesión para continuar.
         </h1>
       <form action={dispatch} className="space-y-3">  
         <div className="w-full">
@@ -69,7 +69,7 @@ export default function LoginForm() {
               className={`mb-3 mt-5 block text-xs font-medium text-gray-900 ${systemDefault.text}`}
               htmlFor="email"
             >
-              Email:
+              Correo electrónico:
             </label>
             <div className="relative">
               <input
@@ -80,7 +80,7 @@ export default function LoginForm() {
                 id="email"
                 type="email"
                 name="email"
-                placeholder="Enter your email address"
+                placeholder="Ingresa tu dirección de correo electrónico"
                 required
               />
               <AtSymbolIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] 
@@ -94,7 +94,7 @@ export default function LoginForm() {
               className={`mb-3 mt-5 block text-xs font-medium text-gray-900 ${systemDefault.text}`}
               htmlFor="password"
             >
-              Password:
+              Contraseña:
             </label>
             <div className="relative">
               <input
@@ -105,7 +105,7 @@ export default function LoginForm() {
                 id="password"
                 type="password"
                 name="password"
-                placeholder="Enter password"
+                placeholder="Introduzca la contraseña"
                 required
                 minLength={6}
               />
@@ -152,7 +152,7 @@ function LoginButton() {
  
   return (
     <Button className="mt-4 w-full" aria-disabled={pending}>
-      Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+      Inicia sesión <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   );
 }
@@ -166,7 +166,7 @@ function CreateAccount() {
     <Button className="mt-2 w-full" aria-disabled={pending} onClick={() => {
       replace('/create-account');
     }}>
-      Create Account <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+      Crear una cuenta <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   );
 }
@@ -180,7 +180,7 @@ function ForgotPassword() {
     <Button className="mt-2 w-full" aria-disabled={pending} onClick={() => {
       replace('/forgot');
     }}>
-      Forgot password? <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+      ¿Olvidó su contraseña? <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   );
 }
@@ -200,7 +200,7 @@ function GitHubSignInButton() {
           height={25}
           alt='GitHub logo'
         />
-        <p className={`px-2 w-full`}>Sign in with GitHub</p>
+        <p className={`px-2 w-full`}>Iniciar sesión con GitHub</p>
         <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
       </button>
     </form>
@@ -223,7 +223,7 @@ function GoogleSignInButton() {
           height={25}
           alt='Google logo'
         />
-        <p className={`px-2 w-full`}>Sign in with Google</p>
+        <p className={`px-2 w-full`}>Iniciar sesión con Google</p>
         <ArrowRightIcon className="ml-auto h-5 w-5" />
       </button>
     </form>

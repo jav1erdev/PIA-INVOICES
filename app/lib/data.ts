@@ -224,7 +224,10 @@ export async function fetchFilteredInvoices(
         invoices.usocliente_cdfi,
         regimenfiscal_cdfi,
         customers.name,
-        customers.email
+        customers.rfc AS customer_rfc,
+        customers.direccion AS customer_direccion,
+        customers.telefono AS customer_telefono,
+        customers.email 
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
       WHERE
@@ -273,6 +276,49 @@ export async function fetchFilteredInvoices(
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch invoices.');
+  }
+}
+
+export async function fetchAllInvoicesByEmailGroupedByMonth(userEmail: string) {
+  noStore();
+
+  try {
+    const invoices = await sql<InvoicesTable>`
+      SELECT
+        invoices.id,
+        invoices.id_tmp,
+        invoices.amount,
+        invoices.fecha_creado,
+        invoices.fecha_para_pagar,
+        invoices.status,
+        invoices.modo_pago,
+        invoices.usocliente_cdfi,
+        invoices.regimenfiscal_cdfi,
+        customers.name,
+        customers.rfc AS customer_rfc,
+        customers.direccion AS customer_direccion,
+        customers.telefono AS customer_telefono,
+        customers.email 
+      FROM invoices
+      JOIN customers ON invoices.customer_id = customers.id
+      ORDER BY invoices.fecha_creado DESC
+    `;
+
+    const invoicesByMonth: { [key: string]: typeof invoices.rows } = {};
+
+    invoices.rows.forEach((invoice) => {
+      const date = new Date(invoice.fecha_creado);
+      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`; // e.g. "2025-04"
+      if (!invoicesByMonth[monthKey]) {
+        invoicesByMonth[monthKey] = [];
+      }
+      invoicesByMonth[monthKey].push(invoice);
+    });
+
+    return invoicesByMonth;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch all invoices.');
   }
 }
 
@@ -393,7 +439,7 @@ export async function fetchFilteredCustomers(query: string, currentPage: number,
           customers.email ILIKE ${`%${query}%`}
         )
       GROUP BY customers.id, customers.name, customers.email, customers.rfc, customers.direccion, customers.telefono, customers.tipo_cliente, customers.fecha_creado
-      ORDER BY customers.fecha_creado ASC
+      ORDER BY total_paid DESC, total_pending DESC, customers.fecha_creado DESC  
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
@@ -409,6 +455,67 @@ export async function fetchFilteredCustomers(query: string, currentPage: number,
     throw new Error('Failed to fetch customer table.');
   }
 }
+
+
+export async function fetchAllEmployeesExportExcel(userEmail: string) {
+  noStore();
+  try {
+    const data = await sql<EmployeesTableType>`SELECT
+        employees.id,
+        employees.name,
+        employees.email,
+        employees.rfc, 
+        employees.direccion,  
+        employees.telefono,  
+        employees.tipo_empleado,
+        employees.fecha_creado,
+        employees.image_url,
+        COUNT(invoices.id) AS total_invoices,
+        SUM(CASE WHEN invoices.status = 'Pendiente' THEN invoices.amount ELSE 0 END) AS total_pending,
+        SUM(CASE WHEN invoices.status = 'Pagado' THEN invoices.amount ELSE 0 END) AS total_paid
+      FROM employees
+      LEFT JOIN invoices ON employees.id = invoices.employee_id
+      GROUP BY 
+        employees.id, employees.name, employees.email, employees.rfc,
+        employees.direccion, employees.telefono, employees.tipo_empleado,
+        employees.image_url, employees.fecha_creado
+      ORDER BY total_invoices DESC, employees.fecha_creado ASC
+    `;
+    return data.rows;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all employees.');
+  }
+}
+
+export async function fetchAllCustomersExportExcel(userEmail: string) {
+  noStore();
+  try {
+    const data = await sql<CustomersTableType>`SELECT
+        customers.id,
+        customers.name,
+        customers.email,
+        customers.rfc,
+        customers.direccion,
+        customers.telefono,
+        customers.tipo_cliente,
+        customers.fecha_creado,
+        COUNT(invoices.id) AS total_invoices,
+        SUM(CASE WHEN invoices.status = 'Pendiente' THEN invoices.amount ELSE 0 END) AS total_pending,
+        SUM(CASE WHEN invoices.status = 'Pagado' THEN invoices.amount ELSE 0 END) AS total_paid
+      FROM customers
+      LEFT JOIN invoices ON customers.id = invoices.customer_id
+      GROUP BY customers.id, customers.name, customers.email, customers.rfc,
+               customers.direccion, customers.telefono, customers.tipo_cliente, customers.fecha_creado
+      ORDER BY total_paid DESC, total_pending DESC, customers.fecha_creado DESC
+    `;
+    return data.rows;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all customers.');
+  }
+}
+
 
 
 export async function fetchCustomersPages(query: string, userEmail: string) {
@@ -497,7 +604,8 @@ export async function fetchFilteredEmployees(query: string, currentPage: number,
       FROM employees
       LEFT JOIN invoices ON employees.id = invoices.employee_id
       WHERE
-        (employees.name ILIKE ${`%${query}%`} OR
+        (employees.id::text ILIKE ${`%${query}%`} OR 
+        employees.name ILIKE ${`%${query}%`} OR
         employees.tipo_empleado ILIKE ${`%${query}%`})
       GROUP BY 
         employees.id, 
@@ -509,7 +617,7 @@ export async function fetchFilteredEmployees(query: string, currentPage: number,
         employees.tipo_empleado,
         employees.image_url,
         employees.fecha_creado  -- Asegúrate de incluir todas las columnas de employees en el GROUP BY
-      ORDER BY employees.fecha_creado DESC
+      ORDER BY total_invoices DESC, employees.fecha_creado ASC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
@@ -535,6 +643,7 @@ export async function fetchEmployeesAll() {
       SELECT
         id,
         tipo_empleado,
+        image_url,
         name
       FROM employees
       ORDER BY fecha_creado ASC
@@ -584,7 +693,7 @@ export async function fetchEmployeeById(id: string, userEmail: string) {
   try {
     const customer = await sql<EmployeeForm>`
       SELECT
-        id, name, email, rfc, direccion, telefono, tipo_empleado, fecha_creado
+        id, name, email, rfc, direccion, telefono, tipo_empleado, image_url, fecha_creado 
       FROM employees
       WHERE
         id = ${id};

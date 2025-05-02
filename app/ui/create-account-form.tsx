@@ -23,7 +23,7 @@ export default function LoginForm() {
         px-6 pb-4 pt-8
       `}>
         <h1 className={`${lusitana.className} mb-3 text-2xl ${systemDefault.title}`}>
-          Fill in the blanks to create a new account
+          Rellene los espacios en blanco para crear una nueva cuenta
         </h1>
       <form action={dispatch} className="space-y-3">  
         <div className="w-full">
@@ -32,7 +32,7 @@ export default function LoginForm() {
               className={`mb-3 mt-5 block text-sm font-medium text-gray-900 ${systemDefault.text}`}
               htmlFor="name"
             >
-              Name:
+              Nombre:
             </ label>
             <div className="relative">
               <input
@@ -43,7 +43,7 @@ export default function LoginForm() {
                 id="name"
                 type="name"
                 name="name"
-                placeholder="Enter your name"
+                placeholder="Ingresa tu nombre"
                 required
               />
               <UserIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] 
@@ -65,7 +65,7 @@ export default function LoginForm() {
               className={`mb-3 mt-5 block text-sm font-medium text-gray-900 ${systemDefault.text}`}
               htmlFor="email"
             >
-              Email:
+              Correo electrónico:
             </label>
             <div className="relative">
               <input
@@ -76,7 +76,7 @@ export default function LoginForm() {
                 id="email"
                 type="email"
                 name="email"
-                placeholder="Enter your email address"
+                placeholder="Ingresa tu dirección de correo electrónico"
                 required
               />
               <AtSymbolIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] 
@@ -98,11 +98,11 @@ export default function LoginForm() {
               className={`mt-5 block text-sm font-medium text-gray-900 ${systemDefault.text}`}
               htmlFor="password"
             >
-              Password:
+              Contraseña:
             </label>
             <p className={`mb-3 block text-xs font-medium text-gray-900 ${systemDefault.text}`}>
-              The password must have at least 8 characters, 
-              one special character, one upper case letter and one lower case letter.
+              La contraseña debe tener al menos 8 caracteres, 
+              un carácter especial, una letra mayúscula y una letra minúscula. 
             </p>
             <div className="relative">
               <input
@@ -113,7 +113,7 @@ export default function LoginForm() {
                 id="password"
                 type="password"
                 name="password"
-                placeholder="Enter password"
+                placeholder="Introduzca la contraseña"
                 required
                 minLength={6}
               />
@@ -137,7 +137,7 @@ export default function LoginForm() {
 					<label htmlFor="confirm-password" className={`mb-2 block text-sm font-medium
 						${systemDefault.text}
 					`}>
-						Confirm password: 
+						Confirmar contraseña: 
 					</label>
 					<div className="relative mt-2 rounded-md">
 						<div className="relative">
@@ -145,7 +145,7 @@ export default function LoginForm() {
 								id="confirm-password"
 								name="confirm-password"
 								type="password"
-								placeholder="Confirm password"
+								placeholder="Confirmar contraseña"
 								className={`peer block w-full rounded-md border border-gray-200 
 									py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
 									${systemDefault.border} ${systemDefault.bg} ${systemDefault.text}
@@ -164,13 +164,13 @@ export default function LoginForm() {
           <div
             className={`
               flex items-end space-x-1
-              ${(state.message == 'Passwords are different.') ? 'h-4' : 'h-8'} 
+              ${(state.message == 'Las contraseñas son diferentes.') ? 'h-4' : 'h-8'} 
               `}
             aria-live="polite"
             aria-atomic="true"
           >
             <ExclamationCircleIcon className={`
-              ${(state.message == 'Passwords are different.') ? 'h-5' : 'h-10'} 
+              ${(state.message == 'Las contraseñas son diferentes.') ? 'h-5' : 'h-10'} 
               w-5 text-red-500
             `} />
             <p className="text-sm text-red-500">{state.message}</p>
@@ -190,7 +190,7 @@ export default function LoginForm() {
 function CreateAccountButton() {
   return (
     <Button className='mt-4 w-full'>
-      Create Account <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+      Crear una cuenta <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   )
 }
@@ -202,7 +202,7 @@ function ReturnToLoginPageButton() {
     <Button className='mt-4 w-full' onClick={() => {
       replace('/login');
     }}>
-      Go back to the Login page <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
+      Volver a la página de inicio de sesión <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   )
 }

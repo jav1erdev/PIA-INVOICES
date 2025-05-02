@@ -4,6 +4,12 @@ import { deleteInvoice, deleteCustomer, deleteEmployee } from '@/app/lib/actions
 import { themeType } from '@/app/lib/theme';
 import { ClipboardDocumentListIcon } from '@heroicons/react/20/solid';
 import { Button } from '../button';
+import { use, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import { redirect, useRouter } from 'next/navigation';
+import { on } from 'events';
+import { Invoice } from '@/app/lib/definitions';
+import { fetchFilteredInvoices } from '@/app/lib/data';
 
 export function CreateInvoice() {
   return (
@@ -11,7 +17,7 @@ export function CreateInvoice() {
       href="/dashboard/invoices/create"
       className="flex h-10 items-center rounded-lg bg-blue-800 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
-      <span className="hidden md:block">Create Invoice</span>{' '}
+      <span className="hidden md:block">Crear Factura</span>{' '}
       <PlusIcon className="h-5 md:ml-4" />
     </Link>
   );
@@ -73,24 +79,47 @@ export function ViewDetailsInvoices({
 export function DeleteInvoice({ 
   id,
   disabled,
-  theme 
+  theme, 
+  data,
 }: 
 { 
   id: string;
   disabled: boolean;
-  theme: themeType
+  theme: themeType;
+  data: any[];
+
 }) {
-  const deleteInvoiceWithId = deleteInvoice.bind(null, id);
- 
+  const router = useRouter(); // Recargar la página para reflejar los cambios.
+
+  // const deleteInvoiceWithId = deleteInvoice.bind(null, id);
+  const handleDelete = async () => {
+    try {
+      // Lógica para eliminar la factura.
+      await deleteInvoice(id); // Asegúrate de que deleteInvoice sea una función asíncrona que elimine la factura.
+      
+      // const updatedInvoices = await fetchFilteredInvoices(data[0], data[1], data[2]); // Actualiza la lista de facturas después de eliminar una.
+      // setInvoices(updatedInvoices);
+  
+      // Mostrar una alerta de éxito.
+      toast.success('Factura eliminada con éxito');
+      router.refresh(); // Recargar la página para reflejar los cambios.
+    } catch (error) {
+      // Manejar errores y mostrar una alerta de error.
+      toast.error('Error al eliminar la factura');
+    }
+  };
+
+
+
   return (
-    <form action={deleteInvoiceWithId}>
-      <button disabled={disabled} className={`rounded-md border p-2 
+    // <form action={deleteInvoiceWithId}>
+      <button onClick={handleDelete} disabled={disabled} className={`rounded-md border p-2 
       ${disabled ? 'bg-gray-400 text-gray-100 cursor-not-allowed' : 
       `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`}`}>
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />
       </button>
-    </form>
+    // </form>
   );
 }
 
@@ -101,7 +130,7 @@ export function CreateEmployee() {
       href="/dashboard/employees/create"
       className="flex h-10 items-center rounded-lg bg-blue-800 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
-      <span className="hidden md:block">Create Employee</span>{' '}
+      <span className="hidden md:block">Crear Empleado</span>{' '}
       <PlusIcon className="h-5 md:ml-4" />
     </Link>
   );
@@ -169,17 +198,37 @@ export function DeleteEmployee({
   disabled: boolean;
   theme: themeType
 }) {
-  const deleteEmployeeWithId = deleteEmployee.bind(null, id);
+  // const deleteEmployeeWithId = deleteEmployee.bind(null, id);
+  const router = useRouter(); // Recargar la página para reflejar los cambios.
+
+  const handleDelete = async () => {
+    try {
+      // Lógica para eliminar la factura.
+      await deleteEmployee(id); // Asegúrate de que deleteInvoice sea una función asíncrona que elimine la factura.
+      
+      // const updatedInvoices = await fetchFilteredInvoices(data[0], data[1], data[2]); // Actualiza la lista de facturas después de eliminar una.
+      // setInvoices(updatedInvoices);
+  
+      // Mostrar una alerta de éxito.
+      toast.success('Empleado eliminado con éxito');
+      router.refresh(); // Recargar la página para reflejar los cambios.
+
+    } catch (error) {
+      // Manejar errores y mostrar una alerta de error.
+      toast.error('Error al eliminar el empleado');
+    }
+  };
+
  
   return (
-    <form action={deleteEmployeeWithId}>
-      <button disabled={disabled} className={`rounded-md border p-2 
+    // <form action={deleteEmployeeWithId}>
+      <button onClick={handleDelete} disabled={disabled} className={`rounded-md border p-2 
       ${disabled ? 'bg-gray-400 text-gray-100 cursor-not-allowed' : 
       `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`}`}>
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />
       </button>
-    </form>
+    // </form>
   );
 }
 
@@ -189,7 +238,7 @@ export function CreateCustomer() {
       href="/dashboard/customers/create"
       className="flex h-10 items-center rounded-lg bg-blue-800 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
-      <span className="hidden md:block">Create Customer</span>{' '}
+      <span className="hidden md:block">Crear Cliente</span>{' '}
       <PlusIcon className="h-5 md:ml-4" />
     </Link>
   );
@@ -257,16 +306,35 @@ export function DeleteCustomer({
   disabled: boolean;
   theme: themeType
 }) {
-  const deleteCustomerWithId = deleteCustomer.bind(null, id);
+  // const deleteCustomerWithId = deleteCustomer.bind(null, id);
+  const router = useRouter(); // Recargar la página para reflejar los cambios.
+
+  const handleDelete = async () => {
+    try {
+      // Lógica para eliminar la factura.
+      await deleteCustomer(id); // Asegúrate de que deleteInvoice sea una función asíncrona que elimine la factura.
+      
+      // const updatedInvoices = await fetchFilteredInvoices(data[0], data[1], data[2]); // Actualiza la lista de facturas después de eliminar una.
+      // setInvoices(updatedInvoices);
+  
+      // Mostrar una alerta de éxito.
+      toast.success('Cliente eliminado con éxito');
+      router.refresh(); // Recargar la página para reflejar los cambios.
+    } catch (error) {
+      // Manejar errores y mostrar una alerta de error.
+      toast.error('Error al eliminar el cliente.');
+    }
+  };
+
  
   return (
-    <form action={deleteCustomerWithId}>
-      <button disabled={disabled} className={`rounded-md border p-2 
+    // <form action={deleteCustomerWithId}>
+      <button onClick={handleDelete} disabled={disabled} className={`rounded-md border p-2 
       ${disabled ? 'bg-gray-400 text-gray-100 cursor-not-allowed' : 
       `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`}`}>
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />
       </button>
-    </form>
+    // </form>
   );
 }

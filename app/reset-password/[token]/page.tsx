@@ -3,7 +3,7 @@ import ResetPasswordForm from '@/app/ui/reset-password-form';
 import { Metadata } from 'next'; 
 
 export const metadata: Metadata = {
-  title: 'Reset password',
+  title: 'Restablecer contraseña',
 };
  
 export default function LoginPage({ params }: { params: { token: string } }) {

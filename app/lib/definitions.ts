@@ -55,7 +55,7 @@ export type Employee = {
   name: string;
   email: string;
   rfc: string;
-  fecha_creado: Date;
+  fecha_creado: string;
   total_invoices: number;
   direccion: string;
   telefono: string;
@@ -81,6 +81,9 @@ export type Invoice = {
   id: string;
   id_tmp: number;
   customer_id: string;
+  customer_rfc: string;
+  customer_direccion: string;
+  customer_telefono: string;
   employee_id: string;
   name: string;
   email: string;
@@ -127,6 +130,9 @@ export type InvoicesTable = {
   id: string;
   id_tmp: number;
   customer_id: string;
+  customer_rfc: string;
+  customer_direccion: string;
+  customer_telefono: string;
   employee_id: string;
   name: string;
   email: string;
@@ -215,6 +221,7 @@ export type FormattedEmployeesTable = {
 export type EmployeeField = {
   id: string;
   name: string;
+  image_url: string;  
   tipo_empleado: "Supervisor" | "Jefe de area" | "Asistente de Inventario" | "Gerente de la planta principal" | "Auxiliar";
 };
 

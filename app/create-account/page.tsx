@@ -3,7 +3,7 @@ import CreateAccountForm from '@/app/ui/create-account-form';
 import { Metadata } from 'next'; 
 
 export const metadata: Metadata = {
-  title: 'Create Account',
+  title: 'Crear una cuenta',
 };
  
 export default function LoginPage() {

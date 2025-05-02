@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
     // Convertir el PDF recibido como Blob a un Buffer
     const pdfBuffer = Buffer.from(await pdfFile.arrayBuffer());  // Usar .arrayBuffer() para convertir a Buffer
-    const pdfPath = path.join(tmpDir, `invoice_${invoiceId}.pdf`);
+    const pdfPath = path.join(tmpDir, `FacturaCDFI_${invoiceId}.pdf`);
 
     // Escribir el archivo PDF en el sistema
     fs.writeFileSync(pdfPath, new Uint8Array(pdfBuffer));
@@ -54,7 +54,7 @@ export async function POST(req: Request) {
       text: `Hola, adjuntamos la factura #${invoiceId}. Gracias por su pago.`,
       attachments: [
         {
-          filename: `FacturaCDFI-${invoiceId}.pdf`,
+          filename: `FacturaCDFI_${invoiceId}.pdf`,
           path: pdfPath,
           contentType: "application/pdf",
         },

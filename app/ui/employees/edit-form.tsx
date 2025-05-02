@@ -15,6 +15,9 @@ import { updateEmployee } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 import { Employee } from '@/app/lib/definitions';
 import { themeType } from '@/app/lib/theme';
+import { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { toast, ToastContainer } from 'react-toastify';
 
 export default function EditInvoiceForm({
   employee,
@@ -28,19 +31,133 @@ export default function EditInvoiceForm({
   const updateEmployeeWithId = updateEmployee.bind(null, employee.id);
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useFormState(updateEmployeeWithId, initialState);
+  const [isGood, setIsGood] = useState(false);
+  const router = useRouter();
+  const [fotoBase64, setFotoBase64] = useState<string | null>(null);
+  
+  useEffect(() => {
+    if (state?.success) {
+      toast.success('Empleado actualizado con éxito!');
+      setTimeout(() => {
+        router.push('/dashboard/employees');
+        router.refresh();
+      }, 2000);
+    }  
+    if (state?.errors) {
+      setIsGood(false);
+    }
+  }, [state, router]);
 
+  useEffect(() => {
+    if (imgRef.current && imgRef.current.complete) {
+      setImageLoaded(true);
+    }
+  }, []);
+
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+
+  if (!employee) return null;
+  
+  const hasImage = !!employee.image_url;
+  
+
+  const uploadImage = (file: any) => {
+    console.log('Archivo:', file);  // Verifica si el archivo está bien
+  
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'piaimage');
+    formData.append('folder', 'perfil');
+    formData.append('resource_type', 'image');
+    
+    const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/drn7ynbiq/upload';
+    
+    fetch(cloudinaryUrl, {
+      method: 'POST',
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.secure_url) {
+          console.log('Imagen subida con éxito:', data.secure_url);
+          // Usa esta URL para guardarla en tu base de datos o mostrar la imagen
+          setFotoBase64(data.secure_url);
+        } else {
+          console.log('Error al subir la imagen:', data);
+        }
+      })
+      .catch((error) => {
+        console.error('Error al subir la imagen:', error);
+      });
+  };
+  
+  // Manejador para el cambio de archivo en un input
+  const handleFileChange = (event: any) => {
+    const file = event.target.files[0];
+    if (file) {
+      uploadImage(file); // Subir la imagen
+    } else {
+      setFotoBase64(null); // Si no hay archivo, restablecer la imagen
+    }
+  };
+
+    
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsGood(true);
+    const formData = new FormData(e.currentTarget);
+    dispatch(formData);
+  };
+
+  
   return (
-    <form action={dispatch}>
+    <form onSubmit={handleSubmit}>
+      <ToastContainer theme="colored" />
+
       <input type="hidden" name="userEmail" value={userEmail} />
+      <input type="hidden" name="photo" value={fotoBase64 || ""} />
 
       <div className={`rounded-md ${theme.container} p-4 md:p-6`}>
-      <h1 className={`text-sm text-gray-500 ${theme.title}`}>Identificador de empleado: {employee.id}</h1>
 
+        <div className='flex flex-col md:flex-row gap-7 items-center justify-evenly'>
+          <div className='flex flex-col items-center gap-4 justify-center'>
+            <h1 className={`text-sm md:text-base text-gray-500 ${theme.title}`}>Identificador de empleado: {employee.id}</h1>
+            <h1 className={`text-sm md:text-base text-gray-500 ${theme.title}`}>Fecha de ingreso: {employee.fecha_creado}</h1>
+          </div>
+          <div className="flex items-center justify-center">
+              {!imageLoaded && hasImage && (
+                <div className="w-40 h-40 flex items-center justify-center rounded-full bg-gray-200 text-gray-500 animate-pulse">
+                  Cargando...
+                </div>
+              )}
+              {!hasImage && (
+                <div className="w-40 h-40 flex items-center justify-center rounded-full bg-gray-200 text-gray-500 animate-pulse">
+                  Sin Foto
+                </div>
+              )}
+              {hasImage && (
+                <img
+                ref={imgRef} 
+                src={employee.image_url}
+                alt="Vista previa"
+                className={`w-40 h-40 rounded-full object-cover transition-opacity duration-300 ${
+                  imageLoaded ? "opacity-100" : "opacity-0 absolute"
+                }`}
+                onLoad={() => setImageLoaded(true)}
+              />
+              )
+            }
+              
+          </div>
+        </div>
+      
         <div className="my-4">
           <label htmlFor="employee" className={`mb-2 block text-sm font-medium
             ${theme.text}
           `}>
-            Name: 
+            Nombre: 
           </label>
           <div className="relative">
             <input
@@ -48,7 +165,7 @@ export default function EditInvoiceForm({
               name="name"
               type="text"
               defaultValue={employee.name}
-              placeholder="Type the employee name"
+              placeholder="Escriba el nombre del empleado"
               className={`peer block w-full rounded-md border 
                 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                 ${theme.border} ${theme.bg} ${theme.text}
@@ -83,7 +200,7 @@ export default function EditInvoiceForm({
               disabled
               defaultValue={employee.rfc}
               readOnly
-              placeholder="Type the employee rfc"
+              placeholder="Escriba el rfc del empleado"
               className={`peer block w-full rounded-md border 
                 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                 ${theme.border} ${theme.bg} ${theme.text}
@@ -116,7 +233,7 @@ export default function EditInvoiceForm({
               name="telefono"
               type="text"
               defaultValue={employee.telefono}
-              placeholder="Type the employee telefono"
+              placeholder="Escriba el teléfono del empleado"
               className={`peer block w-full rounded-md border 
                 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                 ${theme.border} ${theme.bg} ${theme.text}
@@ -149,7 +266,7 @@ export default function EditInvoiceForm({
               name="direccion"
               type="text"
               defaultValue={employee.direccion}
-              placeholder="Type the employee direccion"
+              placeholder="Escriba la dirección del empleado"
               className={`peer block w-full rounded-md border 
                 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                 ${theme.border} ${theme.bg} ${theme.text}
@@ -175,7 +292,7 @@ export default function EditInvoiceForm({
           <label htmlFor="amount" className={`mb-2 block text-sm font-medium
             ${theme.text}
           `}>
-            Email
+            Correo Electronico:
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -184,7 +301,7 @@ export default function EditInvoiceForm({
                 name="email"
                 type="mail"
                 defaultValue={employee.email}
-                placeholder="Enter the employee email"
+                placeholder="Ingrese el correo electrónico del empleado"
                 className={`peer block w-full rounded-md border 
                   py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                   ${theme.border} ${theme.bg} ${theme.text}
@@ -207,6 +324,41 @@ export default function EditInvoiceForm({
           </div>
         </div>
 
+        <div className="mb-4">
+          <label htmlFor="foto" className={`mb-2 block text-sm font-medium ${theme.text}`}>
+            Foto:
+          </label>
+          <div className="relative flex flex-col md:flex-row items-center gap-7">
+            <input
+              id="foto"
+              name="foto"
+              type="file"
+              accept="image/*"
+              className={`peer block w-full rounded-md border py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 ${theme.border} ${theme.bg} ${theme.text}`}
+              aria-describedby="foto-error"
+              onChange={handleFileChange}
+            /> {/* Input para subir la foto top-1/2 -translate-y-1/2 */}
+            <div className="relative right-3 flex items-center">
+              {fotoBase64 ? (
+                <img
+                 src={fotoBase64}
+                 alt="Vista previa"
+                 className="w-20 h-20 md:w-40 md:h-40 rounded-full object-cover"
+                />
+              ) : (
+                <UserCircleIcon className="h-6 w-6 text-gray-500" />
+              )}
+            </div>
+          </div>
+          <div id="foto-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.photo &&
+              state.errors.photo.map((error: string) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
+          </div>
+        </div>
         
              
         {/* Invoice Status */}
@@ -217,7 +369,7 @@ export default function EditInvoiceForm({
           <div className={`rounded-md border px-[14px] py-3
             ${theme.bg} ${theme.border}
           `}>
-            <div className="flex gap-4">
+            <div className="flex flex-col md:flex-row gap-4">
               <div className="flex items-center">
                 <input
                   id="supervisor"
@@ -335,10 +487,7 @@ export default function EditInvoiceForm({
           </div>
         </fieldset>
 
-
-
-
-        {state?.message && (
+        {state?.message && state?.errors && (
           <p className="mt-2 text-sm text-red-500"  key={state.message}>
             {state.message}
           </p>
@@ -356,7 +505,8 @@ export default function EditInvoiceForm({
         >
           Cancel
         </Link>
-        <Button type="submit">Update Employee</Button>
+        <Button disabled={isGood} className="disabled:bg-slate-400 disabled:cursor-not-allowed" type="submit">
+        {isGood ? "Actualizando..." : "Actualizar Empleado"}</Button>
       </div>
     </form>
   );

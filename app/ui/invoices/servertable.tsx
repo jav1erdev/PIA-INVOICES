@@ -17,6 +17,6 @@ export default async function InvoicesServerTable({
   const userEmail = session?.user?.email || "";
   const invoices = await fetchFilteredInvoices(query, currentPage, userEmail);
 
-  return <InvoicesTable invoices={invoices} theme={theme} />;
+  return <InvoicesTable query={query} currentPage={currentPage} userEmail={userEmail} invoices={invoices} theme={theme} />;
 }
  

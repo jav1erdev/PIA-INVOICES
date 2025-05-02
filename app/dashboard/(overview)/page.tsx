@@ -8,9 +8,11 @@ import { Metadata } from 'next';
 import { auth } from '@/auth';
 import { getUser } from '@/app/lib/data';
 import { darkTheme, defaultTheme, lightTheme, systemDefault, themeType } from '@/app/lib/theme';
+import { Button } from '@/app/ui/button';
+import ExportButton from '@/app/ui/dashboard/export-button';
 
 export const metadata: Metadata = {
-  title: 'Dashboard',
+  title: 'Inicio',
 };
 export default async function Page() {
   const session = await auth();
@@ -32,9 +34,14 @@ switch(user.theme) {
 
   return (
     <main>
-      <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl ${theme?.title || defaultTheme.title}`}>
-        Dashboard
-      </h1>
+      <div className="flex items-center justify-between">
+        <div className="flex w-full items-center justify-between">
+          <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl ${theme?.title || defaultTheme.title}`}>
+            Inicio
+          </h1>
+        </div>
+        <ExportButton />
+      </div>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <Suspense fallback={<CardsSkeleton theme={theme || defaultTheme} />}>
           <CardWrapper theme={theme || defaultTheme} />

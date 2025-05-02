@@ -3,7 +3,7 @@ import ForgotForm from '@/app/ui/forgot-form';
 import { Metadata } from 'next'; 
 
 export const metadata: Metadata = {
-  title: 'Forgot password',
+  title: 'Olvidé mi contraseña',
 };
  
 export default function LoginPage() {

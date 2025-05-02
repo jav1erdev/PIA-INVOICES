@@ -17,8 +17,10 @@ import { Button } from '@/app/ui/button';
 import { createEmployee } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 import { themeType } from '@/app/lib/theme';
-import { useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { toast, ToastContainer } from 'react-toastify';
 
 export default function Form({ 
   userEmail,
@@ -30,7 +32,22 @@ export default function Form({
 
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useFormState(createEmployee, initialState);
+  const [isGood, setIsGood] = useState(false);
+  const router = useRouter();
   const [fotoBase64, setFotoBase64] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (state?.success) {
+      toast.success('Empleado creado con éxito!');
+      setTimeout(() => {
+        router.push('/dashboard/employees');
+        router.refresh();
+      }, 2000);
+    }  
+    if (state?.errors) {
+      setIsGood(false);
+    }
+  }, [state, router]);
 
   const uploadImage = (file: any) => {
     console.log('Archivo:', file);  // Verifica si el archivo está bien
@@ -68,11 +85,22 @@ export default function Form({
     const file = event.target.files[0];
     if (file) {
       uploadImage(file); // Subir la imagen
+    } else {
+      setFotoBase64(null); // Limpiar la vista previa si no hay archivo
     }
   };
   
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsGood(true);
+    const formData = new FormData(e.currentTarget);
+    dispatch(formData);
+  };
+
   return (
-    <form action={dispatch}>
+    <form onSubmit={handleSubmit}>
+      <ToastContainer theme="colored" />
+
       <input type="hidden" name="userEmail" value={userEmail} />
       <input type="hidden" name="photo" value={fotoBase64 || ""} />
 
@@ -81,14 +109,14 @@ export default function Form({
           <label htmlFor="employee" className={`mb-2 block text-sm font-medium
             ${theme.text}
           `}>
-            Name: 
+            Nombre: 
           </label>
           <div className="relative">
             <input
               id="name"
               name="name"
               type="text"
-              placeholder="Type the employee name"
+              placeholder="Escriba el nombre del empleado"
               className={`peer block w-full rounded-md border 
                 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                 ${theme.border} ${theme.bg} ${theme.text}
@@ -120,7 +148,7 @@ export default function Form({
               id="rfc"
               name="rfc"
               type="text"
-              placeholder="Type the employee rfc"
+              placeholder="Escriba el rfc del empleado"
               className={`peer block w-full rounded-md border 
                 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                 ${theme.border} ${theme.bg} ${theme.text}
@@ -152,7 +180,7 @@ export default function Form({
               id="telefono"
               name="telefono"
               type="text"
-              placeholder="Type the employee telefono"
+              placeholder="Escriba el teléfono del empleado"
               className={`peer block w-full rounded-md border 
                 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                 ${theme.border} ${theme.bg} ${theme.text}
@@ -184,7 +212,7 @@ export default function Form({
               id="direccion"
               name="direccion"
               type="text"
-              placeholder="Type the employee direccion"
+              placeholder="Escriba la dirección del empleado"
               className={`peer block w-full rounded-md border 
                 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                 ${theme.border} ${theme.bg} ${theme.text}
@@ -210,7 +238,7 @@ export default function Form({
           <label htmlFor="email" className={`mb-2 block text-sm font-medium
             ${theme.text}
           `}>
-            Email
+            Correo Electronico:
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -218,7 +246,7 @@ export default function Form({
                 id="email"
                 name="email"
                 type="mail"
-                placeholder="Enter the employee email"
+                placeholder="Ingrese el correo electrónico del empleado"
                 className={`peer block w-full rounded-md border 
                   py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                   ${theme.border} ${theme.bg} ${theme.text}
@@ -245,7 +273,7 @@ export default function Form({
           <label htmlFor="password" className={`mb-2 block text-sm font-medium
             ${theme.text}
           `}>
-            Password
+            Contraseña:
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -253,7 +281,7 @@ export default function Form({
                 id="password"
                 name="password"
                 type="password"
-                placeholder="Enter the employee password"
+                placeholder="Introduzca la contraseña del empleado"
                 className={`peer block w-full rounded-md border 
                   py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                   ${theme.border} ${theme.bg} ${theme.text}
@@ -280,7 +308,7 @@ export default function Form({
           <label htmlFor="confirm-password" className={`mb-2 block text-sm font-medium
             ${theme.text}
           `}>
-            Confirm Password
+            Confirmar Contraseña:
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -288,7 +316,7 @@ export default function Form({
                 id="confirm-password"
                 name="confirm-password"
                 type="password"
-                placeholder="Confirm the employee password"
+                placeholder="Confirmar la contraseña del empleado"
                 className={`peer block w-full rounded-md border 
                   py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                   ${theme.border} ${theme.bg} ${theme.text}
@@ -315,7 +343,7 @@ export default function Form({
           <label htmlFor="foto" className={`mb-2 block text-sm font-medium ${theme.text}`}>
             Foto:
           </label>
-          <div className="relative">
+          <div className="relative flex flex-col md:flex-row items-center gap-7">
             <input
               id="foto"
               name="foto"
@@ -324,13 +352,13 @@ export default function Form({
               className={`peer block w-full rounded-md border py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 ${theme.border} ${theme.bg} ${theme.text}`}
               aria-describedby="foto-error"
               onChange={handleFileChange}
-            />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
+            /> {/* Input para subir la foto top-1/2 -translate-y-1/2 */}
+            <div className="relative right-3 flex items-center">
               {fotoBase64 ? (
                 <img
                  src={fotoBase64}
                  alt="Vista previa"
-                 className="w-40 h-40 rounded-full object-cover"
+                 className="w-20 h-20 md:w-40 md:h-40 rounded-full object-cover"
                 />
               ) : (
                 <UserCircleIcon className="h-6 w-6 text-gray-500" />
@@ -356,7 +384,7 @@ export default function Form({
           <div className={`rounded-md border px-[14px] py-3
             ${theme.bg} ${theme.border}
           `}>
-            <div className="flex gap-4">
+            <div className="flex flex-col md:flex-row gap-4">
               <div className="flex items-center">
                 <input
                   id="supervisor"
@@ -470,7 +498,7 @@ export default function Form({
         </fieldset>
 
 
-        {state.message && (
+        {state.message && state.errors && (
           <p className="mt-2 text-sm text-red-500"  key={state.message}>
             {state.message}
           </p>
@@ -488,7 +516,8 @@ export default function Form({
         >
           Cancel
         </Link>
-        <Button type="submit">Create Employee</Button>
+        <Button disabled={isGood} className="disabled:bg-slate-400 disabled:cursor-not-allowed" type="submit">
+          {isGood ? "Creando..." : "Crear Empleado"}</Button>
       </div>
     </form>
   );

@@ -14,6 +14,9 @@ import { Button } from '@/app/ui/button';
 import { createCustomer } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 import { themeType } from '@/app/lib/theme';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { toast, ToastContainer } from 'react-toastify';
 
 export default function Form({ 
   userEmail,
@@ -22,12 +25,35 @@ export default function Form({
   userEmail: string;
   theme: themeType;
 }) {
-
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useFormState(createCustomer, initialState);
+  const [isGood, setIsGood] = useState(false);
+  const router = useRouter();
+
+   useEffect(() => {
+      if (state?.success) {
+        toast.success('Cliente creado con éxito!');
+        setTimeout(() => {
+          router.push('/dashboard/customers');
+          router.refresh();
+        }, 2000);
+      } 
+      if (state?.errors) {
+        setIsGood(false);
+      }
+    }, [state, router]);
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      setIsGood(true);
+      const formData = new FormData(e.currentTarget);
+      dispatch(formData);
+    };
 
   return (
-    <form action={dispatch}>
+    <form onSubmit={handleSubmit}>
+      <ToastContainer theme="colored" />
+
       <input type="hidden" name="userEmail" value={userEmail} />
 
       <div className={`rounded-md ${theme.container} p-4 md:p-6`}>
@@ -35,14 +61,14 @@ export default function Form({
           <label htmlFor="customer" className={`mb-2 block text-sm font-medium
             ${theme.text}
           `}>
-            Name: 
+            Nombre: 
           </label>
           <div className="relative">
             <input
               id="name"
               name="name"
               type="text"
-              placeholder="Type the customer name"
+              placeholder="Escriba el nombre del cliente"
               className={`peer block w-full rounded-md border 
                 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                 ${theme.border} ${theme.bg} ${theme.text}
@@ -74,7 +100,7 @@ export default function Form({
               id="rfc"
               name="rfc"
               type="text"
-              placeholder="Type the customer rfc"
+              placeholder="Escriba el rfc del cliente"
               className={`peer block w-full rounded-md border 
                 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                 ${theme.border} ${theme.bg} ${theme.text}
@@ -106,7 +132,7 @@ export default function Form({
               id="telefono"
               name="telefono"
               type="text"
-              placeholder="Type the customer telefono"
+              placeholder="Escriba el teléfono del cliente"
               className={`peer block w-full rounded-md border 
                 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                 ${theme.border} ${theme.bg} ${theme.text}
@@ -138,7 +164,7 @@ export default function Form({
               id="direccion"
               name="direccion"
               type="text"
-              placeholder="Type the customer direccion"
+              placeholder="Escriba la dirección del cliente"
               className={`peer block w-full rounded-md border 
                 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                 ${theme.border} ${theme.bg} ${theme.text}
@@ -164,7 +190,7 @@ export default function Form({
           <label htmlFor="amount" className={`mb-2 block text-sm font-medium
             ${theme.text}
           `}>
-            Email
+            Correo Electrónico:
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -172,7 +198,7 @@ export default function Form({
                 id="email"
                 name="email"
                 type="mail"
-                placeholder="Enter the customer email"
+                placeholder="Introduzca el correo electrónico del cliente"
                 className={`peer block w-full rounded-md border 
                   py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                   ${theme.border} ${theme.bg} ${theme.text}
@@ -257,7 +283,7 @@ export default function Form({
         </fieldset>
 
 
-        {state.message && (
+        {state.message && state.errors && (
           <p className="mt-2 text-sm text-red-500"  key={state.message}>
             {state.message}
           </p>
@@ -275,7 +301,8 @@ export default function Form({
         >
           Cancel
         </Link>
-        <Button type="submit">Create Customer</Button>
+        <Button disabled={isGood} className="disabled:bg-slate-400 disabled:cursor-not-allowed" type="submit">
+        {isGood ? "Creando..." : "Crear Cliente"}</Button>
       </div>
     </form>
   );

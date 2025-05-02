@@ -31,11 +31,11 @@ export default async function CardWrapper({theme}:{theme: themeType}) {
     <>
       {/* NOTE: comment in this code when you get to this point in the course */}
 
-      <Card title="Collected" value={totalPaidInvoices} type="collected" theme={theme} />
-      <Card title="Pending" value={totalPendingInvoices} type="pending" theme={theme} />
-      <Card title="Total Invoices" value={numberOfInvoices} type="invoices" theme={theme} />
+      <Card title="Dinero Generado" value={totalPaidInvoices} type="collected" theme={theme} />
+      <Card title="Dinero Pendiente" value={totalPendingInvoices} type="pending" theme={theme} />
+      <Card title="Total de Facturas" value={numberOfInvoices} type="invoices" theme={theme} />
       <Card
-        title="Total Customers"
+        title="Total de Clientes"
         value={numberOfCustomers}
         type="customers"
         theme={theme}

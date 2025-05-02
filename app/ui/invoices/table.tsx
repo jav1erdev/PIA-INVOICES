@@ -7,6 +7,8 @@ import { useState } from 'react';
 import { Invoice } from '@/app/lib/definitions';
 import jsPDFInvoiceTemplate, { OutputType } from "jspdf-invoice-template";
 import { InvoiceDetailsModal } from './modal';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import dynamic from 'next/dynamic';
 
 // Dynamically import the component that generates the PDF invoice
@@ -21,19 +23,28 @@ const InvoicePDFEmail = dynamic(() => import('./invoicePDFEmail'), {
 
 export default function InvoicesTable({
   invoices,
+  query,
+  currentPage,
+  userEmail,
   theme  
 }: {  
   invoices: Invoice[];
+  query: string;
+  currentPage: number;
+  userEmail: string;
   theme: themeType;  
 }) {
 
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+  // const [invoicesTotal, setInvoicesTotal] = useState<Invoice[]>([]);
 
   const openModal = (invoice: Invoice) => setSelectedInvoice(invoice);
   const closeModal = () => setSelectedInvoice(null);
 
   return (
     <div className="mt-6 flow-root">
+      <ToastContainer theme="colored" />
+
       <div className="inline-block min-w-full align-middle">
         <div className={`rounded-lg ${theme.container} p-2 md:pt-0`}>
           <div className="md:hidden">
@@ -58,7 +69,7 @@ export default function InvoicesTable({
                     <p className={`text-xl font-medium ${theme.title}`}>
                       {formatCurrency(invoice.amount)}
                     </p>
-                    <p className={`${theme.title}`}>{formatDateToLocal(invoice.fecha_creado)}</p>
+                    <p className={`text-base ${theme.title}`}>{formatDateToLocal(invoice.fecha_creado)}</p>
                   </div>
                   <div className="flex justify-end gap-2">
                     {/* <ViewDetailsInvoices
@@ -69,7 +80,7 @@ export default function InvoicesTable({
                     <InvoicePDFGenerator disabled={invoice.status == "Pendiente" ? true : false} invoice={invoice} theme={theme} />
                     <InvoicePDFEmail disabled={invoice.status == "Pendiente" ? true : false} invoice={invoice} theme={theme} />
                     <UpdateInvoice disabled={invoice.status == "Pagado" ? true : false} id={invoice.id} theme={theme} />
-                    <DeleteInvoice disabled={invoice.status == "Pagado" ? true : false} id={invoice.id} theme={theme} />
+                    <DeleteInvoice data={[query, currentPage]} disabled={invoice.status == "Pagado" ? true : false} id={invoice.id} theme={theme} />
                   </div>
                 </div>
               </div>
@@ -84,7 +95,7 @@ export default function InvoicesTable({
                   Id Factura
                 </th>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Customer
+                  Cliente
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Fecha de creacion
@@ -140,7 +151,7 @@ export default function InvoicesTable({
                       <InvoicePDFGenerator disabled={invoice.status == "Pendiente" ? true : false} invoice={invoice} theme={theme} />
                       <InvoicePDFEmail disabled={invoice.status == "Pendiente" ? true : false} invoice={invoice} theme={theme} />
                       <UpdateInvoice disabled={invoice.status == "Pagado" ? true : false} id={invoice.id} theme={theme} />
-                      <DeleteInvoice disabled={invoice.status == "Pagado" ? true : false} id={invoice.id} theme={theme} />
+                      <DeleteInvoice data={[query, currentPage, userEmail]} disabled={invoice.status == "Pagado" ? true : false} id={invoice.id} theme={theme} />
                     </div>
                   </td>
                 </tr>

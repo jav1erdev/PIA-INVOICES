@@ -24,8 +24,8 @@ export default function LoginPage({params}: {params: {email: string}}) {
 					px-6 pb-4 pt-8
 				">
 					<h1 className={`${lusitana.className} mb-3 text-2xl ${systemDefault.title} text-ellipsis overflow-hidden`}>
-						If you typed your email address correctly, a message with instructions 
-            to reset your password was sent to {email}
+            Si escribiste tu dirección de correo electrónico correctamente, aparecerá un mensaje con instrucciones 
+            para restablecer su contraseña fue enviado a {email}
 					</h1>
         </div>
         <ButtonBack />
@@ -44,7 +44,7 @@ function ButtonBack() {
     <Button className='mt-4 w-full' aria-disabled={pending} onClick={() => {
       replace('/login');
     }}>
-      Go back to the Login page <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
+      Volver a la página de inicio de sesión <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   );
 }

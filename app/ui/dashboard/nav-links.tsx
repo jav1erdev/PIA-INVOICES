@@ -18,17 +18,17 @@ import { themeType } from '@/app/lib/theme';
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
 const links = [
-  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
+  { name: 'Inicio', href: '/dashboard', icon: HomeIcon },
   {
-    name: 'Invoices',
+    name: 'Facturas',
     href: '/dashboard/invoices',
     icon: DocumentDuplicateIcon,
   },
-  { name: 'Employees', href: '/dashboard/employees', icon: BriefcaseIcon },
-  { name: 'Schedules', href: '/dashboard/schedules', icon: TableCellsIcon },
-  { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
-  { name: 'My Account', href: '/dashboard/user-profile', icon: UserIcon },
-  { name: 'Settings', href: '/dashboard/settings', icon: Cog6ToothIcon }
+  { name: 'Empleados', href: '/dashboard/employees', icon: BriefcaseIcon },
+  { name: 'Horarios', href: '/dashboard/schedules', icon: TableCellsIcon },
+  { name: 'Clientes', href: '/dashboard/customers', icon: UserGroupIcon },
+  { name: 'Mi Cuenta', href: '/dashboard/user-profile', icon: UserIcon },
+  { name: 'Configuracion', href: '/dashboard/settings', icon: Cog6ToothIcon }
 ];
 
 export default function NavLinks({theme}: {theme: themeType}) {

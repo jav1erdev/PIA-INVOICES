@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { CustomerField } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
@@ -11,10 +11,15 @@ import {
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
+import { redirect } from 'next/navigation';
 import { Button, Button14 } from '@/app/ui/button';
 import { createInvoice } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { themeType } from '@/app/lib/theme';
+import { set } from 'date-fns';
+import { useRouter } from 'next/navigation';
 
 type Product = {
   id: string;
@@ -39,7 +44,22 @@ export default function Form({
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
   const [selectedProductId, setSelectedProductId] = useState('');
   const [total, setTotal] = useState(0);
+  const [isGood, setIsGood] = useState(false);
+  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]); // Estado para productos
+  
+  useEffect(() => {
+    if (state?.success) {
+      toast.success('Factura creada con éxito!');
+      setTimeout(() => {
+        router.push('/dashboard/invoices');
+        router.refresh();
+      }, 2000);
+    } 
+    if (state?.errors) {
+      setIsGood(false);
+    }
+  }, [state, router]);
 
   // Cargar los productos desde la API
   useEffect(() => {
@@ -85,8 +105,16 @@ export default function Form({
     }
   };
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsGood(true);
+    const formData = new FormData(e.currentTarget);
+    dispatch(formData);
+  };
+
   return (
-    <form action={dispatch}>
+    <form onSubmit={handleSubmit}>
+      <ToastContainer theme="colored" />
       <div className={`rounded-md ${theme.container} p-4 md:p-6`}>
         {/* Customer Name */}
         <div className="mb-4">
@@ -94,7 +122,7 @@ export default function Form({
             htmlFor="customer"
             className={`mb-2 block text-sm font-medium ${theme.text}`}
           >
-            Choose customer
+            Elegir cliente
           </label>
           <div className="relative">
             <select
@@ -107,7 +135,7 @@ export default function Form({
               aria-describedby="customer-error"
             >
               <option value="" disabled>
-                Select a customer
+                Elegir a un cliente
               </option>
               {customers.map((customer) => (
                 <option key={customer.id} value={customer.id}>
@@ -171,7 +199,7 @@ export default function Form({
             htmlFor="products"
             className={`mb-2 block text-sm font-medium ${theme.text}`}
           >
-            Add Products
+            Añadir productos
           </label>
           <div className="flex items-center gap-2">
             <select
@@ -183,7 +211,7 @@ export default function Form({
                 ${theme.border} ${theme.bg} ${theme.text}`}
             >
               <option value="" disabled>
-                Select a product
+                Seleccione un producto
               </option>
               {products.map((product) => (
                 <option key={product.id} value={product.id}>
@@ -209,13 +237,13 @@ export default function Form({
         {/* Selected Products Table */}
         {selectedProducts.length > 0 && (
           <div className="mb-4">
-            <h3 className={`mb-2 text-sm font-medium ${theme.text}`}>Invoice Items</h3>
+            <h3 className={`mb-2 text-sm font-medium ${theme.text}`}>Elementos de la factura</h3>
             <table className="w-full border-collapse text-sm">
               <thead>
                 <tr className={`border-b ${theme.border}`}>
-                  <th className="py-2 text-left">Product</th>
-                  <th className="py-2 text-right">Price</th>
-                  <th className="py-2 text-center">Action</th>
+                  <th className="py-2 text-left">Producto</th>
+                  <th className="py-2 text-right">Precio</th>
+                  <th className="py-2 text-center">Accion</th>
                 </tr>
               </thead>
               <tbody>
@@ -250,7 +278,7 @@ export default function Form({
         {/* Invoice Status */}
         <fieldset>
           <legend className={`mb-2 block text-sm font-medium ${theme.text}`}>
-            Set the invoice status
+          Establecer el estado de la factura
           </legend>
           <div className={`rounded-md border px-[14px] py-3 ${theme.bg} ${theme.border}`}>
             <div className="flex gap-4">
@@ -390,7 +418,8 @@ export default function Form({
         >
           Cancel
         </Link>
-        <Button type="submit">Create Invoice</Button>
+        <Button disabled={isGood} className="disabled:bg-slate-400 disabled:cursor-not-allowed" type="submit">
+          {isGood ? "Creando..." : "Crear Factura"}</Button>
       </div>
     </form>
   );

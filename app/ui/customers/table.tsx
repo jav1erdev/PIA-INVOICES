@@ -9,6 +9,8 @@ import { themeType } from '@/app/lib/theme';
 import { Customer } from '@/app/lib/definitions';
 import { formatCurrency } from '@/app/lib/utils';
 import { CustomerDetailsModal } from './modal';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function CustomersTable({  
   customers,
@@ -26,8 +28,9 @@ export default function CustomersTable({
 
   return (
     <div className="w-full">
+      <ToastContainer theme="colored" />
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search customers..." theme={theme} />
+        <Search placeholder="Buscar clientes (por Id, Nombre o Correo Electronico)..." theme={theme} />
         <CreateCustomer />
       </div>
 
@@ -53,34 +56,36 @@ export default function CustomersTable({
                           </div>
                         </div>
                         <p className="text-sm text-gray-500">
-                          {customer.email}
+                          {customer.id}
                         </p>
                         <p className="text-sm text-gray-500">
-                          {customer.id}
+                          {customer.email}
                         </p>
                       </div>
                     </div>
                     <div className="flex w-full items-center justify-between border-b py-5">
                       <div className="flex w-1/2 flex-col">
-                        <p className={`text-xs ${theme.title}`}>Pending</p>
+                        <p className={`text-xs ${theme.title}`}>Pendiente</p>
                         <p className={`font-medium ${theme.title}`}>{formatCurrency(customer.total_pending)}</p>
                       </div>
                       <div className="flex w-1/2 flex-col">
-                        <p className={`text-xs ${theme.title}`}>Paid</p>
+                        <p className={`text-xs ${theme.title}`}>Pagado</p>
                         <p className={`font-medium ${theme.title}`}>{formatCurrency(customer.total_paid)}</p>
                       </div>
                     </div>
-                    <div className={`pt-4 text-sm ${theme.title}`}>
-                      <p>{customer.total_invoices} invoices</p>
-                    </div>
-                    <div className="flex justify-end gap-2">
-                      <ViewDetailsCustomer
-                        id={customer.id}
-                        onOpen={() => openModal(customer)}
-                        theme={theme}
-                      />
-                      <UpdateCustomer disabled={Number(customer.total_pending) > 0.00 ? true : false} id={customer.id} theme={theme} />
-                      <DeleteCustomer disabled={Number(customer.total_pending) > 0 ? true : false} id={customer.id} theme={theme} />
+                    <div className='flex items-center justify-between pt-4'>
+                      <div className={`text-sm ${theme.title}`}>
+                        <p>{customer.total_invoices} facturas</p>
+                      </div>
+                      <div className="flex justify-end gap-2">
+                        <ViewDetailsCustomer
+                          id={customer.id}
+                          onOpen={() => openModal(customer)}
+                          theme={theme}
+                        />
+                        <UpdateCustomer disabled={Number(customer.total_pending) > 0.00 ? true : false} id={customer.id} theme={theme} />
+                        <DeleteCustomer disabled={Number(customer.total_paid || Number(customer.total_pending) ) > 0 ? true : false} id={customer.id} theme={theme} />
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -97,16 +102,16 @@ export default function CustomersTable({
                       Id Cliente
                     </th>
                     <th scope="col" className="px-3 py-5 font-medium">
-                      Name
+                      Nombre
                     </th>
                     <th scope="col" className="px-3 py-5 font-medium">
-                      Email
+                      Correo Electrónico
                     </th>
                     <th scope="col" className="px-3 py-5 font-medium">
-                      Total Pending
+                      Total Pendiente
                     </th>
                     <th scope="col" className="px-4 py-5 font-medium">
-                      Total Paid
+                      Total Pagado
                     </th>
                   </tr>
                 </thead>
@@ -156,7 +161,7 @@ export default function CustomersTable({
                             theme={theme}
                           />
                           <UpdateCustomer disabled={Number(customer.total_pending) > 0.00 ? true : false} id={customer.id} theme={theme} />
-                          <DeleteCustomer disabled={Number(customer.total_pending) > 0.00 ? true : false} id={customer.id} theme={theme} />
+                          <DeleteCustomer disabled={Number(customer.total_paid) || Number(customer.total_pending) > 0.00 ? true : false} id={customer.id} theme={theme} />
                         </div>
                       </td>
                     </tr>

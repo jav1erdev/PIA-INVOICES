@@ -7,7 +7,7 @@ import { auth } from '@/auth';
 import { darkTheme, lightTheme, systemDefault, themeType } from '@/app/lib/theme';
 
 export const metadata: Metadata = {
-  title: 'Edit Invoice',
+  title: 'Editar Factura',
 };
  
 export default async function Page({ params }: { params: { id: string } }) {
@@ -44,9 +44,9 @@ export default async function Page({ params }: { params: { id: string } }) {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Invoices', href: '/dashboard/invoices' },
+          { label: 'Facturas', href: '/dashboard/invoices' },
           {
-            label: 'Edit Invoice',
+            label: 'Editar Factura',
             href: `/dashboard/invoices/${id}/edit`,
             active: true,
           },

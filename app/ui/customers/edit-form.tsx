@@ -12,6 +12,9 @@ import { updateCustomer } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 import { Customer } from '@/app/lib/definitions';
 import { themeType } from '@/app/lib/theme';
+import { useEffect, useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 export default function EditInvoiceForm({
   customer,
@@ -25,9 +28,35 @@ export default function EditInvoiceForm({
   const updateCustomerWithId = updateCustomer.bind(null, customer.id);
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useFormState(updateCustomerWithId, initialState);
+  const [isGood, setIsGood] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+      if (state?.success) {
+        toast.success('Cliente actualizado con éxito!');
+        setTimeout(() => {
+          router.push('/dashboard/customers');
+          router.refresh();
+        }, 2000);
+      }  
+      if (state?.errors) {
+        setIsGood(false);
+      }
+    }, [state, router]);
+
+      
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsGood(true);
+    const formData = new FormData(e.currentTarget);
+    dispatch(formData);
+  };
+
 
   return (
-    <form action={dispatch}>
+    <form onSubmit={handleSubmit}>
+      <ToastContainer theme="colored" />
+
       <input type="hidden" name="userEmail" value={userEmail} />
 
       <div className={`rounded-md ${theme.container} p-4 md:p-6`}>
@@ -35,7 +64,7 @@ export default function EditInvoiceForm({
           <label htmlFor="customer" className={`mb-2 block text-sm font-medium
             ${theme.text}
           `}>
-            Name: 
+            Nombre: 
           </label>
           <div className="relative">
             <input
@@ -43,7 +72,7 @@ export default function EditInvoiceForm({
               name="name"
               type="text"
               defaultValue={customer.name}
-              placeholder="Type the customer name"
+              placeholder="Escriba el nombre del cliente"
               className={`peer block w-full rounded-md border 
                 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                 ${theme.border} ${theme.bg} ${theme.text}
@@ -76,7 +105,7 @@ export default function EditInvoiceForm({
               name="rfc"
               type="text"
               defaultValue={customer.rfc}
-              placeholder="Type the customer rfc"
+              placeholder="Escriba el rfc del cliente"
               className={`peer block w-full rounded-md border 
                 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                 ${theme.border} ${theme.bg} ${theme.text}
@@ -109,7 +138,7 @@ export default function EditInvoiceForm({
               name="telefono"
               type="text"
               defaultValue={customer.telefono}
-              placeholder="Type the customer telefono"
+              placeholder="Escriba el teléfono del cliente"
               className={`peer block w-full rounded-md border 
                 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                 ${theme.border} ${theme.bg} ${theme.text}
@@ -142,7 +171,7 @@ export default function EditInvoiceForm({
               name="direccion"
               type="text"
               defaultValue={customer.direccion}
-              placeholder="Type the customer direccion"
+              placeholder="Escriba la dirección del cliente"
               className={`peer block w-full rounded-md border 
                 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                 ${theme.border} ${theme.bg} ${theme.text}
@@ -168,7 +197,7 @@ export default function EditInvoiceForm({
           <label htmlFor="amount" className={`mb-2 block text-sm font-medium
             ${theme.text}
           `}>
-            Email
+            Correo Electrónico:
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -177,7 +206,7 @@ export default function EditInvoiceForm({
                 name="email"
                 type="mail"
                 defaultValue={customer.email}
-                placeholder="Enter the customer email"
+                placeholder="Introduzca el correo electrónico del cliente"
                 className={`peer block w-full rounded-md border 
                   py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                   ${theme.border} ${theme.bg} ${theme.text}
@@ -264,7 +293,7 @@ export default function EditInvoiceForm({
         </fieldset>
 
 
-        {state?.message && (
+        {state?.message && state?.errors && (
           <p className="mt-2 text-sm text-red-500"  key={state.message}>
             {state.message}
           </p>
@@ -282,7 +311,8 @@ export default function EditInvoiceForm({
         >
           Cancel
         </Link>
-        <Button type="submit">Update Customer</Button>
+        <Button disabled={isGood} className="disabled:bg-slate-400 disabled:cursor-not-allowed" type="submit">
+        {isGood ? "Actualizando..." : "Actualizar Cliente"}</Button>
       </div>
     </form>
   );

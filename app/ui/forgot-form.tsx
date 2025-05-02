@@ -20,7 +20,7 @@ export default function LoginForm() {
         px-6 pb-4 pt-8
       `}>
         <h1 className={`${lusitana.className} mb-3 text-2xl ${systemDefault.title}`}>
-          Please provide your email address for password reset
+          Proporcione su dirección de correo electrónico para restablecer la contraseña
         </h1>
       <form action={dispatch} className="space-y-3">  
         <div className="w-full">
@@ -29,7 +29,7 @@ export default function LoginForm() {
               className={`mb-3 mt-5 block text-xs font-medium text-gray-900 ${systemDefault.text}`}
               htmlFor="email"
             >
-              Email:
+              Correo electrónico:
             </label>
             <div className="relative">
               <input
@@ -40,7 +40,7 @@ export default function LoginForm() {
                 id="email"
                 type="email"
                 name="email"
-                placeholder="Enter your email address"
+                placeholder="Ingresa tu dirección de correo electrónico"
                 required
               />
               <AtSymbolIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] 
@@ -76,7 +76,7 @@ function ResetPassword() {
  
   return (
     <Button className="mt-4 w-full" aria-disabled={pending}>
-      Reset password  <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+      Restablecer contraseña  <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   );
 }
@@ -90,7 +90,7 @@ function GoBack() {
     <Button className="mt-2 w-full" aria-disabled={pending} onClick={() => {
       replace('/login');
     }}>
-      Go back <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
+      Volver <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   );
 }

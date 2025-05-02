@@ -30,7 +30,7 @@ export default function SideNav({ theme }: {theme: themeType }) {
             md:justify-start md:p-2 md:px-3 ${theme.title}
           `}>
             <PowerIcon className="w-6" />
-            <div className="hidden md:block">Sign Out</div>
+            <div className="hidden md:block">Cerrar Sesion</div>
           </button>
         </form>
       </div>
