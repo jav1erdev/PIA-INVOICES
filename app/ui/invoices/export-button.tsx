@@ -1,5 +1,5 @@
 'use client';
-import { Button } from "../button";
+import { Button } from '../button';
 
 export default function ExportButton() {
   const handleExportar = async () => {
@@ -17,7 +17,9 @@ export default function ExportButton() {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `reporte_factura-${new Date().toLocaleString("es-ES", { hour12: false })}.xlsx`;
+      link.download = `reporte_factura-${new Date().toLocaleString('es-ES', {
+        hour12: false,
+      })}.xlsx`;
       link.click();
       window.URL.revokeObjectURL(url);
     } catch (error) {

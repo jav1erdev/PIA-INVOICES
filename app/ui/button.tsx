@@ -18,7 +18,6 @@ export function Button({ children, className, ...rest }: ButtonProps) {
   );
 }
 
-
 export function Button14({ children, className, ...rest }: ButtonProps) {
   return (
     <button
@@ -32,4 +31,3 @@ export function Button14({ children, className, ...rest }: ButtonProps) {
     </button>
   );
 }
-

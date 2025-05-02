@@ -1,5 +1,5 @@
 'use client';
-import { Button } from "../button";
+import { Button } from '../button';
 import { toPng } from 'html-to-image';
 
 export default function ExportButton() {
@@ -31,7 +31,9 @@ export default function ExportButton() {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `reporte_general-${new Date().toLocaleString("es-ES", { hour12: false })}.xlsx`;
+      link.download = `reporte_general-${new Date().toLocaleString('es-ES', {
+        hour12: false,
+      })}.xlsx`;
       link.click();
       window.URL.revokeObjectURL(url);
     } catch (error) {

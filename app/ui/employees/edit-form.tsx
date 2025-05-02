@@ -7,7 +7,7 @@ import {
   HomeModernIcon,
   UserCircleIcon,
   UserIcon,
-  WrenchIcon
+  WrenchIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
@@ -22,11 +22,11 @@ import { toast, ToastContainer } from 'react-toastify';
 export default function EditInvoiceForm({
   employee,
   userEmail,
-  theme
+  theme,
 }: {
   employee: Employee;
   userEmail: string;
-  theme: themeType
+  theme: themeType;
 }) {
   const updateEmployeeWithId = updateEmployee.bind(null, employee.id);
   const initialState = { message: null, errors: {} };
@@ -34,7 +34,7 @@ export default function EditInvoiceForm({
   const [isGood, setIsGood] = useState(false);
   const router = useRouter();
   const [fotoBase64, setFotoBase64] = useState<string | null>(null);
-  
+
   useEffect(() => {
     if (state?.success) {
       toast.success('Empleado actualizado con éxito!');
@@ -42,7 +42,7 @@ export default function EditInvoiceForm({
         router.push('/dashboard/employees');
         router.refresh();
       }, 2000);
-    }  
+    }
     if (state?.errors) {
       setIsGood(false);
     }
@@ -57,23 +57,21 @@ export default function EditInvoiceForm({
   const [imageLoaded, setImageLoaded] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
 
-
   if (!employee) return null;
-  
+
   const hasImage = !!employee.image_url;
-  
 
   const uploadImage = (file: any) => {
-    console.log('Archivo:', file);  // Verifica si el archivo está bien
-  
+    console.log('Archivo:', file); // Verifica si el archivo está bien
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', 'piaimage');
     formData.append('folder', 'perfil');
     formData.append('resource_type', 'image');
-    
+
     const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/drn7ynbiq/upload';
-    
+
     fetch(cloudinaryUrl, {
       method: 'POST',
       body: formData,
@@ -92,7 +90,7 @@ export default function EditInvoiceForm({
         console.error('Error al subir la imagen:', error);
       });
   };
-  
+
   // Manejador para el cambio de archivo en un input
   const handleFileChange = (event: any) => {
     const file = event.target.files[0];
@@ -103,7 +101,6 @@ export default function EditInvoiceForm({
     }
   };
 
-    
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsGood(true);
@@ -111,53 +108,56 @@ export default function EditInvoiceForm({
     dispatch(formData);
   };
 
-  
   return (
     <form onSubmit={handleSubmit}>
       <ToastContainer theme="colored" />
 
       <input type="hidden" name="userEmail" value={userEmail} />
-      <input type="hidden" name="photo" value={fotoBase64 || ""} />
+      <input type="hidden" name="photo" value={fotoBase64 || ''} />
 
       <div className={`rounded-md ${theme.container} p-4 md:p-6`}>
-
-        <div className='flex flex-col md:flex-row gap-7 items-center justify-evenly'>
-          <div className='flex flex-col items-center gap-4 justify-center'>
-            <h1 className={`text-sm md:text-base text-gray-500 ${theme.title}`}>Identificador de empleado: {employee.id}</h1>
-            <h1 className={`text-sm md:text-base text-gray-500 ${theme.title}`}>Fecha de ingreso: {employee.fecha_creado}</h1>
+        <div className="flex flex-col items-center justify-evenly gap-7 md:flex-row">
+          <div className="flex flex-col items-center justify-center gap-4">
+            <h1 className={`text-sm text-gray-500 md:text-base ${theme.title}`}>
+              Identificador de empleado: {employee.id}
+            </h1>
+            <h1 className={`text-sm text-gray-500 md:text-base ${theme.title}`}>
+              Fecha de ingreso: {employee.fecha_creado}
+            </h1>
           </div>
           <div className="flex items-center justify-center">
-              {!imageLoaded && hasImage && (
-                <div className="w-40 h-40 flex items-center justify-center rounded-full bg-gray-200 text-gray-500 animate-pulse">
-                  Cargando...
-                </div>
-              )}
-              {!hasImage && (
-                <div className="w-40 h-40 flex items-center justify-center rounded-full bg-gray-200 text-gray-500 animate-pulse">
-                  Sin Foto
-                </div>
-              )}
-              {hasImage && (
-                <img
-                ref={imgRef} 
+            {!imageLoaded && hasImage && (
+              <div className="flex h-40 w-40 animate-pulse items-center justify-center rounded-full bg-gray-200 text-gray-500">
+                Cargando...
+              </div>
+            )}
+            {!hasImage && (
+              <div className="flex h-40 w-40 animate-pulse items-center justify-center rounded-full bg-gray-200 text-gray-500">
+                Sin Foto
+              </div>
+            )}
+            {hasImage && (
+              <img
+                ref={imgRef}
                 src={employee.image_url}
                 alt="Vista previa"
-                className={`w-40 h-40 rounded-full object-cover transition-opacity duration-300 ${
-                  imageLoaded ? "opacity-100" : "opacity-0 absolute"
+                className={`h-40 w-40 rounded-full object-cover transition-opacity duration-300 ${
+                  imageLoaded ? 'opacity-100' : 'absolute opacity-0'
                 }`}
                 onLoad={() => setImageLoaded(true)}
               />
-              )
-            }
-              
+            )}
           </div>
         </div>
-      
+
         <div className="my-4">
-          <label htmlFor="employee" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="employee"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
-            Nombre: 
+          `}
+          >
+            Nombre:
           </label>
           <div className="relative">
             <input
@@ -172,9 +172,11 @@ export default function EditInvoiceForm({
               `}
               aria-describedby="name-error"
             />
-            <UserCircleIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+            <UserCircleIcon
+              className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
               -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-            `}/>
+            `}
+            />
           </div>
           <div id="name-error" aria-live="polite" aria-atomic="true">
             {state.errors?.name &&
@@ -187,10 +189,13 @@ export default function EditInvoiceForm({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="employee" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="employee"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
-            RFC: 
+          `}
+          >
+            RFC:
           </label>
           <div className="relative">
             <input
@@ -207,9 +212,11 @@ export default function EditInvoiceForm({
               `}
               aria-describedby="rfc-error"
             />
-            <UserCircleIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+            <UserCircleIcon
+              className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
               -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-            `}/>
+            `}
+            />
           </div>
           <div id="rfc-error" aria-live="polite" aria-atomic="true">
             {state.errors?.rfc &&
@@ -222,10 +229,13 @@ export default function EditInvoiceForm({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="employee" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="employee"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
-            Telefono: 
+          `}
+          >
+            Telefono:
           </label>
           <div className="relative">
             <input
@@ -240,9 +250,11 @@ export default function EditInvoiceForm({
               `}
               aria-describedby="telefono-error"
             />
-            <UserCircleIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+            <UserCircleIcon
+              className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
               -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-            `}/>
+            `}
+            />
           </div>
           <div id="telefono-error" aria-live="polite" aria-atomic="true">
             {state.errors?.telefono &&
@@ -255,10 +267,13 @@ export default function EditInvoiceForm({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="employee" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="employee"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
-            Direccion: 
+          `}
+          >
+            Direccion:
           </label>
           <div className="relative">
             <input
@@ -273,9 +288,11 @@ export default function EditInvoiceForm({
               `}
               aria-describedby="direccion-error"
             />
-            <UserCircleIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+            <UserCircleIcon
+              className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
               -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-            `}/>
+            `}
+            />
           </div>
           <div id="direccion-error" aria-live="polite" aria-atomic="true">
             {state.errors?.direccion &&
@@ -289,9 +306,12 @@ export default function EditInvoiceForm({
 
         {/* Invoice Amount */}
         <div className="mb-4">
-          <label htmlFor="amount" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="amount"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
+          `}
+          >
             Correo Electronico:
           </label>
           <div className="relative mt-2 rounded-md">
@@ -308,10 +328,12 @@ export default function EditInvoiceForm({
                 `}
                 aria-describedby="email-error"
               />
-              <AtSymbolIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+              <AtSymbolIcon
+                className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
                 -translate-y-1/2 text-gray-500 peer-focus:text-gray-900
                 ${theme.inputIcon}
-              `}/>
+              `}
+              />
             </div>
             <div id="amount-error" aria-live="polite" aria-atomic="true">
               {state.errors?.email &&
@@ -325,10 +347,13 @@ export default function EditInvoiceForm({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="foto" className={`mb-2 block text-sm font-medium ${theme.text}`}>
+          <label
+            htmlFor="foto"
+            className={`mb-2 block text-sm font-medium ${theme.text}`}
+          >
             Foto:
           </label>
-          <div className="relative flex flex-col md:flex-row items-center gap-7">
+          <div className="relative flex flex-col items-center gap-7 md:flex-row">
             <input
               id="foto"
               name="foto"
@@ -337,13 +362,14 @@ export default function EditInvoiceForm({
               className={`peer block w-full rounded-md border py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 ${theme.border} ${theme.bg} ${theme.text}`}
               aria-describedby="foto-error"
               onChange={handleFileChange}
-            /> {/* Input para subir la foto top-1/2 -translate-y-1/2 */}
+            />{' '}
+            {/* Input para subir la foto top-1/2 -translate-y-1/2 */}
             <div className="relative right-3 flex items-center">
               {fotoBase64 ? (
                 <img
-                 src={fotoBase64}
-                 alt="Vista previa"
-                 className="w-20 h-20 md:w-40 md:h-40 rounded-full object-cover"
+                  src={fotoBase64}
+                  alt="Vista previa"
+                  className="h-20 w-20 rounded-full object-cover md:h-40 md:w-40"
                 />
               ) : (
                 <UserCircleIcon className="h-6 w-6 text-gray-500" />
@@ -359,17 +385,18 @@ export default function EditInvoiceForm({
               ))}
           </div>
         </div>
-        
-             
+
         {/* Invoice Status */}
         <fieldset>
           <legend className={`mb-2 block text-sm font-medium ${theme.text}`}>
             Selecciona el tipo de empleado
           </legend>
-          <div className={`rounded-md border px-[14px] py-3
+          <div
+            className={`rounded-md border px-[14px] py-3
             ${theme.bg} ${theme.border}
-          `}>
-            <div className="flex flex-col md:flex-row gap-4">
+          `}
+          >
+            <div className="flex flex-col gap-4 md:flex-row">
               <div className="flex items-center">
                 <input
                   id="supervisor"
@@ -417,7 +444,9 @@ export default function EditInvoiceForm({
                   name="tipo_empleado"
                   type="radio"
                   value="Asistente de Inventario"
-                  defaultChecked={employee.tipo_empleado === 'Asistente de Inventario'}
+                  defaultChecked={
+                    employee.tipo_empleado === 'Asistente de Inventario'
+                  }
                   className={`h-4 w-4 cursor-pointer 
                     text-gray-600 focus:ring-2 ${theme.container} ${theme.border}
                   `}
@@ -439,7 +468,9 @@ export default function EditInvoiceForm({
                   name="tipo_empleado"
                   type="radio"
                   value="Gerente de la planta principal"
-                  defaultChecked={employee.tipo_empleado === 'Gerente de la planta principal'}
+                  defaultChecked={
+                    employee.tipo_empleado === 'Gerente de la planta principal'
+                  }
                   className={`h-4 w-4 cursor-pointer 
                     text-gray-600 focus:ring-2 ${theme.container} ${theme.border}
                   `}
@@ -449,7 +480,8 @@ export default function EditInvoiceForm({
                   htmlFor="gerente-de-la-planta-principal"
                   className={`ml-2 flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-gray-600 ${theme.container} ${theme.border} ${theme.text}`}
                 >
-                  Gerente de la planta principal <BuildingOffice2Icon className="h-4 w-4" />
+                  Gerente de la planta principal{' '}
+                  <BuildingOffice2Icon className="h-4 w-4" />
                 </label>
               </div>
               <div className="flex items-center">
@@ -474,7 +506,6 @@ export default function EditInvoiceForm({
                   Auxiliar <WrenchIcon className="h-4 w-4" />
                 </label>
               </div>
-              
             </div>
           </div>
           <div id="tipo_empleado-error" aria-live="polite" aria-atomic="true">
@@ -488,7 +519,7 @@ export default function EditInvoiceForm({
         </fieldset>
 
         {state?.message && state?.errors && (
-          <p className="mt-2 text-sm text-red-500"  key={state.message}>
+          <p className="mt-2 text-sm text-red-500" key={state.message}>
             {state.message}
           </p>
         )}
@@ -505,8 +536,13 @@ export default function EditInvoiceForm({
         >
           Cancel
         </Link>
-        <Button disabled={isGood} className="disabled:bg-slate-400 disabled:cursor-not-allowed" type="submit">
-        {isGood ? "Actualizando..." : "Actualizar Empleado"}</Button>
+        <Button
+          disabled={isGood}
+          className="disabled:cursor-not-allowed disabled:bg-slate-400"
+          type="submit"
+        >
+          {isGood ? 'Actualizando...' : 'Actualizar Empleado'}
+        </Button>
       </div>
     </form>
   );

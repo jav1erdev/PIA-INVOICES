@@ -1,13 +1,13 @@
 'use client';
- 
+
 import { useEffect } from 'react';
-import { Metadata } from 'next'; 
+import { Metadata } from 'next';
 import { systemDefault } from '@/app/lib/theme';
 
 export const metadata: Metadata = {
   title: 'Error',
 };
- 
+
 export default function Error({
   error,
   reset,
@@ -19,7 +19,7 @@ export default function Error({
     // Optionally log the error to an error reporting service
     console.error(error);
   }, [error]);
- 
+
   return (
     <main className="flex h-full flex-col items-center justify-center">
       <h2 className={`text-center ${systemDefault.title}`}>¡Algo salió mal!</h2>

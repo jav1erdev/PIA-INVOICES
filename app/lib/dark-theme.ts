@@ -12,6 +12,5 @@ export default {
   hoverBg: 'dark:hover:bg-[#1c2932]',
   hoverText: 'dark:hover:text-blue-600',
   hoverBorder: 'dark:hover:border-blue-600',
-  inputIcon: 'dark:peer-focus:text-gray-500'
-  
-}
+  inputIcon: 'dark:peer-focus:text-gray-500',
+};

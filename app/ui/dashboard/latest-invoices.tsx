@@ -5,7 +5,7 @@ import { fetchLatestInvoices } from '@/app/lib/data';
 import { auth } from '@/auth';
 import { themeType } from '@/app/lib/theme';
 
-export default async function LatestInvoices({theme}:{theme: themeType}) {
+export default async function LatestInvoices({ theme }: { theme: themeType }) {
   const session = await auth();
   const userEmail = session?.user?.email!;
 
@@ -13,12 +13,16 @@ export default async function LatestInvoices({theme}:{theme: themeType}) {
 
   return (
     <div className="flex w-full flex-col md:col-span-4">
-      <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl ${theme.title}`}>
+      <h2
+        className={`${lusitana.className} mb-4 text-xl md:text-2xl ${theme.title}`}
+      >
         Ultimas facturas recientes
       </h2>
-      <div className={`flex grow flex-col justify-between rounded-xl
+      <div
+        className={`flex grow flex-col justify-between rounded-xl
         ${theme.container} p-4
-      `}>
+      `}
+      >
         {/* NOTE: comment in this code when you get to this point in the course */}
 
         <div className={`${theme.bg} px-6`}>
@@ -37,7 +41,9 @@ export default async function LatestInvoices({theme}:{theme: themeType}) {
               >
                 <div className="flex items-center">
                   <div className="min-w-0">
-                    <p className={`truncate text-xs font-semibold md:text-base ${theme.title}`}>
+                    <p
+                      className={`truncate text-xs font-semibold md:text-base ${theme.title}`}
+                    >
                       {invoice.name}
                     </p>
                     <p className="hidden text-xs text-gray-500 sm:block">
@@ -45,33 +51,34 @@ export default async function LatestInvoices({theme}:{theme: themeType}) {
                     </p>
                   </div>
                 </div>
-              
 
                 <div className="flex items-center">
                   <div className="min-w-0">
-                      <p
-                      className={`$ truncate text-xs text-end font-semibold md:text-base 
+                    <p
+                      className={`$ truncate text-end text-xs font-semibold md:text-base 
                         ${theme.title}
-                      `}>
+                      `}
+                    >
                       {invoice.amount}
                     </p>
                     <p
-                  className={`truncate text-xs text-end text-gray-500 font-medium md:text-base 
+                      className={`truncate text-end text-xs font-medium text-gray-500 md:text-base 
                     ${theme.title}
-                  `}>
-                  {invoice.status}
-                </p>
+                  `}
+                    >
+                      {invoice.status}
+                    </p>
                   </div>
                 </div>
-                
-               
               </div>
             );
           })}
         </div>
         <div className="flex items-center pb-2 pt-6">
           <ArrowPathIcon className="h-5 w-5 text-gray-500" />
-          <h3 className="ml-2 text-sm text-gray-500 ">Actualizado hace un momento</h3>
+          <h3 className="ml-2 text-sm text-gray-500 ">
+            Actualizado hace un momento
+          </h3>
         </div>
       </div>
     </div>

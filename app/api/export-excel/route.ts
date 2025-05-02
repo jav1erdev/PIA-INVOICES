@@ -1,19 +1,25 @@
 import { NextResponse } from 'next/server';
 import ExcelJS from 'exceljs';
-import { fetchFilteredInvoices, fetchRevenue, fetchCardData, fetchAllCustomersExportExcel, fetchAllEmployeesExportExcel, fetchAllInvoicesByEmailGroupedByMonth } from '@/app/lib/data';
+import {
+  fetchFilteredInvoices,
+  fetchRevenue,
+  fetchCardData,
+  fetchAllCustomersExportExcel,
+  fetchAllEmployeesExportExcel,
+  fetchAllInvoicesByEmailGroupedByMonth,
+} from '@/app/lib/data';
 import { auth } from '@/auth';
 import { formatCurrency } from '@/app/lib/utils';
 import { table } from 'console';
 
 export async function POST(req: Request) {
-  
-    async function fetchImageBuffer(imageUrl: string): Promise<Buffer> {
-        const res = await fetch(imageUrl);
-        const arrayBuffer = await res.arrayBuffer();
-        return Buffer.from(arrayBuffer);
-    }
-  
-    try {
+  async function fetchImageBuffer(imageUrl: string): Promise<Buffer> {
+    const res = await fetch(imageUrl);
+    const arrayBuffer = await res.arrayBuffer();
+    return Buffer.from(arrayBuffer);
+  }
+
+  try {
     const { image } = await req.json();
     const session = await auth();
     const email = session?.user?.email!;
@@ -23,16 +29,16 @@ export async function POST(req: Request) {
     const employees = await fetchAllEmployeesExportExcel(email);
     const customers = await fetchAllCustomersExportExcel(email);
 
-
-
-
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet('Reporte General');
 
     // 🏷️ TÍTULO CENTRAL
     sheet.mergeCells('A1:F1');
     const titleCell = sheet.getCell('A1');
-    titleCell.value = `📊 Reporte General de Actividad - ${new Date().toLocaleString("es-ES", { hour12: true })}`;
+    titleCell.value = `📊 Reporte General de Actividad - ${new Date().toLocaleString(
+      'es-ES',
+      { hour12: true },
+    )}`;
     titleCell.font = { size: 16, bold: true };
     titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
     sheet.addRow([]);
@@ -79,7 +85,15 @@ export async function POST(req: Request) {
       fgColor: { argb: 'FFFCE4D6' },
     };
 
-    sheet.addRow(['ID', 'Cliente', 'Email', 'Fecha Creación', 'Fecha Pago', 'Total', 'Estado']);
+    sheet.addRow([
+      'ID',
+      'Cliente',
+      'Email',
+      'Fecha Creación',
+      'Fecha Pago',
+      'Total',
+      'Estado',
+    ]);
     const columnHeader = sheet.getRow(sheet.lastRow!.number);
     columnHeader.font = { bold: true };
 
@@ -133,62 +147,71 @@ export async function POST(req: Request) {
     //   col.width = max;
     // });
     sheet.columns.forEach((col, index) => {
-        
-        let custom_Width;
-        
-        if (index === 0) custom_Width = 22; // Ajusta el ancho de la columna 4 a 20
-        if (index === 2) custom_Width = 35; // Ajusta el ancho de la columna 4 a 20
-        if (index === 3) custom_Width = 17; // Ajusta el ancho de la columna 6 a 15
-        if (index === 4) custom_Width = 17; // Ajusta el ancho de la columna 6 a 15
-        if (index === 5) custom_Width = 35; // Ajusta el ancho de la columna 6 a 15
-        
-        if (custom_Width) {
-            col.width = custom_Width;
-        } else {
-            let max = 10;
+      let custom_Width;
 
-            col.eachCell?.({ includeEmpty: true }, (cell) => {
-            const val = String(cell.value ?? '');
-            max = Math.max(max, val.length + 2);
-            });
+      if (index === 0) custom_Width = 22; // Ajusta el ancho de la columna 4 a 20
+      if (index === 2) custom_Width = 35; // Ajusta el ancho de la columna 4 a 20
+      if (index === 3) custom_Width = 17; // Ajusta el ancho de la columna 6 a 15
+      if (index === 4) custom_Width = 17; // Ajusta el ancho de la columna 6 a 15
+      if (index === 5) custom_Width = 35; // Ajusta el ancho de la columna 6 a 15
+
+      if (custom_Width) {
+        col.width = custom_Width;
+      } else {
+        let max = 10;
+
+        col.eachCell?.({ includeEmpty: true }, (cell) => {
+          const val = String(cell.value ?? '');
+          max = Math.max(max, val.length + 2);
+        });
         col.width = Math.min(max, 40); // Limita a 40 como máximo
-        }
+      }
     });
-
 
     // HOJA EMPLEADOS
     const sheetEmp = workbook.addWorksheet('Empleados');
     sheetEmp.mergeCells('A1:J1');
     sheetEmp.getCell('A1').value = '📋 Lista de Empleados';
     sheetEmp.getCell('A1').font = { size: 14, bold: true };
-    sheetEmp.getCell('A1').alignment = { vertical: 'middle', horizontal: 'center' };
+    sheetEmp.getCell('A1').alignment = {
+      vertical: 'middle',
+      horizontal: 'center',
+    };
     sheetEmp.addRow([]);
 
     sheetEmp.addRow([
-    'ID', 'Nombre', 'Email', 'RFC', 'Dirección', 'Teléfono', 'Tipo',
-    'Fecha de Registro', 'Total Facturas', 'Foto'
+      'ID',
+      'Nombre',
+      'Email',
+      'RFC',
+      'Dirección',
+      'Teléfono',
+      'Tipo',
+      'Fecha de Registro',
+      'Total Facturas',
+      'Foto',
     ]);
     const empHeader = sheetEmp.getRow(3);
     empHeader.font = { bold: true };
     empHeader.fill = {
-    type: 'pattern',
-    pattern: 'solid',
-    fgColor: { argb: 'FFCCE5FF' }, // Azul suave
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFCCE5FF' }, // Azul suave
     };
     empHeader.alignment = { vertical: 'middle', horizontal: 'center' };
     sheetEmp.autoFilter = {
-    from: {
+      from: {
         row: 3,
-        column: 1
-    },
-    to: {
+        column: 1,
+      },
+      to: {
         row: 3,
-        column: 10
-    }
+        column: 10,
+      },
     };
 
     employees.forEach((emp) => {
-    const row = sheetEmp.addRow([
+      const row = sheetEmp.addRow([
         emp.id,
         emp.name,
         emp.email,
@@ -198,41 +221,40 @@ export async function POST(req: Request) {
         emp.tipo_empleado,
         emp.fecha_creado,
         emp.total_invoices,
-        emp.image_url && emp.image_url.startsWith('http') ? "" : 'Sin Imagen',
-    ]);
-    row.alignment = { vertical: 'middle', horizontal: 'justify' };
+        emp.image_url && emp.image_url.startsWith('http') ? '' : 'Sin Imagen',
+      ]);
+      row.alignment = { vertical: 'middle', horizontal: 'justify' };
 
-        if (emp.image_url && emp.image_url.startsWith('http')) {
-            const imageBuffer = fetchImageBuffer(emp.image_url);
-            const imageId = workbook.addImage({
-                buffer: imageBuffer,
-                extension: 'png',
-            });
-            const rowIndex = row.number - 1; // Obtener el índice de la fila actual
-            sheetEmp.addImage(imageId, {
-                tl: { col: 9, row: rowIndex },
-                ext: { width: 100, height: 100 },
-                editAs: 'oneCell',
-            });
-        }
+      if (emp.image_url && emp.image_url.startsWith('http')) {
+        const imageBuffer = fetchImageBuffer(emp.image_url);
+        const imageId = workbook.addImage({
+          buffer: imageBuffer,
+          extension: 'png',
+        });
+        const rowIndex = row.number - 1; // Obtener el índice de la fila actual
+        sheetEmp.addImage(imageId, {
+          tl: { col: 9, row: rowIndex },
+          ext: { width: 100, height: 100 },
+          editAs: 'oneCell',
+        });
+      }
     });
 
     sheetEmp.eachRow((row, rowNumber) => {
-        if (rowNumber >= 4) { // Ignorar la fila de encabezado
-            row.height = 80; // Ajusta la altura de cada fila a 50
-        }
+      if (rowNumber >= 4) {
+        // Ignorar la fila de encabezado
+        row.height = 80; // Ajusta la altura de cada fila a 50
+      }
     });
-    
+
     sheetEmp.columns.forEach((col, index) => {
-      
       let custom_Width;
-      
-      
+
       if (custom_Width) {
         col.width = custom_Width;
       } else {
         let max = 10;
-        
+
         col.eachCell?.({ includeEmpty: true }, (cell) => {
           const val = String(cell.value ?? '');
           max = Math.max(max, val.length + 2);
@@ -240,18 +262,28 @@ export async function POST(req: Request) {
         col.width = Math.min(max, 40); // Limita a 40 como máximo
       }
     });
-    
+
     // HOJA CLIENTES
     const sheetCli = workbook.addWorksheet('Clientes');
     sheetCli.mergeCells('A1:I1');
     sheetCli.getCell('A1').value = '📋 Lista de Clientes';
     sheetCli.getCell('A1').font = { size: 14, bold: true };
-    sheetCli.getCell('A1').alignment = { vertical: 'middle', horizontal: 'center' };
+    sheetCli.getCell('A1').alignment = {
+      vertical: 'middle',
+      horizontal: 'center',
+    };
     sheetCli.addRow([]);
-    
+
     sheetCli.addRow([
-      'ID', 'Nombre', 'Email', 'RFC', 'Dirección', 'Teléfono',
-      'Tipo', 'Fecha de Registro', 'Total Facturas'
+      'ID',
+      'Nombre',
+      'Email',
+      'RFC',
+      'Dirección',
+      'Teléfono',
+      'Tipo',
+      'Fecha de Registro',
+      'Total Facturas',
     ]);
     const cliHeader = sheetCli.getRow(3);
     cliHeader.font = { bold: true };
@@ -264,14 +296,14 @@ export async function POST(req: Request) {
     sheetCli.autoFilter = {
       from: {
         row: 3,
-        column: 1
+        column: 1,
       },
       to: {
         row: 3,
-        column: 9
-      }
+        column: 9,
+      },
     };
-    
+
     customers.forEach((cli) => {
       const row = sheetCli.addRow([
         cli.id,
@@ -282,33 +314,32 @@ export async function POST(req: Request) {
         cli.telefono,
         cli.tipo_cliente,
         cli.fecha_creado,
-        cli.total_invoices
+        cli.total_invoices,
       ]);
       row.alignment = { vertical: 'middle', horizontal: 'justify' };
     });
 
     sheetCli.eachRow((row, rowNumber) => {
-        if (rowNumber >= 4) { // Ignorar la fila de encabezado
-            row.height = 80; // Ajusta la altura de cada fila a 50
-        }
+      if (rowNumber >= 4) {
+        // Ignorar la fila de encabezado
+        row.height = 80; // Ajusta la altura de cada fila a 50
+      }
     });
-    
+
     sheetCli.columns.forEach((col, index) => {
-      
       let custom_Width;
-      
-      
+
       if (custom_Width) {
         col.width = custom_Width;
       } else {
         let max = 10;
-        
+
         col.eachCell?.({ includeEmpty: true }, (cell) => {
           const val = String(cell.value ?? '');
-            max = Math.max(max, val.length + 2);
-            });
+          max = Math.max(max, val.length + 2);
+        });
         col.width = Math.min(max, 40); // Limita a 40 como máximo
-        }
+      }
     });
 
     const buffer = await workbook.xlsx.writeBuffer();
@@ -316,34 +347,41 @@ export async function POST(req: Request) {
     return new NextResponse(buffer, {
       status: 200,
       headers: {
-        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'Content-Type':
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'Content-Disposition': 'attachment; filename="reporte_general.xlsx"',
       },
     });
   } catch (error) {
     console.error('Error al generar Excel:', error);
-    return NextResponse.json({ error: 'Error al generar el reporte' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Error al generar el reporte' },
+      { status: 500 },
+    );
   }
 }
 
-
 export async function GET() {
-  
-    try {
+  try {
     const session = await auth();
     const email = session?.user?.email!;
     const revenueData = await fetchRevenue();
     const cardData = await fetchCardData(email);
     const invoicesByMonth = await fetchAllInvoicesByEmailGroupedByMonth(email);
 
-
-
     const workbook = new ExcelJS.Workbook();
     const sheetFacturas = workbook.addWorksheet('Reporte Factura');
     sheetFacturas.mergeCells('A1:G1');
-    sheetFacturas.getCell('A1').value = `🧾 Reporte de Factura - ${new Date().toLocaleString("es-ES", { hour12: true })}`;
+    sheetFacturas.getCell(
+      'A1',
+    ).value = `🧾 Reporte de Factura - ${new Date().toLocaleString('es-ES', {
+      hour12: true,
+    })}`;
     sheetFacturas.getCell('A1').font = { size: 16, bold: true };
-    sheetFacturas.getCell('A1').alignment = { vertical: 'middle', horizontal: 'center' };
+    sheetFacturas.getCell('A1').alignment = {
+      vertical: 'middle',
+      horizontal: 'center',
+    };
     sheetFacturas.addRow([]);
 
     // 📋 RESUMEN GENERAL
@@ -362,7 +400,9 @@ export async function GET() {
     sheetFacturas.addRow([]);
 
     // 📈 INGRESOS POR MES
-    sheetFacturas.addRow([`Ingresos por mes del Año - ${new Date().getFullYear()}`]);
+    sheetFacturas.addRow([
+      `Ingresos por mes del Año - ${new Date().getFullYear()}`,
+    ]);
     const ingresosHeader = sheetFacturas.getRow(sheetFacturas.lastRow!.number);
     ingresosHeader.font = { bold: true };
     ingresosHeader.fill = {
@@ -377,17 +417,24 @@ export async function GET() {
     });
     sheetFacturas.addRow([]);
 
-
-
-
     // HOJA FACTURAS POR MES
     const monthNames = [
-      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
     ];
 
     // Ordenar meses de forma descendente
-    const fecha = new Date()
+    const fecha = new Date();
     const currentYear = fecha.getFullYear();
     const currentMonth = fecha.getMonth();
 
@@ -398,7 +445,6 @@ export async function GET() {
       const monthStr = String(month).padStart(2, '0');
       const key = `${currentYear}-${monthStr}`;
       const title = `${monthNames[n]} ${currentYear}`;
-    
 
       sheetFacturas.addRow([title]);
       const monthHeader = sheetFacturas.getRow(sheetFacturas.lastRow!.number);
@@ -416,9 +462,16 @@ export async function GET() {
         emptyRow.font = { italic: true };
         emptyRow.alignment = { vertical: 'middle', horizontal: 'center' };
         sheetFacturas.mergeCells(`A${emptyRow.number}:G${emptyRow.number}`);
-
       } else {
-        sheetFacturas.addRow(['ID', 'Cliente', 'Email', 'Fecha Creación', 'Fecha Pago', 'Total', 'Estado']);
+        sheetFacturas.addRow([
+          'ID',
+          'Cliente',
+          'Email',
+          'Fecha Creación',
+          'Fecha Pago',
+          'Total',
+          'Estado',
+        ]);
         const tableHeader = sheetFacturas.getRow(sheetFacturas.lastRow!.number);
         tableHeader.font = { bold: true };
         tableHeader.fill = {
@@ -427,24 +480,22 @@ export async function GET() {
           fgColor: { argb: 'FFFCE4D6' },
         };
 
-        if (!filterApplied){
-
+        if (!filterApplied) {
           sheetFacturas.autoFilter = {
             from: {
               row: tableHeader.number,
-              column: 1
+              column: 1,
             },
             to: {
               row: tableHeader.number,
-              column: 7
-            }
+              column: 7,
+            },
           };
-          
-          filterApplied = true
-          
+
+          filterApplied = true;
         }
-        
-        invoicesByMonth[key].forEach(inv => {
+
+        invoicesByMonth[key].forEach((inv) => {
           sheetFacturas.addRow([
             inv.id_tmp,
             inv.name,
@@ -460,41 +511,42 @@ export async function GET() {
     }
 
     sheetFacturas.columns.forEach((col, index) => {
-        
       let custom_Width;
-      
+
       if (index === 0) custom_Width = 22; // Ajusta el ancho de la columna 4 a 20
       if (index === 2) custom_Width = 35; // Ajusta el ancho de la columna 4 a 20
       if (index === 3) custom_Width = 17; // Ajusta el ancho de la columna 6 a 15
       if (index === 4) custom_Width = 17; // Ajusta el ancho de la columna 6 a 15
       if (index === 5) custom_Width = 35; // Ajusta el ancho de la columna 6 a 15
-      
-      if (custom_Width) {
-          col.width = custom_Width;
-      } else {
-          let max = 10;
 
-          col.eachCell?.({ includeEmpty: true }, (cell) => {
+      if (custom_Width) {
+        col.width = custom_Width;
+      } else {
+        let max = 10;
+
+        col.eachCell?.({ includeEmpty: true }, (cell) => {
           const val = String(cell.value ?? '');
           max = Math.max(max, val.length + 2);
-          });
-      col.width = Math.min(max, 40); // Limita a 40 como máximo
+        });
+        col.width = Math.min(max, 40); // Limita a 40 como máximo
       }
     });
-
-
 
     const buffer = await workbook.xlsx.writeBuffer();
 
     return new NextResponse(buffer, {
       status: 200,
       headers: {
-        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'Content-Type':
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'Content-Disposition': 'attachment; filename="reporte_factura.xlsx"',
       },
     });
   } catch (error) {
     console.error('Error al generar Excel:', error);
-    return NextResponse.json({ error: 'Error al generar el reporte' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Error al generar el reporte' },
+      { status: 500 },
+    );
   }
 }

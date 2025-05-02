@@ -18,14 +18,13 @@ import { createEmployee } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 import { themeType } from '@/app/lib/theme';
 
-export default function Form({ 
+export default function Form({
   userEmail,
-  theme
-} : { 
+  theme,
+}: {
   userEmail: string;
   theme: themeType;
 }) {
-
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useFormState(createEmployee, initialState);
 
@@ -35,10 +34,13 @@ export default function Form({
 
       <div className={`rounded-md ${theme.container} p-4 md:p-6`}>
         <div className="mb-4">
-          <label htmlFor="employee" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="employee"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
-            Name: 
+          `}
+          >
+            Name:
           </label>
           <div className="relative">
             <input
@@ -52,9 +54,11 @@ export default function Form({
               `}
               aria-describedby="name-error"
             />
-            <UserCircleIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+            <UserCircleIcon
+              className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
               -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-            `}/>
+            `}
+            />
           </div>
           <div id="name-error" aria-live="polite" aria-atomic="true">
             {state.errors?.name &&
@@ -67,10 +71,13 @@ export default function Form({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="rfc" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="rfc"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
-            RFC: 
+          `}
+          >
+            RFC:
           </label>
           <div className="relative">
             <input
@@ -84,9 +91,11 @@ export default function Form({
               `}
               aria-describedby="rfc-error"
             />
-            <UserCircleIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+            <UserCircleIcon
+              className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
               -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-            `}/>
+            `}
+            />
           </div>
           <div id="rfc-error" aria-live="polite" aria-atomic="true">
             {state.errors?.rfc &&
@@ -99,10 +108,13 @@ export default function Form({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="telefono" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="telefono"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
-            Telefono: 
+          `}
+          >
+            Telefono:
           </label>
           <div className="relative">
             <input
@@ -116,9 +128,11 @@ export default function Form({
               `}
               aria-describedby="telefono-error"
             />
-            <UserCircleIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+            <UserCircleIcon
+              className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
               -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-            `}/>
+            `}
+            />
           </div>
           <div id="telefono-error" aria-live="polite" aria-atomic="true">
             {state.errors?.telefono &&
@@ -131,10 +145,13 @@ export default function Form({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="direccion" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="direccion"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
-            Direccion: 
+          `}
+          >
+            Direccion:
           </label>
           <div className="relative">
             <input
@@ -148,9 +165,11 @@ export default function Form({
               `}
               aria-describedby="direccion-error"
             />
-            <UserCircleIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+            <UserCircleIcon
+              className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
               -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-            `}/>
+            `}
+            />
           </div>
           <div id="direccion-error" aria-live="polite" aria-atomic="true">
             {state.errors?.direccion &&
@@ -164,9 +183,12 @@ export default function Form({
 
         {/* Invoice Amount */}
         <div className="mb-4">
-          <label htmlFor="email" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="email"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
+          `}
+          >
             Email
           </label>
           <div className="relative mt-2 rounded-md">
@@ -182,10 +204,12 @@ export default function Form({
                 `}
                 aria-describedby="email-error"
               />
-              <AtSymbolIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+              <AtSymbolIcon
+                className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
                 -translate-y-1/2 text-gray-500 peer-focus:text-gray-900
                 ${theme.inputIcon}
-              `}/>
+              `}
+              />
             </div>
             <div id="email-error" aria-live="polite" aria-atomic="true">
               {state.errors?.email &&
@@ -199,9 +223,12 @@ export default function Form({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="password" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="password"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
+          `}
+          >
             Password
           </label>
           <div className="relative mt-2 rounded-md">
@@ -217,10 +244,12 @@ export default function Form({
                 `}
                 aria-describedby="password-error"
               />
-              <AtSymbolIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+              <AtSymbolIcon
+                className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
                 -translate-y-1/2 text-gray-500 peer-focus:text-gray-900
                 ${theme.inputIcon}
-              `}/>
+              `}
+              />
             </div>
             <div id="password-error" aria-live="polite" aria-atomic="true">
               {state.errors?.password &&
@@ -234,9 +263,12 @@ export default function Form({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="confirm-password" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="confirm-password"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
+          `}
+          >
             Confirm Password
           </label>
           <div className="relative mt-2 rounded-md">
@@ -252,12 +284,18 @@ export default function Form({
                 `}
                 aria-describedby="confirm-password-error"
               />
-              <AtSymbolIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+              <AtSymbolIcon
+                className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
                 -translate-y-1/2 text-gray-500 peer-focus:text-gray-900
                 ${theme.inputIcon}
-              `}/>
+              `}
+              />
             </div>
-            <div id="confirm-password-error" aria-live="polite" aria-atomic="true">
+            <div
+              id="confirm-password-error"
+              aria-live="polite"
+              aria-atomic="true"
+            >
               {state.errors?.confirmPassword &&
                 state.errors.confirmPassword.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
@@ -267,15 +305,17 @@ export default function Form({
             </div>
           </div>
         </div>
-        
+
         {/* Invoice Status */}
         <fieldset>
           <legend className={`mb-2 block text-sm font-medium ${theme.text}`}>
             Selecciona el tipo de empleado
           </legend>
-          <div className={`rounded-md border px-[14px] py-3
+          <div
+            className={`rounded-md border px-[14px] py-3
             ${theme.bg} ${theme.border}
-          `}>
+          `}
+          >
             <div className="flex gap-4">
               <div className="flex items-center">
                 <input
@@ -352,7 +392,8 @@ export default function Form({
                   htmlFor="gerente-de-la-planta-principal"
                   className={`ml-2 flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-gray-600 ${theme.container} ${theme.border} ${theme.text}`}
                 >
-                  Gerente de la planta principal <BuildingOffice2Icon className="h-4 w-4" />
+                  Gerente de la planta principal{' '}
+                  <BuildingOffice2Icon className="h-4 w-4" />
                 </label>
               </div>
               <div className="flex items-center">
@@ -376,7 +417,6 @@ export default function Form({
                   Auxiliar <WrenchIcon className="h-4 w-4" />
                 </label>
               </div>
-              
             </div>
           </div>
           <div id="tipo_empleado-error" aria-live="polite" aria-atomic="true">
@@ -389,9 +429,8 @@ export default function Form({
           </div>
         </fieldset>
 
-
         {state.message && (
-          <p className="mt-2 text-sm text-red-500"  key={state.message}>
+          <p className="mt-2 text-sm text-red-500" key={state.message}>
             {state.message}
           </p>
         )}

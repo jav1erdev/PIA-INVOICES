@@ -1,10 +1,10 @@
-import { auth } from "@/auth";
+import { auth } from '@/auth';
 import { sql } from '@vercel/postgres';
 
 type AccountUser = {
-  name: string,
-  email: string
-}
+  name: string;
+  email: string;
+};
 
 const BASE_URL = process.env.BASE_URL;
 
@@ -19,7 +19,7 @@ export async function GET(req: any) {
     // if (!user.rowCount) {
     //   try {
     //     await sql`
-    //       INSERT INTO employees (name, email, isoauth, fecha_creado) 
+    //       INSERT INTO employees (name, email, isoauth, fecha_creado)
     //       VALUES (${name}, ${email}, ${true}, ${date})
     //     `
     //   } catch(error) {

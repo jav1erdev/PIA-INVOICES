@@ -1,15 +1,21 @@
 import { getUser } from '@/app/lib/data';
-import { darkTheme, defaultTheme, lightTheme, systemDefault, themeType } from '@/app/lib/theme';
+import {
+  darkTheme,
+  defaultTheme,
+  lightTheme,
+  systemDefault,
+  themeType,
+} from '@/app/lib/theme';
 import DashboardSkeleton from '@/app/ui/skeletons';
 import { auth } from '@/auth';
- 
+
 export default async function Loading() {
   const session = await auth();
   const userEmail = session?.user?.email!;
   const user = await getUser(userEmail);
   let theme: themeType;
 
-  switch(user.theme) {
+  switch (user.theme) {
     case 'system':
       theme = systemDefault;
       break;
@@ -19,9 +25,9 @@ export default async function Loading() {
     case 'light':
       theme = lightTheme;
       break;
-    default: 
+    default:
       theme = defaultTheme;
   }
 
-  return <DashboardSkeleton theme={theme || defaultTheme } />;
+  return <DashboardSkeleton theme={theme || defaultTheme} />;
 }

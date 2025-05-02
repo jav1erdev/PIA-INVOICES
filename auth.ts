@@ -12,7 +12,9 @@ async function getUser(email: string): Promise<User | undefined> {
   try {
     const user = await sql<User>`SELECT * FROM employees WHERE email=${email}`;
     if (user.rows[0].isoauth === true) {
-      throw new Error('User tried to login using an OAuth account without defining a password first');
+      throw new Error(
+        'User tried to login using an OAuth account without defining a password first',
+      );
     }
 
     return user.rows[0];
@@ -21,7 +23,7 @@ async function getUser(email: string): Promise<User | undefined> {
     throw new Error('Failed to fetch user.');
   }
 }
- 
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [
@@ -30,27 +32,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const parsedCredentials = z
           .object({ email: z.string().email(), password: z.string().min(6) })
           .safeParse(credentials);
- 
+
         if (parsedCredentials.success) {
           const { email, password } = parsedCredentials.data;
           const user = await getUser(email);
           if (!user) return null;
           const passwordsMatch = await bcrypt.compare(password, user.password);
-  
+
           if (passwordsMatch) return user;
         }
-  
+
         console.log('Invalid credentials');
         return null;
       },
     }),
     GitHubProvider({
       clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET as string
+      clientSecret: process.env.GITHUB_SECRET as string,
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_ID as string,
-      clientSecret: process.env.GOOGLE_SECRET as string
-    })
+      clientSecret: process.env.GOOGLE_SECRET as string,
+    }),
   ],
 });

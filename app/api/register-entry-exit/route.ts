@@ -7,7 +7,10 @@ export async function POST(req: NextRequest) {
 
     // Validar la entrada de datos
     if (!employeeId || !imageBase64 || !action) {
-      return NextResponse.json({ message: 'Faltan datos requeridos' }, { status: 400 });
+      return NextResponse.json(
+        { message: 'Faltan datos requeridos' },
+        { status: 400 },
+      );
     }
 
     const nowdate = new Date().toISOString();
@@ -19,7 +22,10 @@ export async function POST(req: NextRequest) {
       `;
 
       if (existingEntry.rows.length > 0) {
-        return NextResponse.json({ message: 'Ya existe una entrada sin salida para este empleado' }, { status: 400 });
+        return NextResponse.json(
+          { message: 'Ya existe una entrada sin salida para este empleado' },
+          { status: 400 },
+        );
       }
 
       // Registrar la entrada si no existe un registro de salida pendiente
@@ -38,7 +44,13 @@ export async function POST(req: NextRequest) {
       `;
 
       if (entryRecord.rows.length === 0) {
-        return NextResponse.json({ message: 'No hay una entrada registrada para este empleado o ya se ha registrado la salida' }, { status: 400 });
+        return NextResponse.json(
+          {
+            message:
+              'No hay una entrada registrada para este empleado o ya se ha registrado la salida',
+          },
+          { status: 400 },
+        );
       }
 
       // Actualizar el registro de salida
@@ -54,6 +66,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Acción no válida' }, { status: 400 });
   } catch (error) {
     console.error('Error al registrar entrada/salida:', error);
-    return NextResponse.json({ message: 'Error al registrar la entrada/salida', error }, { status: 500 });
+    return NextResponse.json(
+      { message: 'Error al registrar la entrada/salida', error },
+      { status: 500 },
+    );
   }
 }

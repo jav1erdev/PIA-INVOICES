@@ -1,11 +1,11 @@
 import AcmeLogo from '@/app/ui/acme-logo';
 import CreateAccountForm from '@/app/ui/create-account-form';
-import { Metadata } from 'next'; 
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Crear una cuenta',
 };
- 
+
 export default function LoginPage() {
   return (
     <main className="flex items-center justify-center">

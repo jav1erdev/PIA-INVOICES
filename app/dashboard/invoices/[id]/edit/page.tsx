@@ -4,12 +4,17 @@ import { fetchInvoiceById, fetchCustomers, getUser } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { auth } from '@/auth';
-import { darkTheme, lightTheme, systemDefault, themeType } from '@/app/lib/theme';
+import {
+  darkTheme,
+  lightTheme,
+  systemDefault,
+  themeType,
+} from '@/app/lib/theme';
 
 export const metadata: Metadata = {
   title: 'Editar Factura',
 };
- 
+
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
 
@@ -28,7 +33,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const user = await getUser(userEmail);
   let theme: themeType;
 
-  switch(user.theme) {
+  switch (user.theme) {
     case 'system':
       theme = systemDefault;
       break;
@@ -39,7 +44,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       theme = lightTheme;
       break;
   }
-  
+
   return (
     <main>
       <Breadcrumbs
@@ -53,7 +58,12 @@ export default async function Page({ params }: { params: { id: string } }) {
         ]}
         theme={theme}
       />
-      <Form invoice={invoice} customers={customers} employee={user.id} theme={theme} />
+      <Form
+        invoice={invoice}
+        customers={customers}
+        employee={user.id}
+        theme={theme}
+      />
     </main>
-  )
+  );
 }

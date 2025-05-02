@@ -25,11 +25,11 @@ export const formatDatetoPayToLocal = (
   dateStr: string | null | undefined,
   locale: string = 'en-MX',
 ): string => {
-  if (!dateStr) return '';  // Devuelve una cadena vacía si no hay fecha
+  if (!dateStr) return ''; // Devuelve una cadena vacía si no hay fecha
 
   // Añadir una hora predeterminada para evitar efectos de zona horaria
-  const date = new Date(dateStr + 'T12:00:00');  // Añadir las 12:00 del mediodía para evitar ajustes
-  if (isNaN(date.getTime())) return '';  // Si la fecha no es válida, devuelve una cadena vacía
+  const date = new Date(dateStr + 'T12:00:00'); // Añadir las 12:00 del mediodía para evitar ajustes
+  if (isNaN(date.getTime())) return ''; // Si la fecha no es válida, devuelve una cadena vacía
 
   const options: Intl.DateTimeFormatOptions = {
     day: 'numeric',
@@ -48,13 +48,11 @@ export const generateYAxis = (revenue: Revenue[]) => {
   const topLabel = Math.ceil(highestRecord / 1000) * 1000;
 
   for (let i = topLabel; i >= 0; i -= topLabel / 5) {
-    yAxisLabels.push(`$${(i/1000).toLocaleString('en-US')}K`);
+    yAxisLabels.push(`$${(i / 1000).toLocaleString('en-US')}K`);
   }
 
   return { yAxisLabels, topLabel };
 };
-
-
 
 // export const generateYAxis = (revenue: Revenue[]) => {
 //   // Calculate what labels we need to display on the y-axis

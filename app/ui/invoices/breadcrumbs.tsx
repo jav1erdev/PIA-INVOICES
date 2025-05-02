@@ -11,7 +11,7 @@ interface Breadcrumb {
 
 export default function Breadcrumbs({
   breadcrumbs,
-  theme
+  theme,
 }: {
   breadcrumbs: Breadcrumb[];
   theme: themeType;
@@ -23,8 +23,10 @@ export default function Breadcrumbs({
           <li
             key={breadcrumb.href}
             aria-current={breadcrumb.active}
-            className={clsx(`${breadcrumb.active && `${theme.text}`}
-            `, breadcrumb.active ? `${theme.text}` : 'text-gray-500',
+            className={clsx(
+              `${breadcrumb.active && `${theme.text}`}
+            `,
+              breadcrumb.active ? `${theme.text}` : 'text-gray-500',
             )}
           >
             <Link href={breadcrumb.href}>{breadcrumb.label}</Link>

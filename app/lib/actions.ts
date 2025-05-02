@@ -30,35 +30,55 @@ async function loadModels() {
 // A regular expression to check for valid email format
 const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
-// A regular expression to check for at least one special character, one upper case 
+// A regular expression to check for at least one special character, one upper case
 // letter, one lower case letter and at least 8 characters
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[-_!@#$%^&*]).{8,}$/;
 
 // A Zod schema for the name field
-const nameSchema = z.string().min(3, "El nombre debe tener al menos 3 caracteres");
-const photoSchema = z.string().min(1, "Falta ingresar la foto del empleado");
-const rfcSchema = z.string().min(8, "El RFC debe tener al menos 8 caracteres");
-const telefonoSchema = z.string().min(8, "El teléfono debe tener al menos 8 caracteres");
-const direccionSchema = z.string().min(10, "La dirección debe tener al menos 10 caracteres");
-const tipoempleadoSchema =  z.enum(["Supervisor", "Jefe de area", "Asistente de Inventario", "Gerente de la planta principal", "Auxiliar"], {
-  invalid_type_error: 'Por favor, seleccione un tipo de empleado.',
-});
-const tipoclienteSchema =  z.enum(["Normal", "Asociado"], {
+const nameSchema = z
+  .string()
+  .min(3, 'El nombre debe tener al menos 3 caracteres');
+const photoSchema = z.string().min(1, 'Falta ingresar la foto del empleado');
+const rfcSchema = z.string().min(8, 'El RFC debe tener al menos 8 caracteres');
+const telefonoSchema = z
+  .string()
+  .min(8, 'El teléfono debe tener al menos 8 caracteres');
+const direccionSchema = z
+  .string()
+  .min(10, 'La dirección debe tener al menos 10 caracteres');
+const tipoempleadoSchema = z.enum(
+  [
+    'Supervisor',
+    'Jefe de area',
+    'Asistente de Inventario',
+    'Gerente de la planta principal',
+    'Auxiliar',
+  ],
+  {
+    invalid_type_error: 'Por favor, seleccione un tipo de empleado.',
+  },
+);
+const tipoclienteSchema = z.enum(['Normal', 'Asociado'], {
   invalid_type_error: 'Por favor, seleccione un tipo de cliente.',
 });
 // A Zod schema for the email field
-const emailSchema = z.string().regex(emailRegex, "Formato de correo electrónico no válido");
+const emailSchema = z
+  .string()
+  .regex(emailRegex, 'Formato de correo electrónico no válido');
 
 // A Zod schema for the password field
-const passwordSchema = z.string().regex(passwordRegex, `
+const passwordSchema = z.string().regex(
+  passwordRegex,
+  `
   La contraseña no cumple con los requisitos mínimos de seguridad.
-`);
+`,
+);
 
 // A Zod schema for the object with name, email and password fields
 const UserSchema = z.object({
   name: nameSchema,
   email: emailSchema,
-  password: passwordSchema
+  password: passwordSchema,
   // theme: z.coerce.number({
   //   invalid_type_error: 'Please select a theme',
   // })
@@ -77,29 +97,30 @@ const InvoicesSchema = z.object({
   }),
   fechapagar: z.string().optional(),
   employee: z.string(),
-  regimen_fiscal:  z.string().optional(),
-  metodo_pago:  z.string().optional(),
-  uso_factura:  z.string().optional(),
+  regimen_fiscal: z.string().optional(),
+  metodo_pago: z.string().optional(),
+  uso_factura: z.string().optional(),
   products: z.array(
     z.object({
       id: z.string().nonempty('Se requiere el ID del producto.'),
       name: z.string().nonempty('El nombre del producto es obligatorio.'),
       price: z.number().positive('El precio debe ser mayor que 0.'),
       quantity: z.number().min(1).default(1),
-    })
+    }),
   ),
 });
 
 const EditInvoiceSchema = z.object({
-  status: z.enum(['Pendiente', 'Pagado'], {
-    invalid_type_error: 'Seleccione un estado de factura.',
-  }).optional(),
+  status: z
+    .enum(['Pendiente', 'Pagado'], {
+      invalid_type_error: 'Seleccione un estado de factura.',
+    })
+    .optional(),
   fechapagar: z.string().optional(),
   regimen_fiscal: z.string().optional(),
   metodo_pago: z.string().optional(),
   uso_factura: z.string().optional(),
 });
-
 
 const EmployeeSchema = z.object({
   name: nameSchema,
@@ -111,7 +132,7 @@ const EmployeeSchema = z.object({
   password: passwordSchema,
   userEmail: emailSchema,
   photo: photoSchema,
-})
+});
 
 const UpdateEmployee = z.object({
   name: nameSchema,
@@ -121,7 +142,7 @@ const UpdateEmployee = z.object({
   tipo_empleado: tipoempleadoSchema,
   userEmail: emailSchema,
   photo: photoSchema.optional(),
-})
+});
 
 const CustomerSchema = z.object({
   name: nameSchema,
@@ -130,12 +151,19 @@ const CustomerSchema = z.object({
   telefono: telefonoSchema,
   direccion: direccionSchema,
   tipo_cliente: tipoclienteSchema,
-  userEmail: emailSchema
-})
+  userEmail: emailSchema,
+});
 
 // Use Zod to update the expected types
 const CreateInvoice = InvoicesSchema.omit({ id: true, date: true });
-const UpdateInvoice = InvoicesSchema.omit({ id: true, customerId: true, products: true, amount: true, employee: true, date: true });
+const UpdateInvoice = InvoicesSchema.omit({
+  id: true,
+  customerId: true,
+  products: true,
+  amount: true,
+  employee: true,
+  date: true,
+});
 
 // This is temporary until @types/react-dom is updated
 export type InvoiceState = {
@@ -155,9 +183,21 @@ export type UserState = {
     password?: string[];
     confirmPassword?: string[];
     isoauth?: string[];
-  }
+  };
   message?: string | null;
-}
+};
+
+export type UserthemeState = {
+  errors?: {
+    name?: string[];
+    email?: string[];
+    password?: string[];
+    confirmPassword?: string[];
+    isoauth?: string[];
+  };
+  success?: boolean;
+  message?: string | null;
+};
 
 export type EmployeeState = {
   errors?: {
@@ -171,10 +211,10 @@ export type EmployeeState = {
     isoauth?: string[];
     tipo_empleado?: string[];
     photo?: string[];
-  }
+  };
   message?: string | null;
   success?: boolean;
-}
+};
 
 export type CustomerState = {
   errors?: {
@@ -184,16 +224,14 @@ export type CustomerState = {
     telefono?: string[];
     direccion?: string[];
     tipo_cliente?: string[];
-  }
+  };
   success?: boolean;
   message?: string | null;
-}
+};
 
 type ResetPasswordToken = {
   email: string;
-}
-
-
+};
 
 // export async function createInvoice(prevState: InvoiceState, formData: FormData) {
 //   const rawProducts = formData.get('products') as string | undefined;
@@ -347,7 +385,10 @@ type ResetPasswordToken = {
 //   redirect('/dashboard/invoices');
 // }
 
-export async function createInvoice(prevState: InvoiceState, formData: FormData) {
+export async function createInvoice(
+  prevState: InvoiceState,
+  formData: FormData,
+) {
   const rawProducts = formData.get('products') as string | undefined;
 
   // Parsear `products` si existe
@@ -356,7 +397,7 @@ export async function createInvoice(prevState: InvoiceState, formData: FormData)
     try {
       parsedProducts = JSON.parse(rawProducts);
     } catch (error) {
-      console.error("Error parsing products:", error);
+      console.error('Error parsing products:', error);
       return {
         message: 'Invalid products format.',
       };
@@ -403,7 +444,7 @@ export async function createInvoice(prevState: InvoiceState, formData: FormData)
 
   // Agrupar productos por product_id y sumar cantidades
   const groupedProducts = parsedProducts.reduce((acc: any[], product: any) => {
-    const existingProduct = acc.find(item => item.product_id === product.id);
+    const existingProduct = acc.find((item) => item.product_id === product.id);
     if (existingProduct) {
       existingProduct.quantity += product.quantity; // Sumar cantidades si el producto ya existe
       existingProduct.total += product.price * product.quantity; // Sumar el total
@@ -424,18 +465,25 @@ export async function createInvoice(prevState: InvoiceState, formData: FormData)
   let result;
   try {
     // Iniciar una transacción en la base de datos para insertar la factura
-    if (status1 === "Pendiente" && fechapagar1) {
-
+    if (status1 === 'Pendiente' && fechapagar1) {
       result = await sql`
         INSERT INTO invoices (customer_id, amount, status, fecha_creado, employee_id, fecha_para_pagar)
-        VALUES (${customerId1 as string}, ${amount1 * 100}, ${status1 as string}, ${new Date().toISOString()}, ${employee1 as string}, ${fechapagar1 as string | null})
+        VALUES (${customerId1 as string}, ${amount1 * 100}, ${
+          status1 as string
+        }, ${new Date().toISOString()}, ${employee1 as string}, ${
+          fechapagar1 as string | null
+        })
         RETURNING id`;
     }
 
-    if (status1 === "Pagado") {
+    if (status1 === 'Pagado') {
       result = await sql`
       INSERT INTO invoices (customer_id, amount, status, fecha_creado, employee_id, usocliente_cdfi, modo_pago, regimenfiscal_cdfi)
-      VALUES (${customerId1 as string}, ${amount1 * 100}, ${status1 as string}, ${new Date().toISOString()}, ${employee1 as string}, ${uso_factura12 as string}, ${metodo_pago12 as string}, ${regimen_fiscal12 as string})
+      VALUES (${customerId1 as string}, ${amount1 * 100}, ${
+        status1 as string
+      }, ${new Date().toISOString()}, ${employee1 as string}, ${
+        uso_factura12 as string
+      }, ${metodo_pago12 as string}, ${regimen_fiscal12 as string})
       RETURNING id`;
     }
 
@@ -444,12 +492,15 @@ export async function createInvoice(prevState: InvoiceState, formData: FormData)
 
     // Insertar los productos agrupados
     for (const product of groupedProducts) {
-      console.log(`Inserting product: ${product.product_id}, Quantity: ${product.quantity}, Name:${product.title}, Description: ${product.description}, Price: ${product.price}`);
+      console.log(
+        `Inserting product: ${product.product_id}, Quantity: ${product.quantity}, Name:${product.title}, Description: ${product.description}, Price: ${product.price}`,
+      );
       await sql`
         INSERT INTO invoice_items (invoice_id, product_id, quantity, price, name, description)
-        VALUES (${invoiceId}, ${product.product_id}, ${product.quantity}, ${product.price * 100}, ${product.title}, ${product.description})`; // Convertir precio a centavos
+        VALUES (${invoiceId}, ${product.product_id}, ${product.quantity}, ${
+          product.price * 100
+        }, ${product.title}, ${product.description})`; // Convertir precio a centavos
     }
-
   } catch (error) {
     console.error('Database Error: ', error);
     return {
@@ -460,11 +511,8 @@ export async function createInvoice(prevState: InvoiceState, formData: FormData)
   return {
     success: true,
     message: 'Factura creada con éxito!',
-  }
+  };
 }
-
-
-
 
 // export async function updateInvoice(
 //   id: string,
@@ -552,7 +600,7 @@ export async function createInvoice(prevState: InvoiceState, formData: FormData)
 //     if (status === "Pendiente" && fechapagar) {
 //       console.log("Updating Pending Invoice:", { fechapagar, status });
 //       result = await sql`
-//       UPDATE invoices SET fecha_para_pagar = ${fechapagar}, status = ${status}   
+//       UPDATE invoices SET fecha_para_pagar = ${fechapagar}, status = ${status}
 //       WHERE id = ${id}
 //       `;
 //     }
@@ -560,7 +608,7 @@ export async function createInvoice(prevState: InvoiceState, formData: FormData)
 //     if (status === "Pagado") {
 //       console.log("Updating Paid Invoice:", { uso_factura, status, metodo_pago, regimen_fiscal });
 //       result = await sql`
-//       UPDATE invoices SET usocliente_cdfi = ${uso_factura12}, regimenfiscal_cdfi = ${regimen_fiscal12}, status = ${status}, modo_pago = ${metodo_pago12}         
+//       UPDATE invoices SET usocliente_cdfi = ${uso_factura12}, regimenfiscal_cdfi = ${regimen_fiscal12}, status = ${status}, modo_pago = ${metodo_pago12}
 //       WHERE id = ${id}
 //       `;
 //     }
@@ -586,21 +634,21 @@ export async function updateInvoice(
   formData: FormData,
 ) {
   // Obtener los valores del formulario
-  const status1 = formData.get("status");
-  const fechapagar1 = formData.get("fecha_maxima");
-  const regimen_fiscal1 = formData.get("regimen_fiscal");
-  const metodo_pago1 = formData.get("metodo_pago");
-  const uso_factura1 = formData.get("uso_factura");
+  const status1 = formData.get('status');
+  const fechapagar1 = formData.get('fecha_maxima');
+  const regimen_fiscal1 = formData.get('regimen_fiscal');
+  const metodo_pago1 = formData.get('metodo_pago');
+  const uso_factura1 = formData.get('uso_factura');
 
   // Asignar valores predeterminados
-  const regimen_fiscal = (regimen_fiscal1 as string) ?? "Persona Moral";
-  const metodo_pago = (metodo_pago1 as string) ?? "Efectivo";
-  const uso_factura = (uso_factura1 as string) ?? "Gastos Generales";
-  const status = (status1 as string) ?? "";
-  const fechapagar = (fechapagar1 as string) ?? "";
+  const regimen_fiscal = (regimen_fiscal1 as string) ?? 'Persona Moral';
+  const metodo_pago = (metodo_pago1 as string) ?? 'Efectivo';
+  const uso_factura = (uso_factura1 as string) ?? 'Gastos Generales';
+  const status = (status1 as string) ?? '';
+  const fechapagar = (fechapagar1 as string) ?? '';
 
   // Comprobación de los valores obtenidos
-  console.log("Form Data:", {
+  console.log('Form Data:', {
     regimen_fiscal,
     fechapagar,
     status,
@@ -619,27 +667,27 @@ export async function updateInvoice(
 
   if (!validatedFields.success) {
     const fieldErrors = validatedFields.error.flatten().fieldErrors;
-    console.log("Validation Errors:", fieldErrors);
+    console.log('Validation Errors:', fieldErrors);
     return {
       errors: fieldErrors,
-      message: "Corrija los errores resaltados e inténtelo de nuevo.",
+      message: 'Corrija los errores resaltados e inténtelo de nuevo.',
     };
   }
 
-  const date = new Date().toISOString().split("T")[0]; // Fecha actual YYYY-MM-DD
+  const date = new Date().toISOString().split('T')[0]; // Fecha actual YYYY-MM-DD
 
   let result;
   try {
-    if (status === "Pendiente" && fechapagar) {
-      console.log("Updating Pending Invoice:", { fechapagar, status });
+    if (status === 'Pendiente' && fechapagar) {
+      console.log('Updating Pending Invoice:', { fechapagar, status });
       result = await sql`
         UPDATE invoices SET fecha_para_pagar = ${fechapagar}, status = ${status}   
         WHERE id = ${id}
       `;
     }
 
-    if (status === "Pagado") {
-      console.log("Updating Paid Invoice:", {
+    if (status === 'Pagado') {
+      console.log('Updating Paid Invoice:', {
         uso_factura,
         status,
         metodo_pago,
@@ -653,18 +701,18 @@ export async function updateInvoice(
       `;
     }
 
-    console.log("Invoice Updated, ID:", id);
+    console.log('Invoice Updated, ID:', id);
   } catch (error) {
-    console.error("Database Error:", error);
+    console.error('Database Error:', error);
     return {
-      message: "Error de base de datos: No se pudo actualizar la factura.",
+      message: 'Error de base de datos: No se pudo actualizar la factura.',
     };
   }
 
   return {
     success: true,
     message: 'Factura actualizada con éxito!',
-  }
+  };
 }
 
 export async function deleteInvoice(id: string) {
@@ -674,9 +722,11 @@ export async function deleteInvoice(id: string) {
     return {
       success: true,
       message: 'Factura eliminada con exito!',
-    }
+    };
   } catch (error) {
-    return { errors: 'Error de base de datos: No se pudo eliminar la factura.' };
+    return {
+      errors: 'Error de base de datos: No se pudo eliminar la factura.',
+    };
   }
 }
 
@@ -725,10 +775,14 @@ export async function verificarEmployeeDescriptor(imageUrl: any) {
     .withFaceDescriptor();
 
   if (!detections || !detections.descriptor) {
-    throw new Error('No se pudo crear el empleado ya que la imagen ingresada no es correcta. Debes subir una foto clara y frontal del empleado (Tiene que ser una foto de una persona).');
+    throw new Error(
+      'No se pudo crear el empleado ya que la imagen ingresada no es correcta. Debes subir una foto clara y frontal del empleado (Tiene que ser una foto de una persona).',
+    );
   }
- 
-  console.log(`✅ La foto es correcta, se obtuvo el descriptor facial del empleado `);
+
+  console.log(
+    `✅ La foto es correcta, se obtuvo el descriptor facial del empleado `,
+  );
   return JSON.stringify(detections.descriptor);
 }
 
@@ -755,9 +809,10 @@ export async function saveEmployeeDescriptor(employeeId: any, data: any) {
   console.log(`✅ Descriptor facial guardado para el empleado ${employeeId}`);
 }
 
-
-
-export async function createEmployee(prevState: EmployeeState, formData: FormData) {
+export async function createEmployee(
+  prevState: EmployeeState,
+  formData: FormData,
+) {
   // Validate form using Zod
   const validatedFields = EmployeeSchema.safeParse({
     name: formData.get('name'),
@@ -770,7 +825,7 @@ export async function createEmployee(prevState: EmployeeState, formData: FormDat
     tipo_empleado: formData.get('tipo_empleado'),
     photo: formData.get('photo'),
   });
- 
+
   // If form validation fails, return errors early. Otherwise, continue.
   if (!validatedFields.success) {
     return {
@@ -778,52 +833,66 @@ export async function createEmployee(prevState: EmployeeState, formData: FormDat
       message: 'Campos faltantes. No se pudo crear un empleado.',
     };
   }
- 
+
   // Prepare data for insertion into the database
-  const { name, email, rfc, telefono, direccion, tipo_empleado, password, photo } = validatedFields.data;
+  const {
+    name,
+    email,
+    rfc,
+    telefono,
+    direccion,
+    tipo_empleado,
+    password,
+    photo,
+  } = validatedFields.data;
 
   const confirmPassword = formData.get('confirm-password');
   if (password != confirmPassword) {
     return {
-      message: 'Las contraseñas son diferentes.'
+      message: 'Las contraseñas son diferentes.',
     };
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const account = await sql`SELECT COUNT (*) AS count FROM employees WHERE email=${email}`;
+  const account =
+    await sql`SELECT COUNT (*) AS count FROM employees WHERE email=${email}`;
 
   if (Number(account.rows[0]?.count) > 0) {
     return {
       message: `Esta dirección de correo electrónico ya está en uso, ¡utilice otra!`,
       errors: {
-        email: ['Esta dirección de correo electrónico ya está en uso, ¡utilice otra!'],
-      }
-    }
+        email: [
+          'Esta dirección de correo electrónico ya está en uso, ¡utilice otra!',
+        ],
+      },
+    };
   }
 
   let resultadoverificar = null;
 
   try {
-    resultadoverificar = await verificarEmployeeDescriptor(photo)
+    resultadoverificar = await verificarEmployeeDescriptor(photo);
   } catch (error) {
     return {
       message: `${error}`,
       errors: {
-        photo: ['Ingresa una foto clara y frontal (Tiene que ser una foto de una persona).'],
-      }
-    }
+        photo: [
+          'Ingresa una foto clara y frontal (Tiene que ser una foto de una persona).',
+        ],
+      },
+    };
   }
 
   const date = new Date();
   const formattedDate = date.toLocaleString('es-ES', {
-    weekday: 'long',    // Día de la semana
-    day: '2-digit',     // Día del mes con dos dígitos
-    month: 'long',      // Mes completo
-    year: 'numeric',    // Año en formato numérico
-    hour: '2-digit',    // Hora con dos dígitos
-    minute: '2-digit',  // Minutos con dos dígitos
-    second: '2-digit',  // Segundos con dos dígitos
-    hour12: false       // Formato 24 horas
+    weekday: 'long', // Día de la semana
+    day: '2-digit', // Día del mes con dos dígitos
+    month: 'long', // Mes completo
+    year: 'numeric', // Año en formato numérico
+    hour: '2-digit', // Hora con dos dígitos
+    minute: '2-digit', // Minutos con dos dígitos
+    second: '2-digit', // Segundos con dos dígitos
+    hour12: false, // Formato 24 horas
   });
 
   // Insert data into the database
@@ -839,30 +908,28 @@ export async function createEmployee(prevState: EmployeeState, formData: FormDat
     if (employeeId && resultadoverificar) {
       await saveEmployeeDescriptor(employeeId, resultadoverificar);
     }
-
   } catch (error) {
     // If a database error occurs, return a more specific error.
     return {
       message: `Error de base de datos: No se pudo crear el empleado. ${error} `,
     };
   }
- 
+
   return {
     success: true,
     message: 'Empleado creado con éxito!',
-  }
+  };
 }
 
 export async function updateEmployee(
   id: string,
   prevState: EmployeeState,
-  formData: FormData
+  formData: FormData,
 ) {
-
   const foto = formData.get('photo');
   let validatedFields;
 
-  if (foto === "") {
+  if (foto === '') {
     validatedFields = UpdateEmployee.safeParse({
       name: formData.get('name'),
       email: formData.get('email'),
@@ -883,41 +950,41 @@ export async function updateEmployee(
     });
   }
 
- 
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Campos faltantes. No se pudo actualizar al empleado.',
     };
   }
- 
-  const { name, email, telefono, direccion, tipo_empleado, userEmail, photo } = validatedFields.data;
- 
+
+  const { name, email, telefono, direccion, tipo_empleado, userEmail, photo } =
+    validatedFields.data;
+
   let resultadoverificar = null;
 
-  if (foto !== "") { 
+  if (foto !== '') {
     try {
-      resultadoverificar = await verificarEmployeeDescriptor(photo)
+      resultadoverificar = await verificarEmployeeDescriptor(photo);
     } catch (error) {
       return {
         message: `${error}`,
         errors: {
-          photo: ['Ingresa una foto clara y frontal (Tiene que ser una foto de una persona).'],
-        }
-      }
+          photo: [
+            'Ingresa una foto clara y frontal (Tiene que ser una foto de una persona).',
+          ],
+        },
+      };
     }
   }
 
   try {
-
-    if (foto !== "") {
+    if (foto !== '') {
       await sql`
       UPDATE employees
       SET name = ${name}, email = ${email}, telefono = ${telefono}, direccion = ${direccion}, image_url = ${photo}, tipo_empleado = ${tipo_empleado}  
       WHERE
         id = ${id}
     `;
-
     } else {
       await sql`
       UPDATE employees
@@ -927,19 +994,19 @@ export async function updateEmployee(
     `;
     }
 
-    if (foto !== "" && resultadoverificar) {
+    if (foto !== '' && resultadoverificar) {
       await saveEmployeeDescriptor(id, resultadoverificar);
     }
-
-
   } catch (error) {
-    return { message: `Error de base de datos: No se pudo actualizar el empleado. ` };
+    return {
+      message: `Error de base de datos: No se pudo actualizar el empleado. `,
+    };
   }
- 
+
   return {
     success: true,
     message: 'Empleado actualizado con éxito!',
-  }
+  };
 }
 
 export async function deleteEmployee(id: string) {
@@ -948,14 +1015,18 @@ export async function deleteEmployee(id: string) {
     return {
       success: true,
       message: 'Empleado eliminada con exito!',
-    }
+    };
   } catch (error) {
-    return { message: 'Error de base de datos: No se pudo eliminar el empleado.' };
+    return {
+      message: 'Error de base de datos: No se pudo eliminar el empleado.',
+    };
   }
 }
 
-
-export async function createCustomer(prevState: CustomerState, formData: FormData) {
+export async function createCustomer(
+  prevState: CustomerState,
+  formData: FormData,
+) {
   // Validate form using Zod
   const validatedFields = CustomerSchema.safeParse({
     name: formData.get('name'),
@@ -964,9 +1035,9 @@ export async function createCustomer(prevState: CustomerState, formData: FormDat
     telefono: formData.get('telefono'),
     direccion: formData.get('direccion'),
     tipo_cliente: formData.get('tipo_cliente'),
-    userEmail: formData.get('userEmail')
+    userEmail: formData.get('userEmail'),
   });
- 
+
   // If form validation fails, return errors early. Otherwise, continue.
   if (!validatedFields.success) {
     return {
@@ -974,20 +1045,21 @@ export async function createCustomer(prevState: CustomerState, formData: FormDat
       message: 'Campos faltantes. No se pudo crear un cliente.',
     };
   }
- 
+
   // Prepare data for insertion into the database
-  const { name, email, rfc, telefono, direccion, tipo_cliente, userEmail } = validatedFields.data;
-  
+  const { name, email, rfc, telefono, direccion, tipo_cliente, userEmail } =
+    validatedFields.data;
+
   const date = new Date();
   const formattedDate = date.toLocaleString('es-ES', {
-    weekday: 'long',    // Día de la semana
-    day: '2-digit',     // Día del mes con dos dígitos
-    month: 'long',      // Mes completo
-    year: 'numeric',    // Año en formato numérico
-    hour: '2-digit',    // Hora con dos dígitos
-    minute: '2-digit',  // Minutos con dos dígitos
-    second: '2-digit',  // Segundos con dos dígitos
-    hour12: false       // Formato 24 horas
+    weekday: 'long', // Día de la semana
+    day: '2-digit', // Día del mes con dos dígitos
+    month: 'long', // Mes completo
+    year: 'numeric', // Año en formato numérico
+    hour: '2-digit', // Hora con dos dígitos
+    minute: '2-digit', // Minutos con dos dígitos
+    second: '2-digit', // Segundos con dos dígitos
+    hour12: false, // Formato 24 horas
   });
 
   // Insert data into the database
@@ -996,24 +1068,23 @@ export async function createCustomer(prevState: CustomerState, formData: FormDat
       INSERT INTO customers (name, email, rfc, direccion, telefono, tipo_cliente, fecha_creado)
       VALUES (${name}, ${email}, ${rfc}, ${direccion}, ${telefono}, ${tipo_cliente}, ${formattedDate})
     `;
-
   } catch (error) {
     // If a database error occurs, return a more specific error.
     return {
       message: `Error de base de datos: No se pudo crear el cliente. `,
     };
   }
- 
+
   return {
     success: true,
     message: 'Cliente creado con éxito!',
-  }
+  };
 }
 
 export async function updateCustomer(
   id: string,
   prevState: CustomerState,
-  formData: FormData
+  formData: FormData,
 ) {
   const validatedFields = CustomerSchema.safeParse({
     name: formData.get('name'),
@@ -1022,18 +1093,19 @@ export async function updateCustomer(
     telefono: formData.get('telefono'),
     direccion: formData.get('direccion'),
     tipo_cliente: formData.get('tipo_cliente'),
-    userEmail: formData.get('userEmail')
+    userEmail: formData.get('userEmail'),
   });
- 
+
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Campos faltantes. No se pudo actualizar al cliente.',
     };
   }
- 
-  const { name, email, rfc, telefono, direccion, tipo_cliente, userEmail } = validatedFields.data;
- 
+
+  const { name, email, rfc, telefono, direccion, tipo_cliente, userEmail } =
+    validatedFields.data;
+
   try {
     await sql`
       UPDATE customers
@@ -1043,36 +1115,41 @@ export async function updateCustomer(
       AND
         id = ${id}
     `;
-
   } catch (error) {
-    return { message: `Error de base de datos: No se pudo actualizar el cliente. ` };
+    return {
+      message: `Error de base de datos: No se pudo actualizar el cliente. `,
+    };
   }
- 
+
   return {
     success: true,
     message: 'Cliente actualizado con éxito!',
-  }
+  };
 }
 
 export async function deleteCustomer(id: string) {
   try {
     await sql`DELETE FROM customers WHERE id = ${id}`;
-    toast.success("Cliente eliminado con éxito!");
+    toast.success('Cliente eliminado con éxito!');
     return { message: 'Cliente eliminado.' };
   } catch (error) {
-    return { message: 'Error de base de datos: No se pudo eliminar el cliente.' };
+    return {
+      message: 'Error de base de datos: No se pudo eliminar el cliente.',
+    };
   }
 }
 
-
-export async function createUserWithCredentials(prevState: UserState, formData: FormData) {
+export async function createUserWithCredentials(
+  prevState: UserState,
+  formData: FormData,
+) {
   // Validate form using Zod
   const validatedFields = UserSchema.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
     password: formData.get('password'),
   });
- 
+
   // If form validation fails, return errors early. Otherwise, continue.
   if (!validatedFields.success) {
     return {
@@ -1085,7 +1162,7 @@ export async function createUserWithCredentials(prevState: UserState, formData: 
   const confirmPassword = formData.get('confirm-password');
   if (password != confirmPassword) {
     return {
-      message: 'Las contraseñas son diferentes.'
+      message: 'Las contraseñas son diferentes.',
     };
   }
 
@@ -1094,13 +1171,13 @@ export async function createUserWithCredentials(prevState: UserState, formData: 
 
   if (account.rowCount) {
     return {
-      message: `Esta dirección de correo electrónico ya está en uso, ¡utilice otra!`
-    }
+      message: `Esta dirección de correo electrónico ya está en uso, ¡utilice otra!`,
+    };
   }
 
   const date = new Date().toISOString().split('T')[0];
   try {
-      await sql`
+    await sql`
       INSERT INTO employees (name, email, rfc, direccion, telefono, tipo_empleado, password, isoauth, theme, fecha_creado)
       VALUES (${name}, ${email}, ${'BRGFAI2U'}, ${'S4 LA DE LA ESQUINA'}, ${'8118225743'}, ${'Supervisor'}, ${hashedPassword}, ${false}, ${'light'}, ${'sábado, 23 de noviembre de 2024, 02:48:48'})
     `;
@@ -1113,10 +1190,10 @@ export async function createUserWithCredentials(prevState: UserState, formData: 
       message: `
         Error de base de datos: No se pudo crear la cuenta.
         Inténtalo de nuevo o ponte en contacto con el equipo de soporte.
-      `
-    }
+      `,
+    };
   }
-  
+
   redirect('/login?account-created=true');
 }
 
@@ -1124,7 +1201,6 @@ export async function authenticateWithCredentials(
   prevState: string | undefined,
   formData: FormData,
 ) {
-
   try {
     await signIn('credentials', formData);
   } catch (error) {
@@ -1145,19 +1221,15 @@ export async function authenticateWithOAuth(provider: string) {
   await signIn(provider);
 }
 
-export async function updateUser(
-  prevState: UserState, 
-  formData: FormData
-) {
-  
+export async function updateUser(prevState: UserState, formData: FormData) {
   // Validate form using Zod
   const validatedFields = UserSchema.safeParse({
     name: formData.get('name'),
     password: formData.get('password'),
     // theme: formData.get('theme'),
-    email: formData.get('userEmail')
+    email: formData.get('userEmail'),
   });
- 
+
   // If form validation fails, return errors early. Otherwise, continue.
   if (!validatedFields.success) {
     return {
@@ -1165,21 +1237,20 @@ export async function updateUser(
       message: 'Campos faltantes. No se pudo actualizar el usuario.',
     };
   }
- 
+
   // Prepare data for insertion into the database
   // const { name, email, password, theme} = validatedFields.data; // If the theme is enabled
   const { name, email, password } = validatedFields.data;
-  
+
   const confirmPassword = formData.get('confirm-password');
   if (password != confirmPassword) {
     return {
-      message: 'Las contraseñas son diferentes'
-    }
+      message: 'Las contraseñas son diferentes',
+    };
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
- 
   // Insert data into the database
   try {
     await sql`
@@ -1192,8 +1263,7 @@ export async function updateUser(
         email = ${email}
     `;
 
-    toast.success("Datos del usuario actualizados con éxito!");
-
+    toast.success('Datos del usuario actualizados con éxito!');
   } catch (error) {
     // If a database error occurs, return a more specific error.
 
@@ -1201,13 +1271,13 @@ export async function updateUser(
       message: 'Error de base de datos: No se pudo actualizar el usuario.',
     };
   }
- 
+
   redirect('/dashboard/user-profile?user-updated=true');
 }
 
 export async function updateTheme(
-  formData: FormData
-)  {
+  prevState: UserthemeState,
+  formData: FormData) {
   unstable_noStore();
   let theme = formData.get('theme') as 'system' | 'dark' | 'light';
   const email = formData.get('user-email') as string;
@@ -1221,28 +1291,34 @@ export async function updateTheme(
         email = ${email}
     `;
 
-    toast.success("Tema actualizado con éxito!");
-
+    return { 
+      success: true,
+      message: 'Cliente eliminado.' 
+    };
+    
   } catch (error) {
     console.log(error);
+    return {
+      message: 'Error de la base de datos: No se pudo actualizar el tema.',
+    };
   }
 
-  redirect('/dashboard/settings');
 }
 
 export async function forgotPassword(
-  prevState: string | undefined, 
-  formData: FormData) 
-{ 
+  prevState: string | undefined,
+  formData: FormData,
+) {
   const email = formData.get('email');
-  const resetToken = jwt.sign({
-    email
-  },
-    process.env.AUTH_SECRET!, 
+  const resetToken = jwt.sign(
+    {
+      email,
+    },
+    process.env.AUTH_SECRET!,
     {
       algorithm: 'HS256',
-      expiresIn: '30min'
-    }
+      expiresIn: '30min',
+    },
   );
 
   const transporter = nodemailer.createTransport({
@@ -1260,9 +1336,9 @@ export async function forgotPassword(
       subject: 'Tu enlace de restablecimiento de contraseña', // Subject of the email
       text: `Haz clic en el enlace para restablecer tu contraseña: ${process.env.BASE_URL}/reset-password/${resetToken}`, // Customize the email content
     });
-  } catch(error) {
+  } catch (error) {
     console.log(error);
-    return "Algo salió mal.";
+    return 'Algo salió mal.';
   }
 
   redirect(`/forgot/instructions/${email}`);
@@ -1270,13 +1346,16 @@ export async function forgotPassword(
 
 export async function resetPassword(
   token: string,
-  prevState: string | undefined, 
-  formData: FormData
+  prevState: string | undefined,
+  formData: FormData,
 ) {
   // checking whether the token is still valid
   try {
-    var decoded = jwt.verify(token, process.env.AUTH_SECRET!) as ResetPasswordToken;
-  } catch(error) {
+    var decoded = jwt.verify(
+      token,
+      process.env.AUTH_SECRET!,
+    ) as ResetPasswordToken;
+  } catch (error) {
     console.log(error);
     return 'Este token no es válido o ha caducado.';
   }
@@ -1288,18 +1367,20 @@ export async function resetPassword(
     if (!user.rows[0]) {
       return `No hay ningún usuario con este correo electrónico: ${email}`;
     }
-  } catch(error) {
+  } catch (error) {
     console.log('Algo salió mal.');
     return 'Algo salió mal.';
   }
 
   // updating the password
   const ValidatePassword = passwordSchema.safeParse(formData.get('password'));
- 
+
   // If form validation fails, return errors early. Otherwise, continue.
   if (!ValidatePassword.success) {
-    return  'Las contraseñas deben tener al menos 8 caracteres,' + 
-      'un carácter especial, una letra mayúscula y una letra minúscula.';
+    return (
+      'Las contraseñas deben tener al menos 8 caracteres,' +
+      'un carácter especial, una letra mayúscula y una letra minúscula.'
+    );
   }
 
   // Insert data into the database

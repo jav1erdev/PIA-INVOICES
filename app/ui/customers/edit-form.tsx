@@ -4,7 +4,7 @@ import {
   AtSymbolIcon,
   HomeModernIcon,
   UserCircleIcon,
-  UserIcon
+  UserIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
@@ -19,11 +19,11 @@ import { useRouter } from 'next/navigation';
 export default function EditInvoiceForm({
   customer,
   userEmail,
-  theme
+  theme,
 }: {
   customer: Customer;
   userEmail: string;
-  theme: themeType
+  theme: themeType;
 }) {
   const updateCustomerWithId = updateCustomer.bind(null, customer.id);
   const initialState = { message: null, errors: {} };
@@ -32,26 +32,24 @@ export default function EditInvoiceForm({
   const router = useRouter();
 
   useEffect(() => {
-      if (state?.success) {
-        toast.success('Cliente actualizado con éxito!');
-        setTimeout(() => {
-          router.push('/dashboard/customers');
-          router.refresh();
-        }, 2000);
-      }  
-      if (state?.errors) {
-        setIsGood(false);
-      }
-    }, [state, router]);
+    if (state?.success) {
+      toast.success('Cliente actualizado con éxito!');
+      setTimeout(() => {
+        router.push('/dashboard/customers');
+        router.refresh();
+      }, 2000);
+    }
+    if (state?.errors) {
+      setIsGood(false);
+    }
+  }, [state, router]);
 
-      
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsGood(true);
     const formData = new FormData(e.currentTarget);
     dispatch(formData);
   };
-
 
   return (
     <form onSubmit={handleSubmit}>
@@ -61,10 +59,13 @@ export default function EditInvoiceForm({
 
       <div className={`rounded-md ${theme.container} p-4 md:p-6`}>
         <div className="mb-4">
-          <label htmlFor="customer" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="customer"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
-            Nombre: 
+          `}
+          >
+            Nombre:
           </label>
           <div className="relative">
             <input
@@ -79,9 +80,11 @@ export default function EditInvoiceForm({
               `}
               aria-describedby="name-error"
             />
-            <UserCircleIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+            <UserCircleIcon
+              className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
               -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-            `}/>
+            `}
+            />
           </div>
           <div id="name-error" aria-live="polite" aria-atomic="true">
             {state.errors?.name &&
@@ -94,10 +97,13 @@ export default function EditInvoiceForm({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="customer" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="customer"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
-            RFC: 
+          `}
+          >
+            RFC:
           </label>
           <div className="relative">
             <input
@@ -112,9 +118,11 @@ export default function EditInvoiceForm({
               `}
               aria-describedby="rfc-error"
             />
-            <UserCircleIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+            <UserCircleIcon
+              className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
               -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-            `}/>
+            `}
+            />
           </div>
           <div id="rfc-error" aria-live="polite" aria-atomic="true">
             {state.errors?.rfc &&
@@ -127,10 +135,13 @@ export default function EditInvoiceForm({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="customer" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="customer"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
-            Telefono: 
+          `}
+          >
+            Telefono:
           </label>
           <div className="relative">
             <input
@@ -145,9 +156,11 @@ export default function EditInvoiceForm({
               `}
               aria-describedby="telefono-error"
             />
-            <UserCircleIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+            <UserCircleIcon
+              className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
               -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-            `}/>
+            `}
+            />
           </div>
           <div id="telefono-error" aria-live="polite" aria-atomic="true">
             {state.errors?.telefono &&
@@ -160,10 +173,13 @@ export default function EditInvoiceForm({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="customer" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="customer"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
-            Direccion: 
+          `}
+          >
+            Direccion:
           </label>
           <div className="relative">
             <input
@@ -178,9 +194,11 @@ export default function EditInvoiceForm({
               `}
               aria-describedby="direccion-error"
             />
-            <UserCircleIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+            <UserCircleIcon
+              className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
               -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-            `}/>
+            `}
+            />
           </div>
           <div id="direccion-error" aria-live="polite" aria-atomic="true">
             {state.errors?.direccion &&
@@ -194,9 +212,12 @@ export default function EditInvoiceForm({
 
         {/* Invoice Amount */}
         <div className="mb-4">
-          <label htmlFor="amount" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="amount"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
+          `}
+          >
             Correo Electrónico:
           </label>
           <div className="relative mt-2 rounded-md">
@@ -213,10 +234,12 @@ export default function EditInvoiceForm({
                 `}
                 aria-describedby="email-error"
               />
-              <AtSymbolIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+              <AtSymbolIcon
+                className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
                 -translate-y-1/2 text-gray-500 peer-focus:text-gray-900
                 ${theme.inputIcon}
-              `}/>
+              `}
+              />
             </div>
             <div id="amount-error" aria-live="polite" aria-atomic="true">
               {state.errors?.email &&
@@ -229,15 +252,16 @@ export default function EditInvoiceForm({
           </div>
         </div>
 
-        
         {/* Invoice Status */}
         <fieldset>
           <legend className={`mb-2 block text-sm font-medium ${theme.text}`}>
             Selecciona el tipo de cliente
           </legend>
-          <div className={`rounded-md border px-[14px] py-3
+          <div
+            className={`rounded-md border px-[14px] py-3
             ${theme.bg} ${theme.border}
-          `}>
+          `}
+          >
             <div className="flex gap-4">
               <div className="flex items-center">
                 <input
@@ -267,7 +291,7 @@ export default function EditInvoiceForm({
                   name="tipo_cliente"
                   type="radio"
                   value="Asociado"
-                  defaultChecked={customer.tipo_cliente === "Asociado"}
+                  defaultChecked={customer.tipo_cliente === 'Asociado'}
                   className={`h-4 w-4 cursor-pointer 
                     text-gray-600 focus:ring-2 ${theme.container} ${theme.border}
                   `}
@@ -292,9 +316,8 @@ export default function EditInvoiceForm({
           </div>
         </fieldset>
 
-
         {state?.message && state?.errors && (
-          <p className="mt-2 text-sm text-red-500"  key={state.message}>
+          <p className="mt-2 text-sm text-red-500" key={state.message}>
             {state.message}
           </p>
         )}
@@ -311,8 +334,13 @@ export default function EditInvoiceForm({
         >
           Cancel
         </Link>
-        <Button disabled={isGood} className="disabled:bg-slate-400 disabled:cursor-not-allowed" type="submit">
-        {isGood ? "Actualizando..." : "Actualizar Cliente"}</Button>
+        <Button
+          disabled={isGood}
+          className="disabled:cursor-not-allowed disabled:bg-slate-400"
+          type="submit"
+        >
+          {isGood ? 'Actualizando...' : 'Actualizar Cliente'}
+        </Button>
       </div>
     </form>
   );

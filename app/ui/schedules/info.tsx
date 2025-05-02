@@ -10,34 +10,37 @@ export default function SchedulesInfo({
   userEmail,
   theme,
 }: {
-  employees: EmployeeField[],
-  userEmail: string,
-  theme: themeType,
+  employees: EmployeeField[];
+  userEmail: string;
+  theme: themeType;
 }) {
-    const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
 
-    useEffect(() => {
-        const initialLoadedImages: Record<string, boolean> = {};
-      
-        employees.forEach((employee) => {
-          const img = document.getElementById(`img-${employee.id}`) as HTMLImageElement | null;
-          if (img?.complete) {
-            initialLoadedImages[employee.id] = true;
-          }
-        });
-      
-        setLoadedImages(initialLoadedImages);
-      }, [employees]);
-      
-    
-    const handleImageLoad = (id: string) => {
-      setLoadedImages(prev => ({ ...prev, [id]: true }));
-    };
+  useEffect(() => {
+    const initialLoadedImages: Record<string, boolean> = {};
+
+    employees.forEach((employee) => {
+      const img = document.getElementById(
+        `img-${employee.id}`,
+      ) as HTMLImageElement | null;
+      if (img?.complete) {
+        initialLoadedImages[employee.id] = true;
+      }
+    });
+
+    setLoadedImages(initialLoadedImages);
+  }, [employees]);
+
+  const handleImageLoad = (id: string) => {
+    setLoadedImages((prev) => ({ ...prev, [id]: true }));
+  };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-2 py-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className={`${lusitana.className} text-2xl md:text-3xl font-semibold text-gray-800`}>
+    <div className="mx-auto w-full max-w-7xl px-2 py-6">
+      <div className="mb-6 flex items-center justify-between">
+        <h1
+          className={`${lusitana.className} text-2xl font-semibold ${theme.text} md:text-3xl`}
+        >
           Horarios de los empleados
         </h1>
       </div>
@@ -50,18 +53,18 @@ export default function SchedulesInfo({
           return (
             <div
               key={employee.id}
-              className="bg-white shadow-lg rounded-lg p-4 hover:shadow-xl transition-shadow duration-300"
+              className={`rounded-lg ${theme.container} p-4 shadow-lg transition-shadow duration-300 hover:shadow-xl`}
             >
               <a
                 href={`/dashboard/schedules/${employee.id}`}
-                className="block text-blue-600 hover:text-blue-800 transition-colors duration-200"
+                className="block text-blue-600 transition-colors duration-200 hover:text-blue-800"
               >
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   {/* Imagen + info */}
-                  <div className="flex items-center gap-4 flex-shrink-0">
-                    <div className="relative w-20 md:w-40 aspect-square">
+                  <div className="flex flex-shrink-0 items-center gap-4">
+                    <div className="relative aspect-square w-20 md:w-40">
                       {!imageLoaded && hasImage && (
-                        <div className="w-full h-full flex items-center justify-center rounded-full bg-gray-200 text-gray-500 text-center px-2 animate-pulse text-xs md:text-base">
+                        <div className="flex h-full w-full animate-pulse items-center justify-center rounded-full bg-gray-200 px-2 text-center text-xs text-gray-500 md:text-base">
                           Cargando...
                         </div>
                       )}
@@ -70,29 +73,30 @@ export default function SchedulesInfo({
                           id={`img-${employee.id}`}
                           src={employee.image_url}
                           alt="Vista previa"
-                          className={`w-full h-full rounded-full object-cover transition-opacity duration-300 ${
-                            imageLoaded ? "opacity-100" : "hidden opacity-0"
+                          className={`h-full w-full rounded-full object-cover transition-opacity duration-300 ${
+                            imageLoaded ? 'opacity-100' : 'hidden opacity-0'
                           }`}
-                          onLoad={() => handleImageLoad(employee.id)
-                        }
+                          onLoad={() => handleImageLoad(employee.id)}
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center rounded-full bg-gray-200 text-gray-500 text-xs md:text-base text-center px-2">
+                        <div className="flex h-full w-full items-center justify-center rounded-full bg-gray-200 px-2 text-center text-xs text-gray-500 md:text-base">
                           Sin Foto
                         </div>
                       )}
                     </div>
 
                     <div className="flex flex-col justify-center">
-                      <span className="text-sm md:text-lg font-semibold truncate max-w-[149px] md:max-w-none">
+                      <span className="max-w-[149px] truncate text-sm font-semibold md:max-w-none md:text-lg">
                         {employee.name}
                       </span>
-                      <span className="text-xs md:text-sm text-gray-500">{employee.tipo_empleado}</span>
+                      <span className="text-xs text-gray-500 md:text-sm">
+                        {employee.tipo_empleado}
+                      </span>
                     </div>
                   </div>
 
                   {/* ID */}
-                  <div className="text-xs md:text-sm text-gray-500 text-right">
+                  <div className="text-right text-xs text-gray-500 md:text-sm">
                     ID: {employee.id}
                   </div>
                 </div>

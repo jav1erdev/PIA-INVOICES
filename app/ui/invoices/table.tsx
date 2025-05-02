@@ -1,11 +1,19 @@
-"use client"
-import { UpdateInvoice, DeleteInvoice, ViewDetailsInvoices } from '@/app/ui/invoices/buttons';
+'use client';
+import {
+  UpdateInvoice,
+  DeleteInvoice,
+  ViewDetailsInvoices,
+} from '@/app/ui/invoices/buttons';
 import InvoiceStatus from '@/app/ui/invoices/status';
-import { formatDateToLocal, formatCurrency, formatDatetoPayToLocal } from '@/app/lib/utils';
+import {
+  formatDateToLocal,
+  formatCurrency,
+  formatDatetoPayToLocal,
+} from '@/app/lib/utils';
 import { themeType } from '@/app/lib/theme';
 import { useState } from 'react';
 import { Invoice } from '@/app/lib/definitions';
-import jsPDFInvoiceTemplate, { OutputType } from "jspdf-invoice-template";
+import jsPDFInvoiceTemplate, { OutputType } from 'jspdf-invoice-template';
 import { InvoiceDetailsModal } from './modal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,28 +21,26 @@ import dynamic from 'next/dynamic';
 
 // Dynamically import the component that generates the PDF invoice
 const InvoicePDFGenerator = dynamic(() => import('./invoicePDFGenerator'), {
-  ssr: false,  // This ensures it's only rendered on the client side
+  ssr: false, // This ensures it's only rendered on the client side
 });
 
 const InvoicePDFEmail = dynamic(() => import('./invoicePDFEmail'), {
-  ssr: false,  // This ensures it's only rendered on the client side
+  ssr: false, // This ensures it's only rendered on the client side
 });
-
 
 export default function InvoicesTable({
   invoices,
   query,
   currentPage,
   userEmail,
-  theme  
-}: {  
+  theme,
+}: {
   invoices: Invoice[];
   query: string;
   currentPage: number;
   userEmail: string;
-  theme: themeType;  
+  theme: themeType;
 }) {
-
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   // const [invoicesTotal, setInvoicesTotal] = useState<Invoice[]>([]);
 
@@ -62,14 +68,16 @@ export default function InvoicesTable({
                     </div>
                     <p className="text-sm text-gray-500">{invoice.email}</p>
                   </div>
-                  <InvoiceStatus status={invoice.status} theme={theme}  />
+                  <InvoiceStatus status={invoice.status} theme={theme} />
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
                     <p className={`text-xl font-medium ${theme.title}`}>
                       {formatCurrency(invoice.amount)}
                     </p>
-                    <p className={`text-base ${theme.title}`}>{formatDateToLocal(invoice.fecha_creado)}</p>
+                    <p className={`text-base ${theme.title}`}>
+                      {formatDateToLocal(invoice.fecha_creado)}
+                    </p>
                   </div>
                   <div className="flex justify-end gap-2">
                     {/* <ViewDetailsInvoices
@@ -77,16 +85,33 @@ export default function InvoicesTable({
                       onOpen={() => openModal(invoice)}
                       theme={theme}
                     /> */}
-                    <InvoicePDFGenerator disabled={invoice.status == "Pendiente" ? true : false} invoice={invoice} theme={theme} />
-                    <InvoicePDFEmail disabled={invoice.status == "Pendiente" ? true : false} invoice={invoice} theme={theme} />
-                    <UpdateInvoice disabled={invoice.status == "Pagado" ? true : false} id={invoice.id} theme={theme} />
-                    <DeleteInvoice data={[query, currentPage]} disabled={invoice.status == "Pagado" ? true : false} id={invoice.id} theme={theme} />
+                    <InvoicePDFGenerator
+                      disabled={invoice.status == 'Pendiente' ? true : false}
+                      invoice={invoice}
+                      theme={theme}
+                    />
+                    <InvoicePDFEmail
+                      disabled={invoice.status == 'Pendiente' ? true : false}
+                      invoice={invoice}
+                      theme={theme}
+                    />
+                    <UpdateInvoice
+                      disabled={invoice.status == 'Pagado' ? true : false}
+                      id={invoice.id}
+                      theme={theme}
+                    />
+                    <DeleteInvoice
+                      data={[query, currentPage]}
+                      disabled={invoice.status == 'Pagado' ? true : false}
+                      id={invoice.id}
+                      theme={theme}
+                    />
                   </div>
                 </div>
               </div>
             ))}
           </div>
-          
+
           {/* Table View */}
           <table className={`hidden min-w-full ${theme.text} md:table`}>
             <thead className="rounded-lg text-left text-sm font-normal">
@@ -148,10 +173,27 @@ export default function InvoicesTable({
                         onOpen={() => openModal(invoice)}
                         theme={theme}
                       /> */}
-                      <InvoicePDFGenerator disabled={invoice.status == "Pendiente" ? true : false} invoice={invoice} theme={theme} />
-                      <InvoicePDFEmail disabled={invoice.status == "Pendiente" ? true : false} invoice={invoice} theme={theme} />
-                      <UpdateInvoice disabled={invoice.status == "Pagado" ? true : false} id={invoice.id} theme={theme} />
-                      <DeleteInvoice data={[query, currentPage, userEmail]} disabled={invoice.status == "Pagado" ? true : false} id={invoice.id} theme={theme} />
+                      <InvoicePDFGenerator
+                        disabled={invoice.status == 'Pendiente' ? true : false}
+                        invoice={invoice}
+                        theme={theme}
+                      />
+                      <InvoicePDFEmail
+                        disabled={invoice.status == 'Pendiente' ? true : false}
+                        invoice={invoice}
+                        theme={theme}
+                      />
+                      <UpdateInvoice
+                        disabled={invoice.status == 'Pagado' ? true : false}
+                        id={invoice.id}
+                        theme={theme}
+                      />
+                      <DeleteInvoice
+                        data={[query, currentPage, userEmail]}
+                        disabled={invoice.status == 'Pagado' ? true : false}
+                        id={invoice.id}
+                        theme={theme}
+                      />
                     </div>
                   </td>
                 </tr>
@@ -160,7 +202,7 @@ export default function InvoicesTable({
           </table>
         </div>
       </div>
-      
+
       {/* Modal */}
       {selectedInvoice && (
         <InvoiceDetailsModal invoice={selectedInvoice} onClose={closeModal} />

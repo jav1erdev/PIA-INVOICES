@@ -7,11 +7,10 @@ import { generatePagination } from '@/app/lib/utils';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { themeType } from '@/app/lib/theme';
 
-export default function Pagination({ 
+export default function Pagination({
   totalPages,
-  theme
-}: 
-{ 
+  theme,
+}: {
   totalPages: number;
   theme: themeType;
 }) {
@@ -37,7 +36,7 @@ export default function Pagination({
       <PaginationArrow
         direction="left"
         href={createPageURL(safeCurrentPage - 1)}
-        isDisabled={safeCurrentPage <= 1}  
+        isDisabled={safeCurrentPage <= 1}
         theme={theme}
       />
 
@@ -79,7 +78,7 @@ function PaginationNumber({
   href,
   isActive,
   position,
-  theme
+  theme,
 }: {
   page: number | string;
   href: string;
@@ -90,9 +89,11 @@ function PaginationNumber({
   const className = clsx(
     `flex h-10 w-10 items-center justify-center text-sm border
       ${theme.border} ${theme.text}
-      ${(!isActive && position !== 'middle') && 
-        `${theme.hoverBorder} ${theme.hoverBg} ${theme.hoverText}`}`
-    ,
+      ${
+        !isActive &&
+        position !== 'middle' &&
+        `${theme.hoverBorder} ${theme.hoverBg} ${theme.hoverText}`
+      }`,
     {
       'rounded-l-md': position === 'first' || position === 'single',
       'rounded-r-md': position === 'last' || position === 'single',
@@ -114,7 +115,7 @@ function PaginationArrow({
   href,
   direction,
   isDisabled,
-  theme
+  theme,
 }: {
   href: string;
   direction: 'left' | 'right';
@@ -125,7 +126,10 @@ function PaginationArrow({
     `flex h-10 w-10 items-center justify-center rounded-md border
       ${theme.border} ${theme.text}
       ${isDisabled && `${theme.border} ${theme.notActiveText}`}
-      ${!isDisabled && `${theme.hoverBorder} ${theme.hoverBg} ${theme.hoverText}`}
+      ${
+        !isDisabled &&
+        `${theme.hoverBorder} ${theme.hoverBg} ${theme.hoverText}`
+      }
     `,
     {
       'pointer-events-none': isDisabled,

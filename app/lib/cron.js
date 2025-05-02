@@ -1,7 +1,9 @@
 import schedule from 'node-cron';
 import fetch from 'node-fetch';
 
-const API_URL = process.env.API_URL || 'https://c462-2806-109f-10-5b94-8d11-a7bf-bd27-2097.ngrok-free.app/api/send-email-payment';
+const API_URL =
+  process.env.API_URL ||
+  'https://c462-2806-109f-10-5b94-8d11-a7bf-bd27-2097.ngrok-free.app/api/send-email-payment';
 
 // Programar la ejecución de la API a las 8:00 AM cada día
 schedule('45 14 * * *', async () => {
@@ -10,8 +12,8 @@ schedule('45 14 * * *', async () => {
     await fetch(API_URL, {
       method: 'GET', // o 'POST', dependiendo de la configuración de tu API
       headers: {
-        'Authorization': `Bearer ${process.env.TOKENAPP}`, // Si tienes autenticación
-      }
+        Authorization: `Bearer ${process.env.TOKENAPP}`, // Si tienes autenticación
+      },
     });
     console.log('✅ Correos programados.');
   } catch (error) {

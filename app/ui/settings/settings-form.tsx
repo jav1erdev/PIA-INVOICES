@@ -1,32 +1,62 @@
 'use client';
 
-import {
-  MoonIcon,
-  SunIcon,
-} from '@heroicons/react/24/outline';
+import { MoonIcon, SunIcon } from '@heroicons/react/24/outline';
 import 'react-toastify/dist/ReactToastify.css';
 import { updateTheme } from '@/app/lib/actions';
 import { Button } from '../button';
 import { User } from '@/app/lib/definitions';
 import { themeType } from '@/app/lib/theme';
+import { useEffect, useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import { useRouter } from 'next/navigation';
+import { useFormState } from 'react-dom';
 
-export default function Form({ 
+export default function Form({
   user,
-  theme 
-} : 
-{ 
+  theme,
+}: {
   user: User;
-  theme: themeType; 
+  theme: themeType;
 }) {
-  
+
+    const initialState = { message: null, errors: {} };
+    const [state, dispatch] = useFormState(updateTheme, initialState);
+    const [isGood, setIsGood] = useState(false);
+    const router = useRouter();
+
+    useEffect(() => {
+      if (state?.success) {
+        toast.success('Tema actualizado con éxito!');
+        setIsGood(false);
+        router.refresh();
+      }
+      if (state?.errors) {
+        setIsGood(false);
+      }
+    }, [state, router]);
+
+    
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsGood(true);
+    const formData = new FormData(e.currentTarget);
+    dispatch(formData);
+  };
+
+
   return (
-    <form action={updateTheme}>
-      <input type='hidden' name='user-email' value={user.email} />
+    <form onSubmit={handleSubmit}>
+      <ToastContainer theme="colored" />
+      
+      <input type="hidden" name="user-email" value={user.email} />
       <div className={`rounded-md ${theme.container} p-4 md:p-6`}>
         <div className="mb-4">
-          <label htmlFor="theme" className={`mb-2  block text-sm font-medium
+          <label
+            htmlFor="theme"
+            className={`mb-2  block text-sm font-medium
             ${theme.text}
-          `}>
+          `}
+          >
             Elige un tema:
           </label>
           <div className="relative">
@@ -43,41 +73,51 @@ export default function Form({
               <option value="" disabled>
                 Select a theme
               </option>
-              <option value="dark">
-                Dark
-              </option>
-              <option value="light">
-                Light
-              </option>
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
             </select>
-            {
-              (!user.theme || user.theme == 'system' ) ? 
-                <>
-                  <SunIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+            {!user.theme || user.theme == 'system' ? (
+              <>
+                <SunIcon
+                  className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
                   -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-                  `}/>
-                  <MoonIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+                  `}
+                />
+                <MoonIcon
+                  className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
                   -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-                  `}/>
-                </> : 
-                (user.theme == 'dark') ?
-                  <>
-                    <MoonIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+                  `}
+                />
+              </>
+            ) : user.theme == 'dark' ? (
+              <>
+                <MoonIcon
+                  className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
                     -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-                    `}/>
-                  </> :
-                  <>
-                    <SunIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+                    `}
+                />
+              </>
+            ) : (
+              <>
+                <SunIcon
+                  className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
                     -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-                    `}/>
-                  </>
-            }
+                    `}
+                />
+              </>
+            )}
           </div>
         </div>
       </div>
 
       <div className="mt-6 flex justify-end">
-        <Button type="submit">Actualizar Configuracion</Button>
+        <Button
+          disabled={isGood}
+          className="disabled:cursor-not-allowed disabled:bg-slate-400"
+          type="submit"
+        >
+          {isGood ? 'Actualizando...' : 'Actualizar Configuracion'}
+        </Button>
       </div>
     </form>
   );

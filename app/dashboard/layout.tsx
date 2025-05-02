@@ -1,15 +1,25 @@
 import SideNav from '@/app/ui/dashboard/sidenav';
 import { auth } from '@/auth';
 import { getUser } from '../lib/data';
-import { darkTheme, defaultTheme, lightTheme, systemDefault, themeType } from '../lib/theme';
- 
-export default async function Layout({ children }: { children: React.ReactNode }) {
+import {
+  darkTheme,
+  defaultTheme,
+  lightTheme,
+  systemDefault,
+  themeType,
+} from '../lib/theme';
+
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const session = await auth();
   const userEmail = session?.user?.email!;
   const user = await getUser(userEmail);
   let theme: themeType;
 
-  switch(user?.theme) {
+  switch (user?.theme) {
     case 'system':
       theme = systemDefault;
       break;
@@ -20,13 +30,15 @@ export default async function Layout({ children }: { children: React.ReactNode }
       theme = lightTheme;
       break;
     default:
-    // Proporciona un valor predeterminado
-    theme = defaultTheme; 
-    break;
+      // Proporciona un valor predeterminado
+      theme = defaultTheme;
+      break;
   }
 
   return (
-    <div className={`flex h-screen flex-col md:flex-row md:overflow-hidden ${theme.bg}`}>
+    <div
+      className={`flex h-screen flex-col md:flex-row md:overflow-hidden ${theme.bg}`}
+    >
       <div className="w-full flex-none md:w-64">
         <SideNav theme={theme} />
       </div>

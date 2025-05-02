@@ -8,7 +8,7 @@ let matchedEmployee = null;
 for (const employee of employees) {
   const dbDescriptor = Object.values(employee.face_descriptor);
   const distance = faceapi.euclideanDistance(inputDescriptor, dbDescriptor);
-  
+
   if (distance < 0.6) {
     matchedEmployee = employee;
     break;

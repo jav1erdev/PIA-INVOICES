@@ -1,11 +1,11 @@
 import AcmeLogo from '@/app/ui/acme-logo';
 import ForgotForm from '@/app/ui/forgot-form';
-import { Metadata } from 'next'; 
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Olvidé mi contraseña',
 };
- 
+
 export default function LoginPage() {
   return (
     <main className="flex items-center justify-end md:h-screen">

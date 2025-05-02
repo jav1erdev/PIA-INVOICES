@@ -40,7 +40,7 @@ import { themeType } from '@/app/lib/theme';
 //       {/* NOTE: comment in this code when you get to this point in the course */}
 
 //       <div className={`rounded-xl p-4 ${theme.container}`}>
-//         <div className={`sm:grid-cols-13 mt-0 grid grid-cols-12 items-end gap-2 rounded-md 
+//         <div className={`sm:grid-cols-13 mt-0 grid grid-cols-12 items-end gap-2 rounded-md
 //           ${theme.bg} p-4 md:gap-4
 //         `}>
 //           <div
@@ -78,7 +78,7 @@ import { themeType } from '@/app/lib/theme';
 
 export default async function RevenueChart({ theme }: { theme: themeType }) {
   const revenue: Revenue[] = await fetchRevenue();
-  
+
   // Normaliza los datos dividiendo por 100
   const normalizedRevenue = revenue.map((month) => ({
     ...month,
@@ -88,8 +88,12 @@ export default async function RevenueChart({ theme }: { theme: themeType }) {
   if (!normalizedRevenue || normalizedRevenue.length === 0) {
     return (
       <div>
-        <p className="mt-4 text-xl text-center text-gray-400">Grafico de ganancias.</p>
-        <p className="mt-4 text-base text-center text-gray-400">No hay datos disponibles.</p>
+        <p className="mt-4 text-center text-xl text-gray-400">
+          Grafico de ganancias.
+        </p>
+        <p className="mt-4 text-center text-base text-gray-400">
+          No hay datos disponibles.
+        </p>
       </div>
     );
   }
@@ -109,7 +113,7 @@ export default async function RevenueChart({ theme }: { theme: themeType }) {
 
       <div id="revenue-chart" className={`rounded-xl p-4 ${theme.container}`}>
         <div
-          className={`sm:grid-cols-13 mt-0 grid grid-cols-12 items-end gap-2 rounded-md 
+          className={`mt-0 grid grid-cols-12 items-end gap-2 rounded-md sm:grid-cols-13 
           ${theme.bg} p-4 md:gap-4`}
         >
           <div
@@ -138,7 +142,9 @@ export default async function RevenueChart({ theme }: { theme: themeType }) {
         </div>
         <div className="flex items-center pb-2 pt-6">
           <CalendarIcon className="h-5 w-5 text-gray-500" />
-          <h3 className="ml-2 text-sm text-gray-500">A partir del año en curso</h3>
+          <h3 className="ml-2 text-sm text-gray-500">
+            A partir del año en curso
+          </h3>
         </div>
       </div>
     </div>

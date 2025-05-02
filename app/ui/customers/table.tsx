@@ -1,53 +1,64 @@
-"use client";
+'use client';
 
-import React, { useState } from 'react';  
-import Search from '@/app/ui/search';  
-import { fetchFilteredCustomers } from '@/app/lib/data';  
-import { CreateCustomer, DeleteCustomer, UpdateCustomer, ViewDetailsCustomer } from '../invoices/buttons';  
-import { auth } from '@/auth';  
-import { themeType } from '@/app/lib/theme';  
+import React, { useState } from 'react';
+import Search from '@/app/ui/search';
+import { fetchFilteredCustomers } from '@/app/lib/data';
+import {
+  CreateCustomer,
+  DeleteCustomer,
+  UpdateCustomer,
+  ViewDetailsCustomer,
+} from '../invoices/buttons';
+import { auth } from '@/auth';
+import { themeType } from '@/app/lib/theme';
 import { Customer } from '@/app/lib/definitions';
 import { formatCurrency } from '@/app/lib/utils';
 import { CustomerDetailsModal } from './modal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function CustomersTable({  
+export default function CustomersTable({
   customers,
-  theme  
-}: {  
+  theme,
+}: {
   customers: Customer[];
-  theme: themeType;  
-}) {  
-
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  theme: themeType;
+}) {
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
+    null,
+  );
 
   const openModal = (customer: Customer) => setSelectedCustomer(customer);
   const closeModal = () => setSelectedCustomer(null);
-
 
   return (
     <div className="w-full">
       <ToastContainer theme="colored" />
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Buscar clientes (por Id, Nombre o Correo Electronico)..." theme={theme} />
+        <Search
+          placeholder="Buscar clientes (por Id, Nombre o Correo Electronico)..."
+          theme={theme}
+        />
         <CreateCustomer />
       </div>
 
       <div className="mt-6 flow-root">
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
-            <div className={`
+            <div
+              className={`
               overflow-hidden rounded-md ${theme.container}
               p-2 md:pt-0
-            `}>
+            `}
+            >
               <div className="md:hidden">
                 {customers?.map((customer) => (
                   <div
                     key={customer.id}
                     className={`
                       mb-2 w-full ${theme.bg} p-4
-                    `}>
+                    `}
+                  >
                     <div className="flex items-center justify-between border-b pb-4">
                       <div>
                         <div className="mb-2 flex items-center">
@@ -55,9 +66,7 @@ export default function CustomersTable({
                             <p className={`${theme.title}`}>{customer.name}</p>
                           </div>
                         </div>
-                        <p className="text-sm text-gray-500">
-                          {customer.id}
-                        </p>
+                        <p className="text-sm text-gray-500">{customer.id}</p>
                         <p className="text-sm text-gray-500">
                           {customer.email}
                         </p>
@@ -66,14 +75,18 @@ export default function CustomersTable({
                     <div className="flex w-full items-center justify-between border-b py-5">
                       <div className="flex w-1/2 flex-col">
                         <p className={`text-xs ${theme.title}`}>Pendiente</p>
-                        <p className={`font-medium ${theme.title}`}>{formatCurrency(customer.total_pending)}</p>
+                        <p className={`font-medium ${theme.title}`}>
+                          {formatCurrency(customer.total_pending)}
+                        </p>
                       </div>
                       <div className="flex w-1/2 flex-col">
                         <p className={`text-xs ${theme.title}`}>Pagado</p>
-                        <p className={`font-medium ${theme.title}`}>{formatCurrency(customer.total_paid)}</p>
+                        <p className={`font-medium ${theme.title}`}>
+                          {formatCurrency(customer.total_paid)}
+                        </p>
                       </div>
                     </div>
-                    <div className='flex items-center justify-between pt-4'>
+                    <div className="flex items-center justify-between pt-4">
                       <div className={`text-sm ${theme.title}`}>
                         <p>{customer.total_invoices} facturas</p>
                       </div>
@@ -83,20 +96,41 @@ export default function CustomersTable({
                           onOpen={() => openModal(customer)}
                           theme={theme}
                         />
-                        <UpdateCustomer disabled={Number(customer.total_pending) > 0.00 ? true : false} id={customer.id} theme={theme} />
-                        <DeleteCustomer disabled={Number(customer.total_paid || Number(customer.total_pending) ) > 0 ? true : false} id={customer.id} theme={theme} />
+                        <UpdateCustomer
+                          disabled={
+                            Number(customer.total_pending) > 0.0 ? true : false
+                          }
+                          id={customer.id}
+                          theme={theme}
+                        />
+                        <DeleteCustomer
+                          disabled={
+                            Number(
+                              customer.total_paid ||
+                                Number(customer.total_pending),
+                            ) > 0
+                              ? true
+                              : false
+                          }
+                          id={customer.id}
+                          theme={theme}
+                        />
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
-              <table className={`
+              <table
+                className={`
                 hidden min-w-full rounded-md ${theme.text} md:table
-              `}>
-                <thead className={`
+              `}
+              >
+                <thead
+                  className={`
                   ${theme.container}
                   text-left text-sm font-normal
-                `}>
+                `}
+                >
                   <tr>
                     <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
                       Id Cliente
@@ -116,52 +150,83 @@ export default function CustomersTable({
                   </tr>
                 </thead>
 
-                <tbody className={`
+                <tbody
+                  className={`
                   divide-y ${theme.divide} 
                   ${theme.text}
-                `}>
+                `}
+                >
                   {customers.map((customer) => (
                     <tr key={customer.id} className="group">
-                      <td className={`
+                      <td
+                        className={`
                         whitespace-nowrap ${theme.bg} py-5 pl-4 pr-3 text-sm 
-                        ${theme.title} sm:pl-6 rounded-l-md
-                      `}>
+                        ${theme.title} rounded-l-md sm:pl-6
+                      `}
+                      >
                         <div className="flex items-center gap-3">
                           <p>{customer.id}</p>
                         </div>
                       </td>
-                      <td className={`
+                      <td
+                        className={`
                         whitespace-nowrap ${theme.bg} py-5 pl-4 pr-3 text-sm 
-                        ${theme.title} sm:pl-6 rounded-l-md
-                      `}>
+                        ${theme.title} rounded-l-md sm:pl-6
+                      `}
+                      >
                         <div className="flex items-center gap-3">
                           <p>{customer.name}</p>
                         </div>
                       </td>
-                      <td className={`
+                      <td
+                        className={`
                         whitespace-nowrap ${theme.bg} ${theme.text} px-4 py-5 text-sm        
-                      `}>
+                      `}
+                      >
                         {customer.email}
                       </td>
-                      <td className={`
+                      <td
+                        className={`
                         whitespace-nowrap ${theme.bg} px-4 py-5 text-sm ${theme.text}   
-                      `}>
+                      `}
+                      >
                         {formatCurrency(customer.total_pending)}
                       </td>
-                      <td className={`whitespace-nowrap ${theme.bg} px-4 py-5 
+                      <td
+                        className={`whitespace-nowrap ${theme.bg} px-4 py-5 
                         ${theme.text}  
-                        `}>
+                        `}
+                      >
                         {formatCurrency(customer.total_paid)}
                       </td>
-                      <td className={`whitespace-nowrap py-3 pl-6 pr-3 ${theme.bg} rounded-r-md`}>
+                      <td
+                        className={`whitespace-nowrap py-3 pl-6 pr-3 ${theme.bg} rounded-r-md`}
+                      >
                         <div className="flex justify-end gap-3">
                           <ViewDetailsCustomer
                             id={customer.id}
                             onOpen={() => openModal(customer)}
                             theme={theme}
                           />
-                          <UpdateCustomer disabled={Number(customer.total_pending) > 0.00 ? true : false} id={customer.id} theme={theme} />
-                          <DeleteCustomer disabled={Number(customer.total_paid) || Number(customer.total_pending) > 0.00 ? true : false} id={customer.id} theme={theme} />
+                          <UpdateCustomer
+                            disabled={
+                              Number(customer.total_pending) > 0.0
+                                ? true
+                                : false
+                            }
+                            id={customer.id}
+                            theme={theme}
+                          />
+                          <DeleteCustomer
+                            disabled={
+                              Number(customer.total_paid) ||
+                              Number(customer.total_pending) > 0.0
+                                ? true
+                                : false
+                            }
+                            id={customer.id}
+                            theme={theme}
+                          />
                         </div>
                       </td>
                     </tr>
@@ -174,10 +239,11 @@ export default function CustomersTable({
       </div>
       {/* Modal */}
       {selectedCustomer && (
-        <CustomerDetailsModal customer={selectedCustomer} onClose={closeModal} />
+        <CustomerDetailsModal
+          customer={selectedCustomer}
+          onClose={closeModal}
+        />
       )}
     </div>
   );
 }
-
-

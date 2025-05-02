@@ -5,19 +5,17 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 import { themeType } from '../lib/theme';
 
-export default function Search(
-{ 
-  placeholder, 
-  theme 
-}: 
-{ 
-  placeholder: string; 
-  theme: themeType 
+export default function Search({
+  placeholder,
+  theme,
+}: {
+  placeholder: string;
+  theme: themeType;
 }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
-  
+
   const handleSearch = useDebouncedCallback((term) => {
     const params = new URLSearchParams(searchParams.toString());
     if (term) {
@@ -44,10 +42,12 @@ export default function Search(
         }}
         defaultValue={searchParams.get('query')?.toString()}
       />
-      <MagnifyingGlassIcon className={`absolute left-3 top-1/2 h-[18px] w-[18px] 
+      <MagnifyingGlassIcon
+        className={`absolute left-3 top-1/2 h-[18px] w-[18px] 
         -translate-y-1/2 text-gray-500
         ${theme.inputIcon}
-      `}/>
+      `}
+      />
     </div>
   );
 }

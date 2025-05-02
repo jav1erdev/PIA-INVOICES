@@ -25,7 +25,7 @@ export default function EditInvoiceForm({
   invoice,
   customers,
   employee,
-  theme
+  theme,
 }: {
   invoice: InvoiceForm;
   customers: CustomerField[];
@@ -35,16 +35,21 @@ export default function EditInvoiceForm({
   const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useFormState(updateInvoiceWithId, initialState);
-  const [isPaid, setIsPaid] = useState(invoice.status == "Pagado" ? true : false);
-  const [isPending, setIsPending] = useState(invoice.status == "Pendiente" ? true : false);
+  const [isPaid, setIsPaid] = useState(
+    invoice.status == 'Pagado' ? true : false,
+  );
+  const [isPending, setIsPending] = useState(
+    invoice.status == 'Pendiente' ? true : false,
+  );
   const [fechamaxima, setFechaMaxima] = useState(invoice.fecha_para_pagar);
   const [usocliente, setUsocliente] = useState(invoice.usocliente_cdfi);
   const [modopago, setModoPago] = useState(invoice.modo_pago);
-  const [regimenfiscal, setRegimenfiscal] = useState(invoice.regimenfiscal_cdfi);
+  const [regimenfiscal, setRegimenfiscal] = useState(
+    invoice.regimenfiscal_cdfi,
+  );
   const [isGood, setIsGood] = useState(false);
   const router = useRouter();
   const [total, setTotal] = useState(invoice.amount || 0);
-
 
   useEffect(() => {
     if (state?.success) {
@@ -53,7 +58,7 @@ export default function EditInvoiceForm({
         router.push('/dashboard/invoices');
         router.refresh();
       }, 2000);
-    } 
+    }
     if (state?.errors) {
       setIsGood(false);
     }
@@ -64,7 +69,6 @@ export default function EditInvoiceForm({
     setIsPending(false);
   };
 
-
   const handleStatusChange2 = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsPending(e.target.value === 'Pendiente');
     setIsPaid(false);
@@ -72,27 +76,28 @@ export default function EditInvoiceForm({
   console.log(invoice);
   const formatDate = (dateString: string) => {
     const [day, month, year] = dateString.split('/');
-    
+
     return `${year}-${month}-${day}`;
   };
-  
+
   // Uso del formato adecuado
   //const fechaMaxima = invoice.fecha_para_pagar ? formatDate(invoice.fecha_para_pagar) : '';
-  
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsGood(true);
     const formData = new FormData(e.currentTarget);
     dispatch(formData);
   };
-  
 
   return (
     <form onSubmit={handleSubmit}>
       <ToastContainer theme="colored" />
       <div className={`rounded-md ${theme.container} p-4 md:p-6`}>
         {/* Customer Name */}
-        <h1 className={`text-sm text-gray-500 ${theme.title}`}>Identificador de factura: {invoice.id}</h1>
+        <h1 className={`text-sm text-gray-500 ${theme.title}`}>
+          Identificador de factura: {invoice.id}
+        </h1>
         <div className="my-4">
           <label
             htmlFor="customer"
@@ -135,7 +140,7 @@ export default function EditInvoiceForm({
           </div>
         </div>
 
-          {/* Invoice Amount
+        {/* Invoice Amount
           <div className="mb-4">
           <label
             htmlFor="amount"
@@ -170,9 +175,12 @@ export default function EditInvoiceForm({
           </div>
         </div> */}
 
-         {/* Invoice Amount (read-only) */}
-         <div className="mb-4">
-          <label htmlFor="amount" className={`mb-2 block text-sm font-medium ${theme.text}`}>
+        {/* Invoice Amount (read-only) */}
+        <div className="mb-4">
+          <label
+            htmlFor="amount"
+            className={`mb-2 block text-sm font-medium ${theme.text}`}
+          >
             Importe de la factura
           </label>
           <div className="relative mt-2 rounded-md">
@@ -187,24 +195,23 @@ export default function EditInvoiceForm({
                 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
                 ${theme.border} ${theme.bg} ${theme.text}`}
             />
-             <CurrencyDollarIcon
+            <CurrencyDollarIcon
               className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
               -translate-y-1/2 text-gray-500 ${theme.inputIcon}`}
             />
           </div>
         </div>
-        
 
-        
-
-        <input type="hidden" id='employee' name='employee' value={employee}/>
+        <input type="hidden" id="employee" name="employee" value={employee} />
 
         {/* Invoice Status */}
         <fieldset>
           <legend className={`mb-2 block text-sm font-medium ${theme.text}`}>
             Establecer el estado de la factura
           </legend>
-          <div className={`rounded-md border px-[14px] py-3 ${theme.bg} ${theme.border}`}>
+          <div
+            className={`rounded-md border px-[14px] py-3 ${theme.bg} ${theme.border}`}
+          >
             <div className="flex gap-4">
               <div className="flex items-center">
                 <input
@@ -253,22 +260,23 @@ export default function EditInvoiceForm({
                 </p>
               ))}
           </div>
-          
         </fieldset>
 
-        {isPending &&
-         (
+        {isPending && (
           <div className="mt-4 space-y-4">
             {/* Fecha máxima a pagar */}
             <div>
-              <label htmlFor="fecha_maxima" className={`mb-2 block text-sm font-medium ${theme.text}`}>
+              <label
+                htmlFor="fecha_maxima"
+                className={`mb-2 block text-sm font-medium ${theme.text}`}
+              >
                 Fecha máxima a pagar:
               </label>
               <input
                 type="date"
                 id="fecha_maxima"
                 // Verificar y asegurar que la fecha está en el formato correcto (YYYY-MM-DD)
-                defaultValue={fechamaxima}  
+                defaultValue={fechamaxima}
                 name="fecha_maxima"
                 className={`peer block w-full rounded-md border 
                   py-2 text-sm outline-2 placeholder:text-gray-500
@@ -278,14 +286,15 @@ export default function EditInvoiceForm({
           </div>
         )}
 
-
-
         {/* Additional Fields for "Pagado" */}
-          {isPaid && (
+        {isPaid && (
           <div className="mt-4 space-y-4">
             {/* Uso de Factura */}
             <div>
-              <label htmlFor="uso_factura" className={`mb-2 block text-sm font-medium ${theme.text}`}>
+              <label
+                htmlFor="uso_factura"
+                className={`mb-2 block text-sm font-medium ${theme.text}`}
+              >
                 Uso de Factura
               </label>
               <select
@@ -297,14 +306,21 @@ export default function EditInvoiceForm({
                   ${theme.border} ${theme.bg} ${theme.text}`}
               >
                 <option value="Gastos Generales">Gastos Generales</option>
-                <option value="Compra de Materia Prima">Compra de Materia Prima</option>
-                <option value="Equipo de Transporte">Equipo de Transporte</option>
+                <option value="Compra de Materia Prima">
+                  Compra de Materia Prima
+                </option>
+                <option value="Equipo de Transporte">
+                  Equipo de Transporte
+                </option>
               </select>
             </div>
 
             {/* Régimen Fiscal */}
             <div>
-              <label htmlFor="regimen_fiscal" className={`mb-2 block text-sm font-medium ${theme.text}`}>
+              <label
+                htmlFor="regimen_fiscal"
+                className={`mb-2 block text-sm font-medium ${theme.text}`}
+              >
                 Régimen Fiscal
               </label>
               <select
@@ -322,7 +338,10 @@ export default function EditInvoiceForm({
 
             {/* Método de Pago */}
             <div>
-              <label htmlFor="metodo_pago" className={`mb-2 block text-sm font-medium ${theme.text}`}>
+              <label
+                htmlFor="metodo_pago"
+                className={`mb-2 block text-sm font-medium ${theme.text}`}
+              >
                 Método de Pago
               </label>
               <select
@@ -333,13 +352,14 @@ export default function EditInvoiceForm({
                   py-2 text-sm outline-2 placeholder:text-gray-500
                   ${theme.border} ${theme.bg} ${theme.text}`}
               >
-                <option value="Tarjeta de Debito">Tarjeta de Credito/Debito</option>
+                <option value="Tarjeta de Debito">
+                  Tarjeta de Credito/Debito
+                </option>
                 <option value="Efectivo">Efectivo</option>
               </select>
             </div>
           </div>
         )}
-
       </div>
 
       <div className="mt-6 flex justify-end gap-4">
@@ -351,12 +371,14 @@ export default function EditInvoiceForm({
         >
           Cancel
         </Link>
-        <Button disabled={isGood} className="disabled:bg-slate-400 disabled:cursor-not-allowed" type="submit">
-          {isGood ? "Actualizando..." : "Actualizar Factura"}</Button>
+        <Button
+          disabled={isGood}
+          className="disabled:cursor-not-allowed disabled:bg-slate-400"
+          type="submit"
+        >
+          {isGood ? 'Actualizando...' : 'Actualizar Factura'}
+        </Button>
       </div>
     </form>
   );
 }
-
-
-

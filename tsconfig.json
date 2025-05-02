@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    
     "target": "es2015",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -29,8 +28,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/lib/placeholder-data.js",
-    "scripts/seed.js", 
-    "app/lib/cron.js", 
+    "scripts/seed.js",
+    "app/lib/cron.js"
   ],
   "exclude": ["node_modules"]
 }

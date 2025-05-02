@@ -1,11 +1,11 @@
 import AcmeLogo from '@/app/ui/acme-logo';
 import ResetPasswordForm from '@/app/ui/reset-password-form';
-import { Metadata } from 'next'; 
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Restablecer contraseña',
 };
- 
+
 export default function LoginPage({ params }: { params: { token: string } }) {
   const token = params.token;
 

@@ -1,5 +1,5 @@
 'use client';
- 
+
 import { lusitana } from '@/app/ui/fonts';
 import {
   UserIcon,
@@ -13,19 +13,26 @@ import { useFormState } from 'react-dom';
 import { createUserWithCredentials } from '@/app/lib/actions';
 import { systemDefault } from '../lib/theme';
 import { useRouter } from 'next/navigation';
- 
+
 export default function LoginForm() {
   const initialState = { message: null, errors: {} };
-  const [state, dispatch] = useFormState(createUserWithCredentials, initialState);
+  const [state, dispatch] = useFormState(
+    createUserWithCredentials,
+    initialState,
+  );
 
   return (
-    <div className={`flex-1 rounded-lg ${systemDefault.container}
+    <div
+      className={`flex-1 rounded-lg ${systemDefault.container}
         px-6 pb-4 pt-8
-      `}>
-        <h1 className={`${lusitana.className} mb-3 text-2xl ${systemDefault.title}`}>
-          Rellene los espacios en blanco para crear una nueva cuenta
-        </h1>
-      <form action={dispatch} className="space-y-3">  
+      `}
+    >
+      <h1
+        className={`${lusitana.className} mb-3 text-2xl ${systemDefault.title}`}
+      >
+        Rellene los espacios en blanco para crear una nueva cuenta
+      </h1>
+      <form action={dispatch} className="space-y-3">
         <div className="w-full">
           <div>
             <label
@@ -33,7 +40,7 @@ export default function LoginForm() {
               htmlFor="name"
             >
               Nombre:
-            </ label>
+            </label>
             <div className="relative">
               <input
                 className={`peer block w-full rounded-md border border-gray-200 ${systemDefault.border} 
@@ -46,19 +53,21 @@ export default function LoginForm() {
                 placeholder="Ingresa tu nombre"
                 required
               />
-              <UserIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] 
+              <UserIcon
+                className={`pointer-events-none absolute left-3 top-1/2 h-[18px] 
                 w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900
                 ${systemDefault.inputIcon}
-              `}/>
+              `}
+              />
             </div>
             <div id="name-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.name &&
-              state.errors.name.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
+              {state.errors?.name &&
+                state.errors.name.map((error: string) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                ))}
+            </div>
           </div>
           <div>
             <label
@@ -79,19 +88,21 @@ export default function LoginForm() {
                 placeholder="Ingresa tu dirección de correo electrónico"
                 required
               />
-              <AtSymbolIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] 
+              <AtSymbolIcon
+                className={`pointer-events-none absolute left-3 top-1/2 h-[18px] 
                 w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900
                 ${systemDefault.inputIcon}
-              `}/>
+              `}
+              />
             </div>
             <div id="email-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.email &&
-              state.errors.email.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
+              {state.errors?.email &&
+                state.errors.email.map((error: string) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                ))}
+            </div>
           </div>
           <div className="mt-4">
             <label
@@ -100,9 +111,11 @@ export default function LoginForm() {
             >
               Contraseña:
             </label>
-            <p className={`mb-3 block text-xs font-medium text-gray-900 ${systemDefault.text}`}>
-              La contraseña debe tener al menos 8 caracteres, 
-              un carácter especial, una letra mayúscula y una letra minúscula. 
+            <p
+              className={`mb-3 block text-xs font-medium text-gray-900 ${systemDefault.text}`}
+            >
+              La contraseña debe tener al menos 8 caracteres, un carácter
+              especial, una letra mayúscula y una letra minúscula.
             </p>
             <div className="relative">
               <input
@@ -117,92 +130,112 @@ export default function LoginForm() {
                 required
                 minLength={6}
               />
-              <KeyIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+              <KeyIcon
+                className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
                 -translate-y-1/2 text-gray-500 peer-focus:text-gray-900
                 ${systemDefault.inputIcon}
-              `}/>
+              `}
+              />
             </div>
             <div id="customer-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.password &&
-              state.errors.password.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
+              {state.errors?.password &&
+                state.errors.password.map((error: string) => (
+                  <p className="mt-2 text-sm text-red-500" key={error}>
+                    {error}
+                  </p>
+                ))}
+            </div>
           </div>
         </div>
 
         <div className="mb-4">
-					<label htmlFor="confirm-password" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="confirm-password"
+            className={`mb-2 block text-sm font-medium
 						${systemDefault.text}
-					`}>
-						Confirmar contraseña: 
-					</label>
-					<div className="relative mt-2 rounded-md">
-						<div className="relative">
-							<input
-								id="confirm-password"
-								name="confirm-password"
-								type="password"
-								placeholder="Confirmar contraseña"
-								className={`peer block w-full rounded-md border border-gray-200 
+					`}
+          >
+            Confirmar contraseña:
+          </label>
+          <div className="relative mt-2 rounded-md">
+            <div className="relative">
+              <input
+                id="confirm-password"
+                name="confirm-password"
+                type="password"
+                placeholder="Confirmar contraseña"
+                className={`peer block w-full rounded-md border border-gray-200 
 									py-2 pl-10 text-sm outline-2 placeholder:text-gray-500
 									${systemDefault.border} ${systemDefault.bg} ${systemDefault.text}
 								`}
-								aria-describedby="confirm-password-error"
-							/>
-							<KeyIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+                aria-describedby="confirm-password-error"
+              />
+              <KeyIcon
+                className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
                 -translate-y-1/2 text-gray-500 peer-focus:text-gray-900
                 ${systemDefault.inputIcon}
-              `}/>
-						</div>
-					</div>
-				</div>
-        
+              `}
+              />
+            </div>
+          </div>
+        </div>
+
         {state.message && (
           <div
             className={`
               flex items-end space-x-1
-              ${(state.message == 'Las contraseñas son diferentes.') ? 'h-4' : 'h-8'} 
+              ${
+                state.message == 'Las contraseñas son diferentes.'
+                  ? 'h-4'
+                  : 'h-8'
+              } 
               `}
             aria-live="polite"
             aria-atomic="true"
           >
-            <ExclamationCircleIcon className={`
-              ${(state.message == 'Las contraseñas son diferentes.') ? 'h-5' : 'h-10'} 
+            <ExclamationCircleIcon
+              className={`
+              ${
+                state.message == 'Las contraseñas son diferentes.'
+                  ? 'h-5'
+                  : 'h-10'
+              } 
               w-5 text-red-500
-            `} />
+            `}
+            />
             <p className="text-sm text-red-500">{state.message}</p>
           </div>
         )}
 
         <CreateAccountButton />
-        
       </form>
 
       <ReturnToLoginPageButton />
-
     </div>
   );
 }
 
 function CreateAccountButton() {
   return (
-    <Button className='mt-4 w-full'>
-      Crear una cuenta <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+    <Button className="mt-4 w-full">
+      Crear una cuenta{' '}
+      <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
-  )
+  );
 }
 
 function ReturnToLoginPageButton() {
   const { replace } = useRouter();
 
   return (
-    <Button className='mt-4 w-full' onClick={() => {
-      replace('/login');
-    }}>
-      Volver a la página de inicio de sesión <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
+    <Button
+      className="mt-4 w-full"
+      onClick={() => {
+        replace('/login');
+      }}
+    >
+      Volver a la página de inicio de sesión{' '}
+      <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
-  )
+  );
 }

@@ -2,8 +2,13 @@ import Table from '@/app/ui/customers/table';
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { Metadata } from 'next'; 
-import { systemDefault, darkTheme, lightTheme, themeType } from '@/app/lib/theme';
+import { Metadata } from 'next';
+import {
+  systemDefault,
+  darkTheme,
+  lightTheme,
+  themeType,
+} from '@/app/lib/theme';
 import Pagination from '@/app/ui/customers/pagination';
 import { fetchCustomersPages, getUser } from '@/app/lib/data';
 import { auth } from '@/auth';
@@ -12,7 +17,7 @@ import CustomersServerTable from '@/app/ui/customers/servertable';
 export const metadata: Metadata = {
   title: 'Clientes',
 };
- 
+
 export default async function Page({
   searchParams,
 }: {
@@ -31,7 +36,7 @@ export default async function Page({
   const user = await getUser(userEmail);
   let theme: themeType;
 
-  switch(user.theme) {
+  switch (user.theme) {
     case 'system':
       theme = systemDefault;
       break;
@@ -46,10 +51,16 @@ export default async function Page({
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl ${theme.title}`}>Clientes</h1>
+        <h1 className={`${lusitana.className} text-2xl ${theme.title}`}>
+          Clientes
+        </h1>
       </div>
       <Suspense key={query} fallback={<InvoicesTableSkeleton theme={theme} />}>
-        <CustomersServerTable query={query} currentPage={currentPage} theme={theme} />
+        <CustomersServerTable
+          query={query}
+          currentPage={currentPage}
+          theme={theme}
+        />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} theme={theme} />

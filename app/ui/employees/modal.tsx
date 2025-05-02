@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { Employee } from "@/app/lib/definitions";
+import React, { useState } from 'react';
+import { Employee } from '@/app/lib/definitions';
 
 export function EmployeeDetailsModal({
   employee,
@@ -13,15 +13,15 @@ export function EmployeeDetailsModal({
   const [imageLoaded, setImageLoaded] = useState(false);
 
   if (!employee) return null;
-  
+
   const hasImage = !!employee.image_url;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="relative m-4 md:m-4 md:w-1/3 rounded-lg bg-white p-6 shadow-lg">
+      <div className="relative m-4 rounded-lg bg-white p-6 shadow-lg md:m-4 md:w-1/3">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-600 hover:text-gray-900"
+          className="absolute right-4 top-4 text-gray-600 hover:text-gray-900"
         >
           ×
         </button>
@@ -45,20 +45,22 @@ export function EmployeeDetailsModal({
           <strong>Tipo de empleado:</strong> {employee.tipo_empleado}
         </p>
         <p>
-          <strong>Total de facturas realizadas:</strong> {employee.total_invoices}
+          <strong>Total de facturas realizadas:</strong>{' '}
+          {employee.total_invoices}
         </p>
         <p>
-          <strong>Fecha de ingreso:</strong> {employee.fecha_creado.toLocaleString()}
+          <strong>Fecha de ingreso:</strong>{' '}
+          {employee.fecha_creado.toLocaleString()}
         </p>
 
-        <div className="flex items-center justify-center mt-4">
+        <div className="mt-4 flex items-center justify-center">
           {!imageLoaded && hasImage && (
-            <div className="w-40 h-40 flex items-center justify-center rounded-full bg-gray-200 text-gray-500 animate-pulse">
+            <div className="flex h-40 w-40 animate-pulse items-center justify-center rounded-full bg-gray-200 text-gray-500">
               Cargando...
             </div>
           )}
           {!hasImage && (
-            <div className="w-40 h-40 flex items-center justify-center rounded-full bg-gray-200 text-gray-500 animate-pulse">
+            <div className="flex h-40 w-40 animate-pulse items-center justify-center rounded-full bg-gray-200 text-gray-500">
               Sin Foto
             </div>
           )}
@@ -66,13 +68,12 @@ export function EmployeeDetailsModal({
             <img
               src={employee.image_url}
               alt="Vista previa"
-              className={`w-40 h-40 rounded-full object-cover transition-opacity duration-300 ${
-                imageLoaded ? "opacity-100" : "opacity-0 absolute"
+              className={`h-40 w-40 rounded-full object-cover transition-opacity duration-300 ${
+                imageLoaded ? 'opacity-100' : 'absolute opacity-0'
               }`}
               onLoad={() => setImageLoaded(true)}
             />
-            )
-          }
+          )}
         </div>
 
         <div className="mt-4 flex justify-start">

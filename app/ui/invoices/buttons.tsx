@@ -1,6 +1,15 @@
-import { DocumentTextIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import {
+  DocumentTextIcon,
+  PencilIcon,
+  PlusIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { deleteInvoice, deleteCustomer, deleteEmployee } from '@/app/lib/actions';
+import {
+  deleteInvoice,
+  deleteCustomer,
+  deleteEmployee,
+} from '@/app/lib/actions';
 import { themeType } from '@/app/lib/theme';
 import { ClipboardDocumentListIcon } from '@heroicons/react/20/solid';
 import { Button } from '../button';
@@ -23,18 +32,18 @@ export function CreateInvoice() {
   );
 }
 
-export function UpdateInvoice({ 
+export function UpdateInvoice({
   id,
   disabled,
-  theme 
-}: 
-{ 
+  theme,
+}: {
   id: string;
   disabled: boolean;
-  theme: themeType
+  theme: themeType;
 }) {
-
-  const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+  const handleClick = (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
     if (disabled) {
       event.preventDefault();
     }
@@ -43,51 +52,50 @@ export function UpdateInvoice({
     <Link
       href={`/dashboard/invoices/${id}/edit`}
       onClick={handleClick}
-      aria-disabled={disabled} className={`rounded-md border p-2 
-        ${disabled ? 'bg-gray-400 text-gray-100 cursor-not-allowed' : 
-        `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`}`}
+      aria-disabled={disabled}
+      className={`rounded-md border p-2 
+        ${
+          disabled
+            ? 'cursor-not-allowed bg-gray-400 text-gray-100'
+            : `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`
+        }`}
     >
       <PencilIcon className="w-5" />
     </Link>
   );
 }
 
-
-
-export function ViewDetailsInvoices({ 
+export function ViewDetailsInvoices({
   id,
   onOpen,
-  theme 
-}: 
-{ 
+  theme,
+}: {
   id: string;
   onOpen: (id: string) => void;
-  theme: themeType
+  theme: themeType;
 }) {
   return (
-    
-    <button className={`btn-generate-pdf rounded-md border p-2
+    <button
+      className={`btn-generate-pdf rounded-md border p-2
       ${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText}
-      ${theme.hoverBorder}`} onClick={() => onOpen(id)}>
-      <DocumentTextIcon className="w-5" />     
+      ${theme.hoverBorder}`}
+      onClick={() => onOpen(id)}
+    >
+      <DocumentTextIcon className="w-5" />
     </button>
   );
 }
 
-
-
-export function DeleteInvoice({ 
+export function DeleteInvoice({
   id,
   disabled,
-  theme, 
+  theme,
   data,
-}: 
-{ 
+}: {
   id: string;
   disabled: boolean;
   theme: themeType;
   data: any[];
-
 }) {
   const router = useRouter(); // Recargar la página para reflejar los cambios.
 
@@ -96,10 +104,10 @@ export function DeleteInvoice({
     try {
       // Lógica para eliminar la factura.
       await deleteInvoice(id); // Asegúrate de que deleteInvoice sea una función asíncrona que elimine la factura.
-      
+
       // const updatedInvoices = await fetchFilteredInvoices(data[0], data[1], data[2]); // Actualiza la lista de facturas después de eliminar una.
       // setInvoices(updatedInvoices);
-  
+
       // Mostrar una alerta de éxito.
       toast.success('Factura eliminada con éxito');
       router.refresh(); // Recargar la página para reflejar los cambios.
@@ -109,20 +117,24 @@ export function DeleteInvoice({
     }
   };
 
-
-
   return (
     // <form action={deleteInvoiceWithId}>
-      <button onClick={handleDelete} disabled={disabled} className={`rounded-md border p-2 
-      ${disabled ? 'bg-gray-400 text-gray-100 cursor-not-allowed' : 
-      `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`}`}>
-        <span className="sr-only">Delete</span>
-        <TrashIcon className="w-5" />
-      </button>
+    <button
+      onClick={handleDelete}
+      disabled={disabled}
+      className={`rounded-md border p-2 
+      ${
+        disabled
+          ? 'cursor-not-allowed bg-gray-400 text-gray-100'
+          : `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`
+      }`}
+    >
+      <span className="sr-only">Delete</span>
+      <TrashIcon className="w-5" />
+    </button>
     // </form>
   );
 }
-
 
 export function CreateEmployee() {
   return (
@@ -136,67 +148,69 @@ export function CreateEmployee() {
   );
 }
 
-export function UpdateEmployee({ 
+export function UpdateEmployee({
   id,
   disabled,
-  theme 
-}: 
-{ 
+  theme,
+}: {
   id: string;
   disabled: boolean;
-  theme: themeType
+  theme: themeType;
 }) {
-
-  const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+  const handleClick = (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
     if (disabled) {
       event.preventDefault();
     }
   };
-  
+
   return (
     <Link
       href={`/dashboard/employees/${id}/edit`}
       onClick={handleClick}
-      aria-disabled={disabled} className={`rounded-md border p-2 
-        ${disabled ? 'bg-gray-400 text-gray-100 cursor-not-allowed' : 
-        `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`}`}
+      aria-disabled={disabled}
+      className={`rounded-md border p-2 
+        ${
+          disabled
+            ? 'cursor-not-allowed bg-gray-400 text-gray-100'
+            : `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`
+        }`}
     >
       <PencilIcon className="w-5" />
     </Link>
   );
 }
 
-
-export function ViewDetailsEmployee({ 
+export function ViewDetailsEmployee({
   id,
   onOpen,
-  theme 
-}: 
-{ 
+  theme,
+}: {
   id: string;
   onOpen: (id: string) => void;
-  theme: themeType
+  theme: themeType;
 }) {
   return (
-    
-    <button className={`rounded-md border p-2
+    <button
+      className={`rounded-md border p-2
       ${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText}
-      ${theme.hoverBorder}`} onClick={() => onOpen(id)}>
-      <DocumentTextIcon className="w-5" />     
+      ${theme.hoverBorder}`}
+      onClick={() => onOpen(id)}
+    >
+      <DocumentTextIcon className="w-5" />
     </button>
   );
 }
 
-
-export function DeleteEmployee({ 
+export function DeleteEmployee({
   id,
   disabled,
-  theme 
-}: 
-{ 
+  theme,
+}: {
   id: string;
   disabled: boolean;
-  theme: themeType
+  theme: themeType;
 }) {
   // const deleteEmployeeWithId = deleteEmployee.bind(null, id);
   const router = useRouter(); // Recargar la página para reflejar los cambios.
@@ -205,29 +219,34 @@ export function DeleteEmployee({
     try {
       // Lógica para eliminar la factura.
       await deleteEmployee(id); // Asegúrate de que deleteInvoice sea una función asíncrona que elimine la factura.
-      
+
       // const updatedInvoices = await fetchFilteredInvoices(data[0], data[1], data[2]); // Actualiza la lista de facturas después de eliminar una.
       // setInvoices(updatedInvoices);
-  
+
       // Mostrar una alerta de éxito.
       toast.success('Empleado eliminado con éxito');
       router.refresh(); // Recargar la página para reflejar los cambios.
-
     } catch (error) {
       // Manejar errores y mostrar una alerta de error.
       toast.error('Error al eliminar el empleado');
     }
   };
 
- 
   return (
     // <form action={deleteEmployeeWithId}>
-      <button onClick={handleDelete} disabled={disabled} className={`rounded-md border p-2 
-      ${disabled ? 'bg-gray-400 text-gray-100 cursor-not-allowed' : 
-      `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`}`}>
-        <span className="sr-only">Delete</span>
-        <TrashIcon className="w-5" />
-      </button>
+    <button
+      onClick={handleDelete}
+      disabled={disabled}
+      className={`rounded-md border p-2 
+      ${
+        disabled
+          ? 'cursor-not-allowed bg-gray-400 text-gray-100'
+          : `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`
+      }`}
+    >
+      <span className="sr-only">Delete</span>
+      <TrashIcon className="w-5" />
+    </button>
     // </form>
   );
 }
@@ -244,18 +263,18 @@ export function CreateCustomer() {
   );
 }
 
-export function UpdateCustomer({ 
+export function UpdateCustomer({
   id,
-  disabled,   
-  theme 
-}: 
-{ 
+  disabled,
+  theme,
+}: {
   id: string;
-  disabled: boolean;   
-  theme: themeType
+  disabled: boolean;
+  theme: themeType;
 }) {
-
-  const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+  const handleClick = (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
     if (disabled) {
       event.preventDefault();
     }
@@ -265,46 +284,48 @@ export function UpdateCustomer({
     <Link
       href={`/dashboard/customers/${id}/edit`}
       onClick={handleClick}
-      aria-disabled={disabled} className={`rounded-md border p-2 
-      ${disabled ? 'bg-gray-400 text-gray-100 cursor-not-allowed' : 
-      `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`}`}
+      aria-disabled={disabled}
+      className={`rounded-md border p-2 
+      ${
+        disabled
+          ? 'cursor-not-allowed bg-gray-400 text-gray-100'
+          : `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`
+      }`}
     >
       <PencilIcon className="w-5" />
     </Link>
   );
 }
 
-
-export function ViewDetailsCustomer({ 
+export function ViewDetailsCustomer({
   id,
   onOpen,
-  theme 
-}: 
-{ 
+  theme,
+}: {
   id: string;
   onOpen: (id: string) => void;
-  theme: themeType
+  theme: themeType;
 }) {
   return (
-    
-    <button className={`rounded-md border p-2
+    <button
+      className={`rounded-md border p-2
       ${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText}
-      ${theme.hoverBorder}`} onClick={() => onOpen(id)}>
-      <DocumentTextIcon className="w-5" />     
+      ${theme.hoverBorder}`}
+      onClick={() => onOpen(id)}
+    >
+      <DocumentTextIcon className="w-5" />
     </button>
   );
 }
 
-
-export function DeleteCustomer({ 
+export function DeleteCustomer({
   id,
   disabled,
-  theme 
-}: 
-{ 
+  theme,
+}: {
   id: string;
   disabled: boolean;
-  theme: themeType
+  theme: themeType;
 }) {
   // const deleteCustomerWithId = deleteCustomer.bind(null, id);
   const router = useRouter(); // Recargar la página para reflejar los cambios.
@@ -313,10 +334,10 @@ export function DeleteCustomer({
     try {
       // Lógica para eliminar la factura.
       await deleteCustomer(id); // Asegúrate de que deleteInvoice sea una función asíncrona que elimine la factura.
-      
+
       // const updatedInvoices = await fetchFilteredInvoices(data[0], data[1], data[2]); // Actualiza la lista de facturas después de eliminar una.
       // setInvoices(updatedInvoices);
-  
+
       // Mostrar una alerta de éxito.
       toast.success('Cliente eliminado con éxito');
       router.refresh(); // Recargar la página para reflejar los cambios.
@@ -326,15 +347,21 @@ export function DeleteCustomer({
     }
   };
 
- 
   return (
     // <form action={deleteCustomerWithId}>
-      <button onClick={handleDelete} disabled={disabled} className={`rounded-md border p-2 
-      ${disabled ? 'bg-gray-400 text-gray-100 cursor-not-allowed' : 
-      `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`}`}>
-        <span className="sr-only">Delete</span>
-        <TrashIcon className="w-5" />
-      </button>
+    <button
+      onClick={handleDelete}
+      disabled={disabled}
+      className={`rounded-md border p-2 
+      ${
+        disabled
+          ? 'cursor-not-allowed bg-gray-400 text-gray-100'
+          : `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`
+      }`}
+    >
+      <span className="sr-only">Delete</span>
+      <TrashIcon className="w-5" />
+    </button>
     // </form>
   );
 }

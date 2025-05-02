@@ -28,11 +28,11 @@ type Product = {
   price: number;
 };
 
-export default function Form({ 
+export default function Form({
   customers,
   employee,
   theme,
-}: { 
+}: {
   customers: CustomerField[];
   employee: string;
   theme: themeType;
@@ -47,7 +47,7 @@ export default function Form({
   const [isGood, setIsGood] = useState(false);
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]); // Estado para productos
-  
+
   useEffect(() => {
     if (state?.success) {
       toast.success('Factura creada con éxito!');
@@ -55,7 +55,7 @@ export default function Form({
         router.push('/dashboard/invoices');
         router.refresh();
       }, 2000);
-    } 
+    }
     if (state?.errors) {
       setIsGood(false);
     }
@@ -85,7 +85,7 @@ export default function Form({
     setIsPending(e.target.value === 'Pendiente');
     setIsPaid(false);
   };
-  
+
   const handleAddProduct = () => {
     if (!selectedProductId) return;
     const product = products.find((p) => p.id === selectedProductId);
@@ -158,7 +158,7 @@ export default function Form({
           </div>
         </div>
 
-          {/* Invoice Amount
+        {/* Invoice Amount
           <div className="mb-4">
           <label
             htmlFor="amount"
@@ -232,12 +232,13 @@ export default function Form({
               ))}
           </div>
         </div>
-        
 
         {/* Selected Products Table */}
         {selectedProducts.length > 0 && (
           <div className="mb-4">
-            <h3 className={`mb-2 text-sm font-medium ${theme.text}`}>Elementos de la factura</h3>
+            <h3 className={`mb-2 text-sm font-medium ${theme.text}`}>
+              Elementos de la factura
+            </h3>
             <table className="w-full border-collapse text-sm">
               <thead>
                 <tr className={`border-b ${theme.border}`}>
@@ -250,12 +251,14 @@ export default function Form({
                 {selectedProducts.map((product, index) => (
                   <tr key={index} className={`border-b ${theme.border}`}>
                     <td className="py-2 align-middle">{product.name}</td>
-                    <td className="py-2 text-right align-middle">${product.price.toFixed(2)}</td>
-                    <td className="py-2 align-middle text-center">
+                    <td className="py-2 text-right align-middle">
+                      ${product.price.toFixed(2)}
+                    </td>
+                    <td className="py-2 text-center align-middle">
                       <Button14
                         type="button"
                         onClick={() => handleRemoveProduct(index)}
-                        className="text-red-500 items-center justify-center"
+                        className="items-center justify-center text-red-500"
                       >
                         <TrashIcon className="h-5 w-5" />
                       </Button14>
@@ -268,9 +271,24 @@ export default function Form({
               <p className={`text-lg font-bold ${theme.text}`}>
                 Total: ${total.toFixed(2)}
               </p>
-              <input type="hidden" id='amount' name='amount' value={total.toFixed(2)}/>
-              <input type="hidden" id='employee' name='employee' value={employee}/>
-              <input type="hidden" id='products' name='products' value={JSON.stringify(selectedProducts)}/>
+              <input
+                type="hidden"
+                id="amount"
+                name="amount"
+                value={total.toFixed(2)}
+              />
+              <input
+                type="hidden"
+                id="employee"
+                name="employee"
+                value={employee}
+              />
+              <input
+                type="hidden"
+                id="products"
+                name="products"
+                value={JSON.stringify(selectedProducts)}
+              />
             </div>
           </div>
         )}
@@ -278,9 +296,11 @@ export default function Form({
         {/* Invoice Status */}
         <fieldset>
           <legend className={`mb-2 block text-sm font-medium ${theme.text}`}>
-          Establecer el estado de la factura
+            Establecer el estado de la factura
           </legend>
-          <div className={`rounded-md border px-[14px] py-3 ${theme.bg} ${theme.border}`}>
+          <div
+            className={`rounded-md border px-[14px] py-3 ${theme.bg} ${theme.border}`}
+          >
             <div className="flex gap-4">
               <div className="flex items-center">
                 <input
@@ -327,14 +347,16 @@ export default function Form({
                 </p>
               ))}
           </div>
-          
         </fieldset>
 
         {isPending && (
           <div className="mt-4 space-y-4">
             {/* Fecha máxima a pagar */}
             <div>
-              <label htmlFor="fecha_maxima" className={`mb-2 block text-sm font-medium ${theme.text}`}>
+              <label
+                htmlFor="fecha_maxima"
+                className={`mb-2 block text-sm font-medium ${theme.text}`}
+              >
                 Fecha máxima a pagar:
               </label>
               <input
@@ -349,13 +371,15 @@ export default function Form({
           </div>
         )}
 
-
         {/* Additional Fields for "Pagado" */}
-          {isPaid && (
+        {isPaid && (
           <div className="mt-4 space-y-4">
             {/* Uso de Factura */}
             <div>
-              <label htmlFor="uso_factura" className={`mb-2 block text-sm font-medium ${theme.text}`}>
+              <label
+                htmlFor="uso_factura"
+                className={`mb-2 block text-sm font-medium ${theme.text}`}
+              >
                 Uso de Factura
               </label>
               <select
@@ -366,14 +390,21 @@ export default function Form({
                   ${theme.border} ${theme.bg} ${theme.text}`}
               >
                 <option value="Gastos Generales">Gastos Generales</option>
-                <option value="Compra de Materia Prima">Compra de Materia Prima</option>
-                <option value="Equipo de Transporte">Equipo de Transporte</option>
+                <option value="Compra de Materia Prima">
+                  Compra de Materia Prima
+                </option>
+                <option value="Equipo de Transporte">
+                  Equipo de Transporte
+                </option>
               </select>
             </div>
 
             {/* Régimen Fiscal */}
             <div>
-              <label htmlFor="regimen_fiscal" className={`mb-2 block text-sm font-medium ${theme.text}`}>
+              <label
+                htmlFor="regimen_fiscal"
+                className={`mb-2 block text-sm font-medium ${theme.text}`}
+              >
                 Régimen Fiscal
               </label>
               <select
@@ -390,7 +421,10 @@ export default function Form({
 
             {/* Método de Pago */}
             <div>
-              <label htmlFor="metodo_pago" className={`mb-2 block text-sm font-medium ${theme.text}`}>
+              <label
+                htmlFor="metodo_pago"
+                className={`mb-2 block text-sm font-medium ${theme.text}`}
+              >
                 Método de Pago
               </label>
               <select
@@ -400,13 +434,14 @@ export default function Form({
                   py-2 text-sm outline-2 placeholder:text-gray-500
                   ${theme.border} ${theme.bg} ${theme.text}`}
               >
-                <option value="Tarjeta de Debito">Tarjeta de Credito/Debito</option>
+                <option value="Tarjeta de Debito">
+                  Tarjeta de Credito/Debito
+                </option>
                 <option value="Efectivo">Efectivo</option>
               </select>
             </div>
           </div>
         )}
-
       </div>
 
       <div className="mt-6 flex justify-end gap-4">
@@ -418,15 +453,14 @@ export default function Form({
         >
           Cancel
         </Link>
-        <Button disabled={isGood} className="disabled:bg-slate-400 disabled:cursor-not-allowed" type="submit">
-          {isGood ? "Creando..." : "Crear Factura"}</Button>
+        <Button
+          disabled={isGood}
+          className="disabled:cursor-not-allowed disabled:bg-slate-400"
+          type="submit"
+        >
+          {isGood ? 'Creando...' : 'Crear Factura'}
+        </Button>
       </div>
     </form>
   );
 }
-
-
-
-
-
-

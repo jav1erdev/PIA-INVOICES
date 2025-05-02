@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Customer } from "@/app/lib/definitions";
+import React from 'react';
+import { Customer } from '@/app/lib/definitions';
 
 export function CustomerDetailsModal({
   customer,
@@ -14,10 +14,10 @@ export function CustomerDetailsModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="relative m-4 md:m-4 md:w-1/3 rounded-lg bg-white p-6 shadow-lg">
+      <div className="relative m-4 rounded-lg bg-white p-6 shadow-lg md:m-4 md:w-1/3">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-600 hover:text-gray-900"
+          className="absolute right-4 top-4 text-gray-600 hover:text-gray-900"
         >
           ×
         </button>
@@ -41,7 +41,8 @@ export function CustomerDetailsModal({
           <strong>Tipo de cliente:</strong> {customer.tipo_cliente}
         </p>
         <p>
-          <strong>Fecha de ingreso:</strong> {customer.fecha_creado.toLocaleString()}
+          <strong>Fecha de ingreso:</strong>{' '}
+          {customer.fecha_creado.toLocaleString()}
         </p>
         <div className="mt-4">
           <button

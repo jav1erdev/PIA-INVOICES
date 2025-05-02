@@ -4,12 +4,17 @@ import { fetchEmployeeById, getUser } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { auth } from '@/auth';
-import { darkTheme, lightTheme, systemDefault, themeType } from '@/app/lib/theme';
+import {
+  darkTheme,
+  lightTheme,
+  systemDefault,
+  themeType,
+} from '@/app/lib/theme';
 
 export const metadata: Metadata = {
   title: 'Editar Empleado',
 };
- 
+
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
   const session = await auth();
@@ -20,7 +25,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const user = await getUser(userEmail);
   let theme: themeType;
 
-  switch(user.theme) {
+  switch (user.theme) {
     case 'system':
       theme = systemDefault;
       break;
@@ -35,7 +40,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   if (!employee) {
     return notFound();
   }
-  
+
   return (
     <main>
       <Breadcrumbs
@@ -51,5 +56,5 @@ export default async function Page({ params }: { params: { id: string } }) {
       />
       <Form employee={employee} userEmail={userEmail} theme={theme} />
     </main>
-  )
+  );
 }

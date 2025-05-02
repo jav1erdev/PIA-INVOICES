@@ -1,5 +1,5 @@
 'use client';
- 
+
 import { lusitana } from '@/app/ui/fonts';
 import {
   AtSymbolIcon,
@@ -24,45 +24,55 @@ const GitHubSignIn = authenticateWithOAuth.bind(null, 'github');
 function GoogleSignIn() {
   toast.error(
     <>
-      Esta opción de inicio de sesión <b>no</b> funciona debido a <b>las reglas de protección de privacidad de Google</b>. <br />
+      Esta opción de inicio de sesión <b>no</b> funciona debido a{' '}
+      <b>las reglas de protección de privacidad de Google</b>. <br />
       <br />
-      Como se trata de un <b>proyecto de prueba</b>, no puedo proporcionar toda la <b>burocracia</b> necesaria.
-    </>
-  , {
-    autoClose: 15000
-  });
+      Como se trata de un <b>proyecto de prueba</b>, no puedo proporcionar toda
+      la <b>burocracia</b> necesaria.
+    </>,
+    {
+      autoClose: 15000,
+    },
+  );
 }
- 
+
 export default function LoginForm() {
-  const [errorMessage, dispatch] = useFormState(authenticateWithCredentials, undefined);
+  const [errorMessage, dispatch] = useFormState(
+    authenticateWithCredentials,
+    undefined,
+  );
 
   const searchParams = useSearchParams();
   const params = {
     accountCreated: searchParams.get('account-created'),
-    passwordUpdated: searchParams.get('password-updated') 
+    passwordUpdated: searchParams.get('password-updated'),
   };
 
   useEffect(() => {
     if (params.accountCreated) {
-      toast.success("¡Cuenta creada con éxito!");
+      toast.success('¡Cuenta creada con éxito!');
     }
     if (params.passwordUpdated) {
-      toast.success("¡Contraseña actualizada con éxito!");
+      toast.success('¡Contraseña actualizada con éxito!');
     }
     // if (!params.accountCreated && !params.passwordUpdated) {
     //   toast.warning(<><b>Note</b>: accounts are now automatically <b>deleted</b> after <b>one week</b>.</>);
-    // } 
+    // }
   }, []);
 
   return (
-    <div className={`flex-1 rounded-lg ${systemDefault.container}
+    <div
+      className={`flex-1 rounded-lg ${systemDefault.container}
         px-6 pb-4 pt-8
-      `}>
-        <ToastContainer theme="colored" />
-        <h1 className={`${lusitana.className} mb-3 text-2xl ${systemDefault.title}`}>
-          Inicie sesión para continuar.
-        </h1>
-      <form action={dispatch} className="space-y-3">  
+      `}
+    >
+      <ToastContainer theme="colored" />
+      <h1
+        className={`${lusitana.className} mb-3 text-2xl ${systemDefault.title}`}
+      >
+        Inicie sesión para continuar.
+      </h1>
+      <form action={dispatch} className="space-y-3">
         <div className="w-full">
           <div>
             <label
@@ -83,10 +93,12 @@ export default function LoginForm() {
                 placeholder="Ingresa tu dirección de correo electrónico"
                 required
               />
-              <AtSymbolIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] 
+              <AtSymbolIcon
+                className={`pointer-events-none absolute left-3 top-1/2 h-[18px] 
                 w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900
                 ${systemDefault.inputIcon}
-              `}/>
+              `}
+              />
             </div>
           </div>
           <div className="mt-4">
@@ -109,16 +121,18 @@ export default function LoginForm() {
                 required
                 minLength={6}
               />
-              <KeyIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+              <KeyIcon
+                className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
                 -translate-y-1/2 text-gray-500 peer-focus:text-gray-900
                 ${systemDefault.inputIcon}
-              `}/>
+              `}
+              />
             </div>
           </div>
         </div>
-        
+
         <LoginButton />
-        
+
         {errorMessage && (
           <div
             className="flex h-8 items-end space-x-1"
@@ -129,7 +143,6 @@ export default function LoginForm() {
             <p className="text-sm text-red-500">{errorMessage}</p>
           </div>
         )}
-        
       </form>
 
       {/* <CreateAccount /> */}
@@ -146,10 +159,10 @@ export default function LoginForm() {
     </div>
   );
 }
- 
+
 function LoginButton() {
   const { pending } = useFormStatus();
- 
+
   return (
     <Button className="mt-4 w-full" aria-disabled={pending}>
       Inicia sesión <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
@@ -159,28 +172,38 @@ function LoginButton() {
 
 function CreateAccount() {
   const { pending } = useFormStatus();
-  
+
   const { replace } = useRouter();
- 
+
   return (
-    <Button className="mt-2 w-full" aria-disabled={pending} onClick={() => {
-      replace('/create-account');
-    }}>
-      Crear una cuenta <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+    <Button
+      className="mt-2 w-full"
+      aria-disabled={pending}
+      onClick={() => {
+        replace('/create-account');
+      }}
+    >
+      Crear una cuenta{' '}
+      <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   );
 }
 
 function ForgotPassword() {
   const { pending } = useFormStatus();
-  
+
   const { replace } = useRouter();
- 
+
   return (
-    <Button className="mt-2 w-full" aria-disabled={pending} onClick={() => {
-      replace('/forgot');
-    }}>
-      ¿Olvidó su contraseña? <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+    <Button
+      className="mt-2 w-full"
+      aria-disabled={pending}
+      onClick={() => {
+        replace('/forgot');
+      }}
+    >
+      ¿Olvidó su contraseña?{' '}
+      <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   );
 }
@@ -188,44 +211,50 @@ function ForgotPassword() {
 function GitHubSignInButton() {
   return (
     <form action={GitHubSignIn}>
-      <button className={`
-        flex h-10 items-center rounded-lg
-        px-4 text-sm font-medium
-        w-full bg-black hover:bg-[#101010]
-        text-white
-      `} type='submit'>
+      <button
+        className={`
+        flex h-10 w-full items-center
+        rounded-lg bg-black px-4
+        text-sm font-medium text-white
+        hover:bg-[#101010]
+      `}
+        type="submit"
+      >
         <Image
-          src='oauth-logos/github.svg'
+          src="oauth-logos/github.svg"
           width={25}
           height={25}
-          alt='GitHub logo'
+          alt="GitHub logo"
         />
-        <p className={`px-2 w-full`}>Iniciar sesión con GitHub</p>
+        <p className={`w-full px-2`}>Iniciar sesión con GitHub</p>
         <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
       </button>
     </form>
-  )
+  );
 }
 
 function GoogleSignInButton() {
   return (
     <form action={GoogleSignIn}>
-      <button className={`
-        flex h-10 items-center rounded-lg
+      <button
+        className={`
+        mt-2 flex h-10 w-full
+        items-center rounded-lg bg-white
         px-4 text-sm font-medium
-        w-full bg-white hover:bg-[#4287f5]
-        text-black hover:text-white
-        mt-2
-      `} type='submit'>
+        text-black hover:bg-[#4287f5]
+        hover:text-white
+      `}
+        type="submit"
+      >
         <Image
-          src='oauth-logos/google.svg'
+          src="oauth-logos/google.svg"
           width={25}
           height={25}
-          alt='Google logo'
+          alt="Google logo"
         />
-        <p className={`px-2 w-full`}>Iniciar sesión con Google</p>
+        <p className={`w-full px-2`}>Iniciar sesión con Google</p>
         <ArrowRightIcon className="ml-auto h-5 w-5" />
       </button>
     </form>
-  )
+  );
 }

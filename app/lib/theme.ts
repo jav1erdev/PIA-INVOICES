@@ -11,25 +11,24 @@ export type themeType = {
   hoverText: string;
   hoverBorder: string;
   inputIcon: string;
-}
-
-export const defaultTheme: themeType = {
-  bg: "bg-gray-100",
-  container: "bg-white",
-  title: "text-gray-900",
-  text: "text-gray-800",
-  border: "border-gray-200",
-  notActiveText: "text-gray-500",
-  divide: "divide-gray-200",
-  activeLink: "text-blue-600",
-  hoverBg: "bg-gray-200",
-  hoverText: "text-gray-900",
-  hoverBorder: "border-gray-300",
-  inputIcon: "text-gray-400",
 };
 
+export const defaultTheme: themeType = {
+  bg: 'bg-gray-100',
+  container: 'bg-white',
+  title: 'text-gray-900',
+  text: 'text-gray-800',
+  border: 'border-gray-200',
+  notActiveText: 'text-gray-500',
+  divide: 'divide-gray-200',
+  activeLink: 'text-blue-600',
+  hoverBg: 'bg-gray-200',
+  hoverText: 'text-gray-900',
+  hoverBorder: 'border-gray-300',
+  inputIcon: 'text-gray-400',
+};
 
-export const lightTheme : themeType = {
+export const lightTheme: themeType = {
   bg: 'bg-white',
   container: 'bg-gray-50',
   title: 'text-black',
@@ -43,10 +42,10 @@ export const lightTheme : themeType = {
   hoverBg: 'hover:bg-sky-100',
   hoverText: 'hover:text-blue-600',
   hoverBorder: 'hover:border-blue-600',
-  inputIcon: 'peer-focus:text-gray-900'
-}
+  inputIcon: 'peer-focus:text-gray-900',
+};
 
-export const darkTheme : themeType = {
+export const darkTheme: themeType = {
   bg: 'bg-[#181818]',
   container: 'bg-[#212121]',
   title: 'text-white',
@@ -60,8 +59,8 @@ export const darkTheme : themeType = {
   hoverBg: 'hover:bg-[#1c2932]',
   hoverText: 'hover:text-blue-600',
   hoverBorder: 'hover:border-blue-600',
-  inputIcon: 'peer-focus:text-gray-500'
-}
+  inputIcon: 'peer-focus:text-gray-500',
+};
 
 /* export const systemDefault : themeType = {
   bg: `${lightTheme.bg} dark:${darkTheme.bg}`,
@@ -94,5 +93,5 @@ export const systemDefault = {
   hoverBg: 'hover:bg-sky-100',
   hoverText: 'hover:text-blue-600',
   hoverBorder: 'hover:border-blue-600',
-  inputIcon: 'peer-focus:text-gray-900'
-}
+  inputIcon: 'peer-focus:text-gray-900',
+};

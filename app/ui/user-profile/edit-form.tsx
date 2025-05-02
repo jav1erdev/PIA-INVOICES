@@ -1,9 +1,6 @@
 'use client';
 
-import {
-  KeyIcon,
-  UserCircleIcon,
-} from '@heroicons/react/24/outline';
+import { KeyIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { updateUser } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
@@ -14,14 +11,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from 'react';
 import { themeType } from '@/app/lib/theme';
 
-export default function Form({ 
+export default function Form({
   user,
-  theme
-} : { 
+  theme,
+}: {
   user: User;
   theme: themeType;
 }) {
-
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useFormState(updateUser, initialState);
 
@@ -30,7 +26,7 @@ export default function Form({
 
   useEffect(() => {
     if (updatedUser) {
-      toast.success("User updated successfully!!");
+      toast.success('User updated successfully!!');
     }
   });
 
@@ -64,14 +60,18 @@ export default function Form({
               </p>
           )}
         </div> */}
-      <h1 className={`text-sm text-gray-500 ${theme.title}`}>Identificador de usuario: {user.id}</h1>
+        <h1 className={`text-sm text-gray-500 ${theme.title}`}>
+          Identificador de usuario: {user.id}
+        </h1>
 
         <div className="mt-4">
-          
-          <label htmlFor="name" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="name"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
-            Nombre: 
+          `}
+          >
+            Nombre:
           </label>
           <div className="relative">
             <input
@@ -86,9 +86,11 @@ export default function Form({
               `}
               aria-describedby="name-error"
             />
-            <UserCircleIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+            <UserCircleIcon
+              className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
               -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-            `}/>
+            `}
+            />
           </div>
 
           <div id="name-error" aria-live="polite" aria-atomic="true">
@@ -102,14 +104,15 @@ export default function Form({
         </div>
 
         <div className="mb-4">
-        <label
+          <label
             className={`mt-5 block text-sm font-medium ${theme.text}`}
             htmlFor="password"
           >
             Contraseña:
           </label>
           <p className={`mb-3 block text-xs font-medium ${theme.text}`}>
-            La contraseña debe tener al menos 8 caracteres, <br /> un carácter especial, una letra mayúscula y una letra minúscula.
+            La contraseña debe tener al menos 8 caracteres, <br /> un carácter
+            especial, una letra mayúscula y una letra minúscula.
           </p>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -124,9 +127,11 @@ export default function Form({
                 `}
                 aria-describedby="password-error"
               />
-              <KeyIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+              <KeyIcon
+                className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
                 -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-              `}/>
+              `}
+              />
             </div>
 
             <div id="password-error" aria-live="polite" aria-atomic="true">
@@ -141,9 +146,12 @@ export default function Form({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="confirm-password" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="confirm-password"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
+          `}
+          >
             Confirmar contraseña:
           </label>
           <div className="relative mt-2 rounded-md">
@@ -159,12 +167,18 @@ export default function Form({
                 `}
                 aria-describedby="confirm-password-error"
               />
-              <KeyIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+              <KeyIcon
+                className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
                 -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-              `}/>
+              `}
+              />
             </div>
 
-            <div id="confirm-password-error" aria-live="polite" aria-atomic="true">
+            <div
+              id="confirm-password-error"
+              aria-live="polite"
+              aria-atomic="true"
+            >
               {state?.errors?.confirmPassword &&
                 state.errors.confirmPassword.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
@@ -176,7 +190,7 @@ export default function Form({
         </div>
 
         {state?.message && (
-          <p className="mt-2 text-sm text-red-500"  key={state.message}>
+          <p className="mt-2 text-sm text-red-500" key={state.message}>
             {state.message}
           </p>
         )}

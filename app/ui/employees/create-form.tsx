@@ -22,14 +22,13 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { toast, ToastContainer } from 'react-toastify';
 
-export default function Form({ 
+export default function Form({
   userEmail,
-  theme
-} : { 
+  theme,
+}: {
   userEmail: string;
   theme: themeType;
 }) {
-
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useFormState(createEmployee, initialState);
   const [isGood, setIsGood] = useState(false);
@@ -43,23 +42,23 @@ export default function Form({
         router.push('/dashboard/employees');
         router.refresh();
       }, 2000);
-    }  
+    }
     if (state?.errors) {
       setIsGood(false);
     }
   }, [state, router]);
 
   const uploadImage = (file: any) => {
-    console.log('Archivo:', file);  // Verifica si el archivo está bien
-  
+    console.log('Archivo:', file); // Verifica si el archivo está bien
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', 'piaimage');
     formData.append('folder', 'perfil');
     formData.append('resource_type', 'image');
-    
+
     const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/drn7ynbiq/upload';
-    
+
     fetch(cloudinaryUrl, {
       method: 'POST',
       body: formData,
@@ -78,8 +77,7 @@ export default function Form({
         console.error('Error al subir la imagen:', error);
       });
   };
-  
-  
+
   // Manejador para el cambio de archivo en un input
   const handleFileChange = (event: any) => {
     const file = event.target.files[0];
@@ -89,7 +87,7 @@ export default function Form({
       setFotoBase64(null); // Limpiar la vista previa si no hay archivo
     }
   };
-  
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsGood(true);
@@ -102,14 +100,17 @@ export default function Form({
       <ToastContainer theme="colored" />
 
       <input type="hidden" name="userEmail" value={userEmail} />
-      <input type="hidden" name="photo" value={fotoBase64 || ""} />
+      <input type="hidden" name="photo" value={fotoBase64 || ''} />
 
       <div className={`rounded-md ${theme.container} p-4 md:p-6`}>
         <div className="mb-4">
-          <label htmlFor="employee" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="employee"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
-            Nombre: 
+          `}
+          >
+            Nombre:
           </label>
           <div className="relative">
             <input
@@ -123,9 +124,11 @@ export default function Form({
               `}
               aria-describedby="name-error"
             />
-            <UserCircleIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+            <UserCircleIcon
+              className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
               -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-            `}/>
+            `}
+            />
           </div>
           <div id="name-error" aria-live="polite" aria-atomic="true">
             {state.errors?.name &&
@@ -138,10 +141,13 @@ export default function Form({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="rfc" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="rfc"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
-            RFC: 
+          `}
+          >
+            RFC:
           </label>
           <div className="relative">
             <input
@@ -155,9 +161,11 @@ export default function Form({
               `}
               aria-describedby="rfc-error"
             />
-            <UserCircleIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+            <UserCircleIcon
+              className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
               -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-            `}/>
+            `}
+            />
           </div>
           <div id="rfc-error" aria-live="polite" aria-atomic="true">
             {state.errors?.rfc &&
@@ -170,10 +178,13 @@ export default function Form({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="telefono" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="telefono"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
-            Telefono: 
+          `}
+          >
+            Telefono:
           </label>
           <div className="relative">
             <input
@@ -187,9 +198,11 @@ export default function Form({
               `}
               aria-describedby="telefono-error"
             />
-            <UserCircleIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+            <UserCircleIcon
+              className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
               -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-            `}/>
+            `}
+            />
           </div>
           <div id="telefono-error" aria-live="polite" aria-atomic="true">
             {state.errors?.telefono &&
@@ -202,10 +215,13 @@ export default function Form({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="direccion" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="direccion"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
-            Direccion: 
+          `}
+          >
+            Direccion:
           </label>
           <div className="relative">
             <input
@@ -219,9 +235,11 @@ export default function Form({
               `}
               aria-describedby="direccion-error"
             />
-            <UserCircleIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+            <UserCircleIcon
+              className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
               -translate-y-1/2 text-gray-500 ${theme.inputIcon}
-            `}/>
+            `}
+            />
           </div>
           <div id="direccion-error" aria-live="polite" aria-atomic="true">
             {state.errors?.direccion &&
@@ -235,9 +253,12 @@ export default function Form({
 
         {/* Invoice Amount */}
         <div className="mb-4">
-          <label htmlFor="email" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="email"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
+          `}
+          >
             Correo Electronico:
           </label>
           <div className="relative mt-2 rounded-md">
@@ -253,10 +274,12 @@ export default function Form({
                 `}
                 aria-describedby="email-error"
               />
-              <AtSymbolIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+              <AtSymbolIcon
+                className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
                 -translate-y-1/2 text-gray-500 peer-focus:text-gray-900
                 ${theme.inputIcon}
-              `}/>
+              `}
+              />
             </div>
             <div id="email-error" aria-live="polite" aria-atomic="true">
               {state.errors?.email &&
@@ -270,9 +293,12 @@ export default function Form({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="password" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="password"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
+          `}
+          >
             Contraseña:
           </label>
           <div className="relative mt-2 rounded-md">
@@ -288,10 +314,12 @@ export default function Form({
                 `}
                 aria-describedby="password-error"
               />
-              <AtSymbolIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+              <AtSymbolIcon
+                className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
                 -translate-y-1/2 text-gray-500 peer-focus:text-gray-900
                 ${theme.inputIcon}
-              `}/>
+              `}
+              />
             </div>
             <div id="password-error" aria-live="polite" aria-atomic="true">
               {state.errors?.password &&
@@ -305,9 +333,12 @@ export default function Form({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="confirm-password" className={`mb-2 block text-sm font-medium
+          <label
+            htmlFor="confirm-password"
+            className={`mb-2 block text-sm font-medium
             ${theme.text}
-          `}>
+          `}
+          >
             Confirmar Contraseña:
           </label>
           <div className="relative mt-2 rounded-md">
@@ -323,12 +354,18 @@ export default function Form({
                 `}
                 aria-describedby="confirm-password-error"
               />
-              <AtSymbolIcon className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
+              <AtSymbolIcon
+                className={`pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] 
                 -translate-y-1/2 text-gray-500 peer-focus:text-gray-900
                 ${theme.inputIcon}
-              `}/>
+              `}
+              />
             </div>
-            <div id="confirm-password-error" aria-live="polite" aria-atomic="true">
+            <div
+              id="confirm-password-error"
+              aria-live="polite"
+              aria-atomic="true"
+            >
               {state.errors?.confirmPassword &&
                 state.errors.confirmPassword.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
@@ -340,10 +377,13 @@ export default function Form({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="foto" className={`mb-2 block text-sm font-medium ${theme.text}`}>
+          <label
+            htmlFor="foto"
+            className={`mb-2 block text-sm font-medium ${theme.text}`}
+          >
             Foto:
           </label>
-          <div className="relative flex flex-col md:flex-row items-center gap-7">
+          <div className="relative flex flex-col items-center gap-7 md:flex-row">
             <input
               id="foto"
               name="foto"
@@ -352,13 +392,14 @@ export default function Form({
               className={`peer block w-full rounded-md border py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 ${theme.border} ${theme.bg} ${theme.text}`}
               aria-describedby="foto-error"
               onChange={handleFileChange}
-            /> {/* Input para subir la foto top-1/2 -translate-y-1/2 */}
+            />{' '}
+            {/* Input para subir la foto top-1/2 -translate-y-1/2 */}
             <div className="relative right-3 flex items-center">
               {fotoBase64 ? (
                 <img
-                 src={fotoBase64}
-                 alt="Vista previa"
-                 className="w-20 h-20 md:w-40 md:h-40 rounded-full object-cover"
+                  src={fotoBase64}
+                  alt="Vista previa"
+                  className="h-20 w-20 rounded-full object-cover md:h-40 md:w-40"
                 />
               ) : (
                 <UserCircleIcon className="h-6 w-6 text-gray-500" />
@@ -375,16 +416,17 @@ export default function Form({
           </div>
         </div>
 
-        
         {/* Invoice Status */}
         <fieldset>
           <legend className={`mb-2 block text-sm font-medium ${theme.text}`}>
             Selecciona el tipo de empleado
           </legend>
-          <div className={`rounded-md border px-[14px] py-3
+          <div
+            className={`rounded-md border px-[14px] py-3
             ${theme.bg} ${theme.border}
-          `}>
-            <div className="flex flex-col md:flex-row gap-4">
+          `}
+          >
+            <div className="flex flex-col gap-4 md:flex-row">
               <div className="flex items-center">
                 <input
                   id="supervisor"
@@ -460,7 +502,8 @@ export default function Form({
                   htmlFor="gerente-de-la-planta-principal"
                   className={`ml-2 flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-gray-600 ${theme.container} ${theme.border} ${theme.text}`}
                 >
-                  Gerente de la planta principal <BuildingOffice2Icon className="h-4 w-4" />
+                  Gerente de la planta principal{' '}
+                  <BuildingOffice2Icon className="h-4 w-4" />
                 </label>
               </div>
               <div className="flex items-center">
@@ -484,7 +527,6 @@ export default function Form({
                   Auxiliar <WrenchIcon className="h-4 w-4" />
                 </label>
               </div>
-              
             </div>
           </div>
           <div id="tipo_empleado-error" aria-live="polite" aria-atomic="true">
@@ -497,9 +539,8 @@ export default function Form({
           </div>
         </fieldset>
 
-
         {state.message && state.errors && (
-          <p className="mt-2 text-sm text-red-500"  key={state.message}>
+          <p className="mt-2 text-sm text-red-500" key={state.message}>
             {state.message}
           </p>
         )}
@@ -516,8 +557,13 @@ export default function Form({
         >
           Cancel
         </Link>
-        <Button disabled={isGood} className="disabled:bg-slate-400 disabled:cursor-not-allowed" type="submit">
-          {isGood ? "Creando..." : "Crear Empleado"}</Button>
+        <Button
+          disabled={isGood}
+          className="disabled:cursor-not-allowed disabled:bg-slate-400"
+          type="submit"
+        >
+          {isGood ? 'Creando...' : 'Crear Empleado'}
+        </Button>
       </div>
     </form>
   );

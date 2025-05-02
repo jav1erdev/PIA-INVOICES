@@ -65,7 +65,6 @@ export async function fetchRevenue() {
       ORDER BY month;
     `;
 
-
     // console.log('Data fetch completed after 3 seconds.');
 
     return data.rows;
@@ -77,7 +76,7 @@ export async function fetchRevenue() {
 
 export async function fetchLatestInvoices(userEmail: string) {
   noStore();
-  
+
   try {
     const data = await sql<LatestInvoiceRaw>`
       SELECT invoices.amount, customers.name, customers.email, invoices.id, invoices.status
@@ -100,7 +99,7 @@ export async function fetchLatestInvoices(userEmail: string) {
 
 export async function fetchCardData(userEmail: string) {
   noStore();
-  
+
   try {
     // You can probably combine these into a single SQL query
     // However, we are intentionally splitting them to demonstrate
@@ -174,7 +173,7 @@ export async function fetchCardData(userEmail: string) {
 //       FROM invoices
 //       JOIN customers ON invoices.customer_id = customers.id
 //       WHERE
-       
+
 //         (customers.name ILIKE ${`%${query}%`} OR
 //         customers.email ILIKE ${`%${query}%`} OR
 //         invoices.id::text ILIKE ${`%${query}%`} OR
@@ -196,14 +195,12 @@ export async function fetchCardData(userEmail: string) {
 //   }
 // }
 
-
 // This function fetches filtered invoices and their associated products
-
 
 export async function fetchFilteredInvoices(
   query: string,
   currentPage: number,
-  userEmail: string
+  userEmail: string,
 ) {
   noStore();
 
@@ -255,7 +252,7 @@ export async function fetchFilteredInvoices(
     // Process invoices and map products to each invoice
     const processedInvoices = invoices.rows.map((invoice) => {
       const invoiceProducts = products.rows.filter(
-        (product) => product.invoice_id === invoice.id
+        (product) => product.invoice_id === invoice.id,
       );
 
       return {
@@ -308,7 +305,9 @@ export async function fetchAllInvoicesByEmailGroupedByMonth(userEmail: string) {
 
     invoices.rows.forEach((invoice) => {
       const date = new Date(invoice.fecha_creado);
-      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`; // e.g. "2025-04"
+      const monthKey = `${date.getFullYear()}-${String(
+        date.getMonth() + 1,
+      ).padStart(2, '0')}`; // e.g. "2025-04"
       if (!invoicesByMonth[monthKey]) {
         invoicesByMonth[monthKey] = [];
       }
@@ -322,14 +321,9 @@ export async function fetchAllInvoicesByEmailGroupedByMonth(userEmail: string) {
   }
 }
 
-
-
-
-
-
 export async function fetchInvoicesPages(query: string, userEmail: string) {
   noStore();
-  
+
   try {
     const count = await sql`SELECT COUNT(*)
     FROM invoices
@@ -353,7 +347,7 @@ export async function fetchInvoicesPages(query: string, userEmail: string) {
 
 export async function fetchInvoiceById(id: string, userEmail: string) {
   noStore();
-  
+
   try {
     const data = await sql<InvoiceForm>`
       SELECT
@@ -381,13 +375,13 @@ export async function fetchInvoiceById(id: string, userEmail: string) {
       // Convert amount from cents to dollars
       amount: invoice.amount / 100,
     }));
-    
+
     return invoice[0];
   } catch (error) {
     console.error('Database Error:', error);
     // throw new Error('Failed to fetch invoice.');
 
-    return false // we can't return an error, because it can break the not-found functionality at app\dashboard\invoices\[id]\edit\not-found.tsx
+    return false; // we can't return an error, because it can break the not-found functionality at app\dashboard\invoices\[id]\edit\not-found.tsx
   }
 }
 
@@ -411,11 +405,15 @@ export async function fetchCustomers(userEmail: string) {
   }
 }
 
-export async function fetchFilteredCustomers(query: string, currentPage: number, userEmail: string) {
+export async function fetchFilteredCustomers(
+  query: string,
+  currentPage: number,
+  userEmail: string,
+) {
   noStore();
 
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-  
+
   try {
     const data = await sql<CustomersTableType>`
       SELECT
@@ -455,7 +453,6 @@ export async function fetchFilteredCustomers(query: string, currentPage: number,
     throw new Error('Failed to fetch customer table.');
   }
 }
-
 
 export async function fetchAllEmployeesExportExcel(userEmail: string) {
   noStore();
@@ -516,11 +513,9 @@ export async function fetchAllCustomersExportExcel(userEmail: string) {
   }
 }
 
-
-
 export async function fetchCustomersPages(query: string, userEmail: string) {
   noStore();
-  
+
   try {
     const count = await sql`SELECT COUNT(*)
     FROM customers
@@ -540,7 +535,7 @@ export async function fetchCustomersPages(query: string, userEmail: string) {
 
 export async function fetchCustomerById(id: string, userEmail: string) {
   noStore();
-  
+
   try {
     const customer = await sql<CustomerForm>`
       SELECT
@@ -555,10 +550,9 @@ export async function fetchCustomerById(id: string, userEmail: string) {
     console.error('Database Error:', error);
     // throw new Error('Failed to fetch customer.');
 
-    return false // we can't return an error, because it can break the not-found functionality at app\dashboard\invoices\[id]\edit\not-found.tsx
+    return false; // we can't return an error, because it can break the not-found functionality at app\dashboard\invoices\[id]\edit\not-found.tsx
   }
 }
-
 
 export async function fetchEmployees(userEmail: string) {
   noStore();
@@ -581,11 +575,15 @@ export async function fetchEmployees(userEmail: string) {
   }
 }
 
-export async function fetchFilteredEmployees(query: string, currentPage: number, userEmail: string) {
+export async function fetchFilteredEmployees(
+  query: string,
+  currentPage: number,
+  userEmail: string,
+) {
   noStore();
 
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-  
+
   try {
     const data = await sql<EmployeesTableType>`
       SELECT
@@ -623,11 +621,11 @@ export async function fetchFilteredEmployees(query: string, currentPage: number,
 
     const employees = data.rows.map((employee) => ({
       ...employee,
-      total_invoices: Number(employee.total_invoices),  // Convierte total_invoices a un número
+      total_invoices: Number(employee.total_invoices), // Convierte total_invoices a un número
     }));
 
     console.log(employees);
-    
+
     return employees;
   } catch (err) {
     console.error('Database Error:', err);
@@ -657,7 +655,10 @@ export async function fetchEmployeesAll() {
   }
 }
 
-export async function fetchEmployeeSchedules(employeeId: string, userEmail: string) {
+export async function fetchEmployeeSchedules(
+  employeeId: string,
+  userEmail: string,
+) {
   const schedules = await sql.sql`
     SELECT * 
     FROM work_schedules
@@ -669,7 +670,7 @@ export async function fetchEmployeeSchedules(employeeId: string, userEmail: stri
 
 export async function fetchEmployeesPages(query: string, userEmail: string) {
   noStore();
-  
+
   try {
     const count = await sql`SELECT COUNT(*)
     FROM employees
@@ -689,7 +690,7 @@ export async function fetchEmployeesPages(query: string, userEmail: string) {
 
 export async function fetchEmployeeById(id: string, userEmail: string) {
   noStore();
-  
+
   try {
     const customer = await sql<EmployeeForm>`
       SELECT
@@ -704,14 +705,13 @@ export async function fetchEmployeeById(id: string, userEmail: string) {
     console.error('Database Error:', error);
     // throw new Error('Failed to fetch customer.');
 
-    return false // we can't return an error, because it can break the not-found functionality at app\dashboard\invoices\[id]\edit\not-found.tsx
+    return false; // we can't return an error, because it can break the not-found functionality at app\dashboard\invoices\[id]\edit\not-found.tsx
   }
 }
 
-
 export async function getUser(userEmail: string) {
   noStore();
-  
+
   try {
     const user = await sql`SELECT * FROM employees WHERE email = ${userEmail}`;
     return user.rows[0] as User;
@@ -721,10 +721,9 @@ export async function getUser(userEmail: string) {
   }
 }
 
-
 // export async function getUser1(userEmail: string) {
 //   noStore();
-  
+
 //   try {
 //     const user = await sql`SELECT * FROM users WHERE email = ${userEmail}`;
 //     return user.rows[0] as User;

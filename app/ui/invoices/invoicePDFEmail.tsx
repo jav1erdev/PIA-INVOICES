@@ -1,17 +1,27 @@
-"use client"
-import jsPDFInvoiceTemplate, { OutputType } from "jspdf-invoice-template";
-import jsPDF from "jspdf";
-import { formatDateToLocal, formatCurrency, formatDatetoPayToLocal } from '@/app/lib/utils';
+'use client';
+import jsPDFInvoiceTemplate, { OutputType } from 'jspdf-invoice-template';
+import jsPDF from 'jspdf';
+import {
+  formatDateToLocal,
+  formatCurrency,
+  formatDatetoPayToLocal,
+} from '@/app/lib/utils';
 import { Invoice } from '@/app/lib/definitions';
-import { useState } from "react";
-import { themeType } from "@/app/lib/theme";
+import { useState } from 'react';
+import { themeType } from '@/app/lib/theme';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {ArrowPathIcon, ShareIcon } from "@heroicons/react/24/outline";
+import { ArrowPathIcon, ShareIcon } from '@heroicons/react/24/outline';
 
-
-export default function InvoicePDFEmail({ invoice, disabled, theme }: { invoice: Invoice, disabled: boolean, theme: themeType }) {
-
+export default function InvoicePDFEmail({
+  invoice,
+  disabled,
+  theme,
+}: {
+  invoice: Invoice;
+  disabled: boolean;
+  theme: themeType;
+}) {
   const [loading, setLoading] = useState(false); // Estado para evitar descargas múltiples
 
   async function getBase64FromUrl(url: string) {
@@ -29,8 +39,8 @@ export default function InvoicePDFEmail({ invoice, disabled, theme }: { invoice:
     setLoading(true); // Marca como en proceso
     // Agrupar productos con el mismo título y sumar las cantidades y subtotales
     const groupedProducts = invoice.products.reduce((acc, product) => {
-      const existingProduct = acc.find(item => item.title === product.title);
-      
+      const existingProduct = acc.find((item) => item.title === product.title);
+
       if (existingProduct) {
         // Si el producto ya existe, sumamos la cantidad y actualizamos el total
         existingProduct.quantity += product.quantity;
@@ -42,28 +52,28 @@ export default function InvoicePDFEmail({ invoice, disabled, theme }: { invoice:
           total: product.price * product.quantity, // Inicializamos el total
         });
       }
-      
+
       return acc;
     }, []);
-  
+
     // Generar filas de la tabla de productos dinámicamente a partir de los productos agrupados
     const productsTable = groupedProducts.map((product, index) => [
       index + 1,
-      product.title || 'N/A',  // Título del producto
-      product.description || 'N/A',  // Descripción del producto
-      formatCurrency(product.price),  // Formatear precio
-      product.quantity,  // Cantidad
+      product.title || 'N/A', // Título del producto
+      product.description || 'N/A', // Descripción del producto
+      formatCurrency(product.price), // Formatear precio
+      product.quantity, // Cantidad
       //product.unit || 'Unit',  // Unidad
-      formatCurrency(product.total),  // Total por producto
+      formatCurrency(product.total), // Total por producto
     ]);
-  
+
     // Configurar propiedades del PDF
     const props = {
       outputType: OutputType.DataUriString,
       fileName: `FacturaCDFI_${invoice.id}.pdf`,
       returnJsPDFDocObject: true,
       logo: {
-        src: "/Logo.png",  // Ruta del logo
+        src: '/Logo.png', // Ruta del logo
         type: 'PNG',
         width: 100,
         height: 15.02,
@@ -71,24 +81,24 @@ export default function InvoicePDFEmail({ invoice, disabled, theme }: { invoice:
       },
       stamp: {
         inAllPages: true,
-        src: "/sello.png", // Ruta de la imagen del sello
+        src: '/sello.png', // Ruta de la imagen del sello
         width: 207, //aspect ratio = width/height
         height: 75,
         margin: {
-            top: -70, //negative or positive num, from the current position
-            left: -9 //negative or positive num, from the current position
-        }
+          top: -70, //negative or positive num, from the current position
+          left: -9, //negative or positive num, from the current position
+        },
       },
       business: {
-        name: "Mocarr Steel CV",
-        address: "Albania 141, San Nicolas Garza, Nuevo Leon",
-        phone: "(+52) 81-33-91-90-68",
-        email: "mocarr-steel@gmail.com",
-        email_1: "RFC: MC221104AR9",
+        name: 'Mocarr Steel CV',
+        address: 'Albania 141, San Nicolas Garza, Nuevo Leon',
+        phone: '(+52) 81-33-91-90-68',
+        email: 'mocarr-steel@gmail.com',
+        email_1: 'RFC: MC221104AR9',
         website: `ID: ${invoice.id || 'N/A'}`,
       },
       contact: {
-        label: "Factura emitida para:",
+        label: 'Factura emitida para:',
         name: invoice.name || 'Client Name',
         address: `Dirreccion: ${invoice.customer_direccion || 'N/A'}`,
         phone: `Telefono: ${invoice.customer_telefono || 'N/A'}`,
@@ -96,18 +106,22 @@ export default function InvoicePDFEmail({ invoice, disabled, theme }: { invoice:
         otherInfo: `RFC: ${invoice.customer_rfc || 'N/A'}`,
       },
       invoice: {
-        label: "Factura #: ",
+        label: 'Factura #: ',
         num: invoice.id_tmp,
-        invDate: `Fecha de pagar: ${formatDatetoPayToLocal(invoice.fecha_para_pagar) || "N/A"}`,
-        invGenDate: `Fecha de generación: ${formatDateToLocal(invoice.fecha_creado)}`,
+        invDate: `Fecha de pagar: ${
+          formatDatetoPayToLocal(invoice.fecha_para_pagar) || 'N/A'
+        }`,
+        invGenDate: `Fecha de generación: ${formatDateToLocal(
+          invoice.fecha_creado,
+        )}`,
         header: [
-          { title: "#", style: { width: 10 } },
-          { title: "Nombre", style: { width: 30 } },
-          { title: "Descripcion", style: { width: 80 } },
-          { title: "Precio" },
-          { title: "Cantidad" },
+          { title: '#', style: { width: 10 } },
+          { title: 'Nombre', style: { width: 30 } },
+          { title: 'Descripcion', style: { width: 80 } },
+          { title: 'Precio' },
+          { title: 'Cantidad' },
           //{ title: "Unidad" },
-          { title: "Total" },
+          { title: 'Total' },
         ],
         table: productsTable,
         additionalRows: [
@@ -126,33 +140,36 @@ export default function InvoicePDFEmail({ invoice, disabled, theme }: { invoice:
           {
             col3: '*Todos los productos ya cuentan con IVA incluido (16%)*',
             style: { fontSize: 10, color: '#888' },
-          }
+          },
         ],
-        invDescLabel: "Detalles adicionales de la factura",
-        invDesc: `\nUso de la factura: ${invoice.usocliente_cdfi || 'N/A'}\nRazón Social: ${invoice.regimenfiscal_cdfi || 'N/A'}\nMétodo de pago: ${invoice.modo_pago || 'N/A'}`,
+        invDescLabel: 'Detalles adicionales de la factura',
+        invDesc: `\nUso de la factura: ${
+          invoice.usocliente_cdfi || 'N/A'
+        }\nRazón Social: ${
+          invoice.regimenfiscal_cdfi || 'N/A'
+        }\nMétodo de pago: ${invoice.modo_pago || 'N/A'}`,
       },
       footer: {
-        text: "La factura se crea en una computadora y es válida sin la firma y el sello.",
+        text: 'La factura se crea en una computadora y es válida sin la firma y el sello.',
       },
       pageEnable: true,
-      pageLabel: "Pagina ",
+      pageLabel: 'Pagina ',
     };
-  
+
     // Generar el PDF base con jsPDFInvoiceTemplate
     const pdf = jsPDFInvoiceTemplate(props);
-  
+
     // Obtener el objeto jsPDF para personalización adicional
     const doc = pdf.jsPDFDocObject;
-  
+
     // Definir la posición en la que colocar "Uso de la factura" y "Razón Social"
     // const yPosition = 170; // Ajuste de la posición Y para evitar que se superponga con la tabla
-  
+
     // // Agregar "Uso de la factura" y "Razón Social" debajo de la barra
     // doc.setFontSize(12).text(`Uso de la factura: ${invoice.usocliente_cdfi || 'N/A'}`, 10, yPosition);
     // doc.setFontSize(12).text(`Razón Social: ${invoice.regimenfiscal_cdfi || 'N/A'}`, 10, yPosition + 20);
     // doc.setFontSize(12).text(`Metodo de pago: ${invoice.modo_pago || 'N/A'}`, 10, yPosition + 40);
 
-      
     // let finalY = 175; // Ajustar la posición Y para evitar superposición
 
     // // Cargar la imagen como base64
@@ -187,7 +204,7 @@ export default function InvoicePDFEmail({ invoice, disabled, theme }: { invoice:
     // // Insertar la imagen ajustada
     // doc.addImage(imageBase64, "PNG", margin, finalY, finalImgWidth, finalImgHeight);
 
-    const pdfBlob = doc.output("blob");
+    const pdfBlob = doc.output('blob');
     const formData = new FormData();
     formData.append('pdfBase64', pdfBlob, `FacturaCDFI_${invoice.id}.pdf`);
     formData.append('invoiceId', invoice.id);
@@ -200,7 +217,7 @@ export default function InvoicePDFEmail({ invoice, disabled, theme }: { invoice:
     });
 
     if (response.ok) {
-      toast.success("¡Factura enviada por correo!");
+      toast.success('¡Factura enviada por correo!');
     } else {
       toast.warning('Hubo un problema al enviar la factura');
     }
@@ -210,16 +227,26 @@ export default function InvoicePDFEmail({ invoice, disabled, theme }: { invoice:
     // // Guardar el PDF
     // doc.save(`FacturaCDFI_${invoice.id}.pdf`);
   };
-  
+
   return (
-    <button disabled={disabled || loading} className={`rounded-md border p-2 
-      ${disabled || loading ? 'bg-gray-400 text-gray-100 cursor-not-allowed' : 
-      `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`}`} onClick={generateInvoicePDF}>
-        {loading ? <ArrowPathIcon className="w-5 transition-all animate-spin" /> : <ShareIcon className="w-5" />}
+    <button
+      disabled={disabled || loading}
+      className={`rounded-md border p-2 
+      ${
+        disabled || loading
+          ? 'cursor-not-allowed bg-gray-400 text-gray-100'
+          : `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`
+      }`}
+      onClick={generateInvoicePDF}
+    >
+      {loading ? (
+        <ArrowPathIcon className="w-5 animate-spin transition-all" />
+      ) : (
+        <ShareIcon className="w-5" />
+      )}
     </button>
   );
 }
-
 
 // export default function InvoicePDFEmail({ invoice, disabled, theme }: { invoice: Invoice, disabled: boolean, theme: themeType }) {
 //   // Estado para evitar descargas múltiples
@@ -325,7 +352,7 @@ export default function InvoicePDFEmail({ invoice, disabled, theme }: { invoice:
 //       formData.append('pdfBase64', pdfBlob, `invoice_${invoice.id}.pdf`);
 //       formData.append('invoiceId', invoice.id);
 //       formData.append('customerEmail', invoice.email);
-  
+
 //       // Guardar PDF
 //       const response = await fetch('/api/send-email-invoice', {
 //         method: 'POST',
@@ -347,14 +374,13 @@ export default function InvoicePDFEmail({ invoice, disabled, theme }: { invoice:
 //   };
 
 //   return (
-//     <button 
-//       disabled={disabled || isGenerating} 
-//       className={`rounded-md border p-2 
-//         ${disabled || isGenerating ? 'bg-gray-400 text-gray-100 cursor-not-allowed' : 
-//         `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`}`} 
+//     <button
+//       disabled={disabled || isGenerating}
+//       className={`rounded-md border p-2
+//         ${disabled || isGenerating ? 'bg-gray-400 text-gray-100 cursor-not-allowed' :
+//         `${theme.border} ${theme.text} ${theme.hoverBg} ${theme.hoverText} ${theme.hoverBorder}`}`}
 //       onClick={generateInvoicePDF}>
-//       <ShareIcon className="w-5" />     
+//       <ShareIcon className="w-5" />
 //     </button>
 //   );
 // }
-

@@ -16,7 +16,7 @@ const iconMap = {
   invoices: InboxIcon,
 };
 
-export default async function CardWrapper({theme}:{theme: themeType}) {
+export default async function CardWrapper({ theme }: { theme: themeType }) {
   const session = await auth();
   const userEmail = session?.user?.email!;
 
@@ -31,9 +31,24 @@ export default async function CardWrapper({theme}:{theme: themeType}) {
     <>
       {/* NOTE: comment in this code when you get to this point in the course */}
 
-      <Card title="Dinero Generado" value={totalPaidInvoices} type="collected" theme={theme} />
-      <Card title="Dinero Pendiente" value={totalPendingInvoices} type="pending" theme={theme} />
-      <Card title="Total de Facturas" value={numberOfInvoices} type="invoices" theme={theme} />
+      <Card
+        title="Dinero Generado"
+        value={totalPaidInvoices}
+        type="collected"
+        theme={theme}
+      />
+      <Card
+        title="Dinero Pendiente"
+        value={totalPendingInvoices}
+        type="pending"
+        theme={theme}
+      />
+      <Card
+        title="Total de Facturas"
+        value={numberOfInvoices}
+        type="invoices"
+        theme={theme}
+      />
       <Card
         title="Total de Clientes"
         value={numberOfCustomers}
@@ -48,12 +63,12 @@ export function Card({
   title,
   value,
   type,
-  theme
+  theme,
 }: {
   title: string;
   value: number | string;
   type: 'invoices' | 'customers' | 'pending' | 'collected';
-  theme: themeType
+  theme: themeType;
 }) {
   const Icon = iconMap[type];
 
@@ -63,7 +78,8 @@ export function Card({
         {Icon ? <Icon className={`h-5 w-5 ${theme.text}`} /> : null}
         <h3 className={`ml-2 text-sm font-medium ${theme.title}`}>{title}</h3>
       </div>
-      <p className={`${lusitana.className} truncate rounded-xl
+      <p
+        className={`${lusitana.className} truncate rounded-xl
         ${theme.bg} ${theme.title} px-4 py-8 text-center text-2xl`}
       >
         {value}

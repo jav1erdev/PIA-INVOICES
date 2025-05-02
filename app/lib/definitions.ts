@@ -23,8 +23,13 @@ export type User = {
   password: string;
   isoauth: boolean;
   theme: 'system' | 'dark' | 'light';
-  tipo_empleado: "Supervisor" | "Jefe de area" | "Asistente de Inventario" | "Gerente de la planta principal" | "Auxiliar";
-}
+  tipo_empleado:
+    | 'Supervisor'
+    | 'Jefe de area'
+    | 'Asistente de Inventario'
+    | 'Gerente de la planta principal'
+    | 'Auxiliar';
+};
 
 export type Customer = {
   id: string;
@@ -37,7 +42,7 @@ export type Customer = {
   total_pending: number;
   direccion: string;
   telefono: string;
-  tipo_cliente: "Normal" | "Asociado";
+  tipo_cliente: 'Normal' | 'Asociado';
 };
 
 export type CustomerEdit = {
@@ -47,7 +52,7 @@ export type CustomerEdit = {
   rfc: string;
   direccion: string;
   telefono: string;
-  tipo_cliente: "Normal" | "Asociado";
+  tipo_cliente: 'Normal' | 'Asociado';
 };
 
 export type Employee = {
@@ -62,7 +67,12 @@ export type Employee = {
   password: string;
   isoauth: boolean;
   theme: 'system' | 'dark' | 'light';
-  tipo_empleado: "Supervisor" | "Jefe de area" | "Asistente de Inventario" | "Gerente de la planta principal" | "Auxiliar";
+  tipo_empleado:
+    | 'Supervisor'
+    | 'Jefe de area'
+    | 'Asistente de Inventario'
+    | 'Gerente de la planta principal'
+    | 'Auxiliar';
   image_url: string;
 };
 
@@ -73,9 +83,13 @@ export type EmployeeEdit = {
   rfc: string;
   direccion: string;
   telefono: string;
-  tipo_empleado: "Supervisor" | "Jefe de area" | "Asistente de Inventario" | "Gerente de la planta principal" | "Auxiliar";
-}
-
+  tipo_empleado:
+    | 'Supervisor'
+    | 'Jefe de area'
+    | 'Asistente de Inventario'
+    | 'Gerente de la planta principal'
+    | 'Auxiliar';
+};
 
 export type Invoice = {
   id: string;
@@ -147,7 +161,7 @@ export type InvoicesTable = {
     unit: string;
     title: string;
     name: string;
-    description: string; 
+    description: string;
     total?: number;
   }[];
   fecha_creado: string;
@@ -155,9 +169,6 @@ export type InvoicesTable = {
   fecha_pago: string;
   status: 'Pendiente' | 'Pagado';
 };
-
-
-
 
 export type CustomersTableType = {
   id: string;
@@ -170,7 +181,7 @@ export type CustomersTableType = {
   fecha_creado: Date;
   direccion: string;
   telefono: string;
-  tipo_cliente: "Normal" | "Asociado";
+  tipo_cliente: 'Normal' | 'Asociado';
 };
 
 export type FormattedCustomersTable = {
@@ -189,7 +200,7 @@ export type CustomerField = {
 };
 
 export type Product = {
-  id: string;         // productId in the database
+  id: string; // productId in the database
   name: string;
   description: string;
   price: number;
@@ -207,7 +218,12 @@ export type EmployeesTableType = {
   direccion: string;
   telefono: string;
   theme: 'system' | 'dark' | 'light';
-  tipo_empleado: "Supervisor" | "Jefe de area" | "Asistente de Inventario" | "Gerente de la planta principal" | "Auxiliar";
+  tipo_empleado:
+    | 'Supervisor'
+    | 'Jefe de area'
+    | 'Asistente de Inventario'
+    | 'Gerente de la planta principal'
+    | 'Auxiliar';
   image_url: string;
 };
 
@@ -221,8 +237,13 @@ export type FormattedEmployeesTable = {
 export type EmployeeField = {
   id: string;
   name: string;
-  image_url: string;  
-  tipo_empleado: "Supervisor" | "Jefe de area" | "Asistente de Inventario" | "Gerente de la planta principal" | "Auxiliar";
+  image_url: string;
+  tipo_empleado:
+    | 'Supervisor'
+    | 'Jefe de area'
+    | 'Asistente de Inventario'
+    | 'Gerente de la planta principal'
+    | 'Auxiliar';
 };
 
 export type InvoiceForm = {
@@ -247,11 +268,11 @@ export type CustomerForm = {
   rfc: string;
   direccion: string;
   telefono: string;
-  tipo_cliente: "Normal" | "Asociado";
-  fecha_creado: Date,
-  total_invoices: number,
-  total_paid: number,
-  total_pending: number,
+  tipo_cliente: 'Normal' | 'Asociado';
+  fecha_creado: Date;
+  total_invoices: number;
+  total_paid: number;
+  total_pending: number;
 };
 
 export type EmployeeForm = {
@@ -261,14 +282,16 @@ export type EmployeeForm = {
   rfc: string;
   direccion: string;
   telefono: string;
-  tipo_empleado: "Supervisor" | "Jefe de area" | "Asistente de Inventario" | "Gerente de la planta principal" | "Auxiliar";
-  image_url: string,
-  fecha_creado: Date,
-  total_invoices: number,
-  password: string,
-  isoauth: boolean,
+  tipo_empleado:
+    | 'Supervisor'
+    | 'Jefe de area'
+    | 'Asistente de Inventario'
+    | 'Gerente de la planta principal'
+    | 'Auxiliar';
+  image_url: string;
+  fecha_creado: Date;
+  total_invoices: number;
+  password: string;
+  isoauth: boolean;
   theme: 'system' | 'dark' | 'light';
 };
-
-
-

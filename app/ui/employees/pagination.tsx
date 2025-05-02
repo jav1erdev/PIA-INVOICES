@@ -7,11 +7,10 @@ import { generatePagination } from '@/app/lib/utils';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { themeType } from '@/app/lib/theme';
 
-export default function Pagination({ 
-  totalPages, 
-  theme
-}: 
-{ 
+export default function Pagination({
+  totalPages,
+  theme,
+}: {
   totalPages: number;
   theme: themeType;
 }) {
@@ -79,7 +78,7 @@ function PaginationNumber({
   href,
   isActive,
   position,
-  theme
+  theme,
 }: {
   page: number | string;
   href: string;
@@ -90,7 +89,9 @@ function PaginationNumber({
   const className = clsx(
     `flex h-10 w-10 items-center justify-center text-sm border
       ${theme.border} ${theme.text}
-      ${(!isActive && position !== 'middle') && 
+      ${
+        !isActive &&
+        position !== 'middle' &&
         `${theme.hoverBorder} ${theme.hoverBg} ${theme.hoverText}`
       }
     `,
@@ -115,7 +116,7 @@ function PaginationArrow({
   href,
   direction,
   isDisabled,
-  theme
+  theme,
 }: {
   href: string;
   direction: 'left' | 'right';
@@ -126,7 +127,10 @@ function PaginationArrow({
     `flex h-10 w-10 items-center justify-center rounded-md border
       ${theme.border} ${theme.text}
       ${isDisabled && `${theme.border} ${theme.notActiveText}`}
-      ${!isDisabled && `${theme.hoverBorder} ${theme.hoverBg} ${theme.hoverText}`}
+      ${
+        !isDisabled &&
+        `${theme.hoverBorder} ${theme.hoverBg} ${theme.hoverText}`
+      }
     `,
     {
       'pointer-events-none text-gray-300': isDisabled,

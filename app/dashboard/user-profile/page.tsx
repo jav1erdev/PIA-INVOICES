@@ -3,19 +3,24 @@ import { Metadata } from 'next';
 import { auth } from '@/auth';
 import { lusitana } from '@/app/ui/fonts';
 import { getUser } from '@/app/lib/data';
-import { darkTheme, lightTheme, systemDefault, themeType } from '@/app/lib/theme';
+import {
+  darkTheme,
+  lightTheme,
+  systemDefault,
+  themeType,
+} from '@/app/lib/theme';
 
 export const metadata: Metadata = {
   title: 'Mi Cuenta',
 };
- 
+
 export default async function Page() {
   const session = await auth();
   const userEmail = session?.user?.email!;
   const user = await getUser(userEmail);
   let theme: themeType;
 
-  switch(user.theme) {
+  switch (user.theme) {
     case 'system':
       theme = systemDefault;
       break;
@@ -26,13 +31,13 @@ export default async function Page() {
       theme = lightTheme;
       break;
   }
-  
+
   return (
     <main className="w-full">
-      <div className="flex w-full items-center justify-between mb-6">
+      <div className="mb-6 flex w-full items-center justify-between">
         <h1 className={` text-2xl ${theme.title}`}>Mi Cuenta</h1>
       </div>
       <Form user={user} theme={theme} />
     </main>
-  )
+  );
 }

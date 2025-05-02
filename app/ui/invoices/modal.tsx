@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Invoice } from "@/app/lib/definitions";
-import { formatCurrency } from "@/app/lib/utils";
+import React from 'react';
+import { Invoice } from '@/app/lib/definitions';
+import { formatCurrency } from '@/app/lib/utils';
 
 export function InvoiceDetailsModal({
   invoice,
@@ -18,7 +18,7 @@ export function InvoiceDetailsModal({
       <div className="w-1/3 rounded-lg bg-white p-6 shadow-lg">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-600 hover:text-gray-900"
+          className="absolute right-4 top-4 text-gray-600 hover:text-gray-900"
         >
           ×
         </button>
@@ -45,10 +45,12 @@ export function InvoiceDetailsModal({
           <strong>Regimen fiscal del CDFI:</strong> {invoice.regimenfiscal_cdfi}
         </p>
         <p>
-          <strong>Fecha de emision:</strong> {invoice.fecha_creado.toLocaleString()}
+          <strong>Fecha de emision:</strong>{' '}
+          {invoice.fecha_creado.toLocaleString()}
         </p>
         <p>
-          <strong>Fecha maxima para pagar:</strong> {invoice.fecha_pago.toLocaleString()}
+          <strong>Fecha maxima para pagar:</strong>{' '}
+          {invoice.fecha_pago.toLocaleString()}
         </p>
         <p>
           <strong>Fecha de pago:</strong> {invoice.fecha_pago.toLocaleString()}

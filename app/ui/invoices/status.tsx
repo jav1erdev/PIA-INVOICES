@@ -2,14 +2,13 @@ import { themeType } from '@/app/lib/theme';
 import { CheckIcon, ClockIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 
-export default function InvoiceStatus({ 
+export default function InvoiceStatus({
   status,
-  theme
-}: 
-{ 
+  theme,
+}: {
   status: string;
   theme: themeType;
- }) {
+}) {
   return (
     <span
       className={clsx(
